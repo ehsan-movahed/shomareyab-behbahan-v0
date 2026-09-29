@@ -7081,14 +7081,16 @@ function getTimeAgo(ts){
   };
 
   /* Seed/migrate old records once more at runtime. */
-  for(var i=0;i<businesses.length;i++){
-    if(!businesses[i].status){
-      businesses[i].status=businesses[i].ownerId?"pending_approval":"approved";
-    }
+  var migratedAny = false;
+for(var i=0;i<businesses.length;i++){
+  if(!businesses[i].status){
+    businesses[i].status=businesses[i].ownerId?"pending_approval":"approved";
+    migratedAny = true;
   }
-  saveToStorage();
-  buildCategories();
-  updateStats();
+}
+if(migratedAny){ saveToStorage(); }
+buildCategories();
+updateStats();
 })();
 </script>
 </body>
