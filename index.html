@@ -90,6 +90,7 @@
 .theme-toggle:hover{background:rgba(255,255,255,.25); transform:scale(1.05);}
 .theme-toggle:active{transform:scale(.95);}
 .theme-toggle svg{width:20px; height:20px; transition:transform .4s var(--ease-spring);}
+/* header-menu-toggle styles moved to category menu section */
 .theme-toggle .icon-sun{display:none;}
 .theme-toggle .icon-moon{display:block;}
 [data-theme="dark"] .theme-toggle .icon-sun{display:block;}
@@ -114,7 +115,8 @@ body, button, input, select, textarea{
   position:relative;
   background:linear-gradient(135deg,#0f766e 0%,#14b8a6 50%,#0d9488 100%);
   color:#fff; padding:28px 20px 56px;
-  text-align:center; overflow:hidden;
+  text-align:center; overflow:visible;
+  z-index:40;
 }
 .header::before{
   content:""; position:absolute; inset:0;
@@ -154,8 +156,13 @@ body, button, input, select, textarea{
 /* ============ CONTAINER ============ */
 .container{
   max-width:720px; margin:auto;
-  padding:0 16px 40px; margin-top:-30px;
+  padding:0 16px 40px; margin-top:-12px;
   position:relative; z-index:2;
+}
+.container > .card:first-of-type{
+  margin-top:8px;
+  position:relative;
+  z-index:3;
 }
 
 /* ============ CARD ============ */
@@ -214,23 +221,211 @@ body, button, input, select, textarea{
 .search-box button:active{transform:scale(.97)}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* ============ CATEGORY MENU ============ */
-.category-menu-wrap{position:relative;margin-top:12px}
-.category-menu-trigger{width:100%;min-height:42px;border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:12px;padding:8px 12px;display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;font:inherit;transition:all .18s var(--ease-smooth)}
-.category-menu-trigger:hover,.category-menu-trigger.open{border-color:var(--primary-500);box-shadow:0 0 0 3px rgba(20,184,166,.10)}
-.category-menu-trigger .menu-left{display:flex;align-items:center;gap:9px;min-width:0}
-.category-menu-trigger .hamburger{width:28px;height:28px;border-radius:8px;background:var(--primary-50);color:var(--primary-600);display:flex;align-items:center;justify-content:center;flex:0 0 auto}
-.category-menu-trigger .hamburger svg{width:16px;height:16px}
-.category-menu-trigger .menu-label{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.category-menu-trigger .menu-count{font-size:11px;color:var(--text-3);font-weight:600}
-.category-menu-trigger .chevron{width:16px;height:16px;transition:transform .2s}.category-menu-trigger.open .chevron{transform:rotate(180deg)}
-.category-menu-panel{display:none;margin-top:7px;padding:8px;background:var(--surface);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow);max-height:420px;overflow:auto;animation:fadeIn .16s ease}.category-menu-panel.open{display:block}
-.category-menu-all{width:100%;border:0;background:var(--muted);color:var(--text-2);border-radius:10px;padding:9px 11px;text-align:right;font:inherit;font-size:13px;font-weight:700;cursor:pointer;margin-bottom:7px}.category-menu-all.active{background:var(--primary-500);color:#fff}
-.category-group{border-top:1px solid var(--border);padding:7px 0}.category-group:first-of-type{border-top:0}
-.category-group-head{width:100%;display:flex;align-items:center;gap:7px;border:0;background:transparent;color:var(--text);padding:8px 6px;cursor:pointer;font:inherit;text-align:right}.category-group-head .cat-emoji{font-size:18px}.category-group-head .cat-name{flex:1;font-size:13px;font-weight:700}.category-group-head .cat-count{font-size:10.5px;color:var(--text-3);font-weight:600}.category-group-head .cat-arrow{width:15px;height:15px;transition:transform .18s}.category-group.open .cat-arrow{transform:rotate(180deg)}
-.category-sublist{display:none;padding:0 10px 4px 0}.category-group.open .category-sublist{display:block}
-.category-subitem{width:100%;display:flex;align-items:center;gap:7px;border:0;background:transparent;color:var(--text-2);padding:7px 8px;border-radius:9px;cursor:pointer;font:inherit;text-align:right;font-size:12px}.category-subitem:hover{background:var(--primary-50);color:var(--primary-700)}.category-subitem.active{background:var(--primary-50);color:var(--primary-700);font-weight:700}.category-subitem .sub-emoji{font-size:14px}.category-subitem .sub-name{flex:1}.category-subitem .sub-count{font-size:10px;color:var(--text-3)}
-@media (max-width:640px){.category-menu-panel{max-height:55vh}}
+/* ============ BUSINESS LOCATION ============ */
+.location-box{background:var(--muted);border:1px solid var(--border);border-radius:12px;padding:12px;}
+.location-status{font-size:12.5px;color:var(--text-2);font-weight:600;margin-bottom:9px;}
+.location-status.success{color:var(--success);}
+.location-actions{display:flex;gap:8px;flex-wrap:wrap;}
+.location-btn,.location-clear-btn{border:1px solid var(--border);border-radius:9px;padding:9px 12px;font:inherit;font-size:12px;font-weight:700;cursor:pointer;}
+.location-btn{background:var(--primary-50);color:var(--primary-700);border-color:var(--primary-100);}
+.location-btn:hover{background:var(--primary-100);}
+.location-clear-btn{background:var(--surface);color:var(--text-2);}
+.location-clear-btn:hover{background:var(--border);}
+.location-coords{font-size:11px;color:var(--text-3);margin-top:8px;min-height:16px;}
+/* ============ CATEGORY MENU (header dropdown) ============ */
+.header-menu-anchor{position:absolute; top:20px; right:20px; z-index:60;}
+.header-menu-toggle{
+  position:relative; top:auto; right:auto;
+  width:42px; height:42px; border-radius:14px;
+  border:1px solid rgba(255,255,255,.25);
+  background:rgba(255,255,255,.15);
+  backdrop-filter:blur(10px);
+  color:#fff; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  transition:all .25s var(--ease-smooth);
+  padding:0;
+}
+.header-menu-toggle:hover{background:rgba(255,255,255,.25); transform:scale(1.05);}
+.header-menu-toggle:active{transform:scale(.95);}
+.header-menu-toggle.open{background:rgba(255,255,255,.3); box-shadow:0 0 0 3px rgba(255,255,255,.18);}
+.header-menu-toggle svg{width:20px;height:20px;}
+.category-menu-panel{
+  position:fixed;
+  top:70px;
+  right:12px;
+  width:min(380px, calc(100vw - 20px));
+  max-height:calc(100vh - 88px);
+  display:flex;
+  flex-direction:column;
+  padding:0;
+  background:var(--surface);
+  color:var(--text);
+  border:1px solid var(--border);
+  border-radius:18px;
+  box-shadow:0 18px 50px rgba(15,23,42,.18);
+  z-index:70;
+  text-align:right;
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  transform:translateY(-10px) scale(.97);
+  transform-origin:top right;
+  /* fixed so header overflow cannot clip categories */
+  transition:opacity .22s var(--ease-smooth), transform .28s var(--ease-spring), visibility .22s;
+  overflow:hidden;
+}
+.category-menu-panel.open{
+  opacity:1;
+  visibility:visible;
+  pointer-events:auto;
+  transform:translateY(0) scale(1);
+}
+.category-menu-panel::before{
+  content:"";
+  position:absolute;
+  top:-6px; right:18px;
+  width:12px; height:12px;
+  background:var(--surface);
+  border-left:1px solid var(--border);
+  border-top:1px solid var(--border);
+  transform:rotate(45deg);
+  z-index:2;
+}
+.category-menu-head{
+  flex-shrink:0;
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  padding:12px 12px 10px;
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+}
+.category-menu-head .cm-title{
+  font-size:13.5px; font-weight:800; color:var(--text);
+  display:flex; align-items:center; gap:8px;
+}
+.category-menu-head .cm-title span{
+  width:26px; height:26px; border-radius:8px;
+  background:var(--primary-50); color:var(--primary-700);
+  display:flex; align-items:center; justify-content:center; font-size:13px;
+}
+.category-menu-head .cm-close{
+  width:30px; height:30px; border:0; border-radius:9px;
+  background:var(--muted); color:var(--text-2); cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  font-size:17px; line-height:1; transition:all .15s;
+}
+.category-menu-head .cm-close:hover{background:var(--border); color:var(--text)}
+.category-menu-body{
+  flex:1 1 auto;
+  overflow:auto;
+  -webkit-overflow-scrolling:touch;
+  padding:8px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:6px;
+  align-content:start;
+  scrollbar-width:thin;
+  scrollbar-color:var(--border) transparent;
+}
+.category-menu-body::-webkit-scrollbar{width:5px}
+.category-menu-body::-webkit-scrollbar-thumb{background:var(--border); border-radius:10px}
+.category-menu-all{
+  grid-column:1 / -1;
+  width:100%; border:0; background:var(--muted); color:var(--text-2);
+  border-radius:12px; padding:10px 12px; text-align:right;
+  font:inherit; font-size:12.5px; font-weight:700; cursor:pointer;
+  transition:all .18s var(--ease-smooth);
+}
+.category-menu-all:hover{background:var(--primary-50); color:var(--primary-700)}
+.category-menu-all.active{background:var(--primary-500); color:#fff; box-shadow:var(--shadow-primary)}
+.category-group{
+  border:1px solid var(--border);
+  border-radius:12px;
+  background:var(--surface);
+  padding:0;
+  margin:0;
+  min-width:0;
+  transition:background .18s, border-color .18s, box-shadow .18s;
+}
+.category-group:hover{
+  border-color:var(--primary-200);
+  background:var(--primary-50);
+}
+.category-group.open{
+  grid-column:1 / -1;
+  background:var(--primary-50);
+  border-color:var(--primary-200);
+  box-shadow:0 4px 14px rgba(20,184,166,.12);
+}
+.category-group-head{
+  width:100%; display:flex; align-items:center; gap:5px;
+  border:0; background:transparent; color:var(--text);
+  padding:7px 7px; cursor:pointer; font:inherit; text-align:right;
+  border-radius:11px; transition:background .15s;
+  min-height:40px;
+}
+.category-group-head .cat-emoji{font-size:16px; width:20px; text-align:center; flex-shrink:0}
+.category-group-head .cat-name{
+  flex:1; font-size:12px; font-weight:700; line-height:1.35;
+  white-space:normal; overflow:hidden;
+  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;
+}
+.category-group-head .cat-count{
+  font-size:10px; color:var(--text-3); font-weight:700;
+  background:var(--muted); border:1px solid var(--border);
+  border-radius:100px; padding:1px 6px; min-width:18px; text-align:center;
+  flex-shrink:0;
+}
+.category-group.open .cat-count{background:var(--primary-500); color:#fff; border-color:var(--primary-500)}
+.category-group-head .cat-arrow{
+  width:13px; height:13px; color:var(--text-3); flex-shrink:0;
+  transition:transform .22s var(--ease-spring);
+}
+.category-group.open .cat-arrow{transform:rotate(180deg); color:var(--primary-600)}
+.category-sublist{
+  display:none;
+  padding:2px 6px 8px;
+  animation:fadeIn .18s ease both;
+  border-top:1px dashed var(--primary-100);
+  margin-top:2px;
+}
+.category-group.open .category-sublist{display:block}
+.category-subitem{
+  width:100%; display:flex; align-items:center; gap:7px;
+  border:0; background:transparent; color:var(--text-2);
+  padding:8px 8px; border-radius:9px; cursor:pointer;
+  font:inherit; text-align:right; font-size:12px;
+  transition:all .15s var(--ease-smooth);
+}
+.category-subitem:hover{
+  background:var(--surface);
+  color:var(--primary-700);
+}
+.category-subitem.active{
+  background:var(--surface);
+  color:var(--primary-700);
+  font-weight:700;
+  box-shadow:0 0 0 1.5px var(--primary-200);
+}
+.category-subitem .sub-emoji{font-size:13px; width:18px; text-align:center}
+.category-subitem .sub-name{flex:1}
+.category-subitem .sub-count{font-size:10px; color:var(--text-3); font-weight:600}
+.category-menu-foot{display:none}
+@media (max-width:640px){
+  .category-menu-panel{
+    width:min(96vw, 360px);
+    max-height:min(90vh, 680px);
+    right:-4px;
+  }
+  .category-group-head{min-height:42px; padding:8px 7px}
+  .category-group-head .cat-name{font-size:11.5px}
+}
+[data-theme="dark"] .category-menu-panel{
+  box-shadow:0 20px 50px rgba(0,0,0,.45);
+}
+[data-theme="dark"] .category-group.open{
+  background:rgba(20,184,166,.12);
+  border-color:rgba(20,184,166,.25);
+}
 /* ============ EXAMPLES ============ */
 .examples{
   margin-top:12px; color:var(--text-3);
@@ -325,29 +520,51 @@ body, button, input, select, textarea{
 /* ============ BUSINESS CARD ============ */
 .business{
   border:1px solid var(--border);
-  border-radius:var(--radius-sm);
-  padding:16px; margin-bottom:12px;
-  transition:all .25s var(--ease-smooth);
-  background:var(--surface); position:relative; overflow:hidden;
-  animation:fadeUp .5s var(--ease-smooth) both;
+  border-radius:20px;
+  padding:0;
+  margin-bottom:14px;
+  transition:transform .28s var(--ease-spring), box-shadow .28s var(--ease-smooth), border-color .2s;
+  background:var(--surface);
+  position:relative;
+  overflow:hidden;
+  animation:fadeUp .45s var(--ease-smooth) both;
+  box-shadow:0 4px 18px rgba(15,23,42,.04);
 }
+.business::before{
+  content:"";
+  position:absolute;
+  top:0; right:0; bottom:0;
+  width:4px;
+  background:linear-gradient(180deg,var(--primary-400),var(--primary-600));
+  opacity:.9;
+}
+.business:nth-child(3n+2)::before{background:linear-gradient(180deg,#38bdf8,#0284c7)}
+.business:nth-child(3n)::before{background:linear-gradient(180deg,#fbbf24,#d97706)}
 .business:hover{
   border-color:var(--primary-200);
-  box-shadow:var(--shadow-lg);
-  transform:translateY(-2px);
+  box-shadow:0 14px 36px rgba(15,23,42,.10);
+  transform:translateY(-3px);
 }
-.business-head{display:flex; align-items:flex-start; gap:12px; margin-bottom:12px;}
+.business-inner{padding:16px 16px 14px 18px}
+.business-head{display:flex; align-items:flex-start; gap:14px; margin-bottom:12px}
 .avatar{
-  width:44px; height:44px; border-radius:12px;
+  width:56px; height:56px; border-radius:16px;
   display:flex; align-items:center; justify-content:center;
-  font-size:18px; font-weight:800; color:#fff;
+  font-size:20px; font-weight:800; color:#fff;
   flex-shrink:0;
-  box-shadow:0 4px 12px rgba(0,0,0,.12);
+  box-shadow:0 8px 20px rgba(15,23,42,.12);
+  overflow:hidden;
+  background-size:cover;
+  background-position:center;
+  border:2px solid rgba(255,255,255,.7);
 }
-.business-head-text{flex:1; min-width:0}
+.avatar.avatar-photo{padding:0; font-size:0; border-color:var(--border)}
+.avatar.avatar-photo img{width:100%; height:100%; object-fit:cover; display:block}
+.avatar.avatar-cat{font-size:26px; font-weight:500; line-height:1}
+.business-head-text{flex:1; min-width:0; padding-top:2px}
 .business h3{
-  margin:0 0 6px; font-size:16px; font-weight:700;
-  line-height:1.4; color:var(--text); word-break:break-word;
+  margin:0 0 8px; font-size:16.5px; font-weight:800;
+  line-height:1.45; color:var(--text); word-break:break-word;
   display:flex; align-items:center; gap:6px; flex-wrap:wrap;
 }
 .business h3 mark{
@@ -358,69 +575,134 @@ body, button, input, select, textarea{
   display:inline-flex; align-items:center; gap:3px;
   background:var(--primary-50); color:var(--primary-700);
   border:1px solid var(--primary-100);
-  padding:2px 7px; border-radius:100px;
-  font-size:10px; font-weight:600; line-height:1;
+  padding:3px 8px; border-radius:100px;
+  font-size:10px; font-weight:700; line-height:1;
 }
 .verified-badge svg{width:10px;height:10px}
+.license-badge{
+  display:inline-flex; align-items:center; gap:3px;
+  background:#eff6ff; color:#1d4ed8;
+  border:1px solid #bfdbfe;
+  padding:3px 8px; border-radius:100px;
+  font-size:10px; font-weight:700; line-height:1;
+}
+[data-theme="dark"] .license-badge{
+  background:rgba(59,130,246,.15); color:#93c5fd; border-color:rgba(59,130,246,.3);
+}
 .emergency-badge{
   display:inline-flex; align-items:center; gap:3px;
   background:#fef2f2; color:#b91c1c;
   border:1px solid #fecaca;
-  padding:2px 7px; border-radius:100px;
-  font-size:10px; font-weight:600; line-height:1;
+  padding:3px 8px; border-radius:100px;
+  font-size:10px; font-weight:700; line-height:1;
 }
 [data-theme="dark"] .emergency-badge{
   background:rgba(220,38,38,.15); color:#fca5a5; border-color:rgba(220,38,38,.3);
 }
 .type{
-  display:inline-block;
-  background:var(--primary-50); color:var(--primary-700);
-  padding:3px 10px; border-radius:100px;
-  font-size:11px; font-weight:600;
+  display:inline-flex; align-items:center; gap:5px;
+  background:linear-gradient(135deg,var(--primary-50),rgba(20,184,166,.08));
+  color:var(--primary-700);
+  padding:4px 11px; border-radius:100px;
+  font-size:11.5px; font-weight:700;
   border:1px solid var(--primary-100);
+  max-width:100%;
 }
 .business-info{
-  display:flex; flex-direction:column; gap:7px;
+  display:flex; flex-direction:column; gap:8px;
   color:var(--text-2); font-size:13.5px;
+  background:var(--muted);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:10px 12px;
 }
-.business-info .row{display:flex; align-items:center; gap:8px;}
-.business-info .row svg{color:var(--text-3); flex-shrink:0; width:14px; height:14px}
+.business-info .row{display:flex; align-items:flex-start; gap:8px; line-height:1.5}
+.business-info .row svg{color:var(--text-3); flex-shrink:0; width:14px; height:14px; margin-top:2px}
 .business-info a{
-  color:var(--text-2); text-decoration:none;
+  color:var(--primary-700); text-decoration:none; font-weight:700;
   border-bottom:1px dashed transparent; transition:all .15s;
 }
-.business-info a:hover{
-  color:var(--primary-600);
-  border-bottom-color:#5eead4;
+.business-info a:hover{color:var(--primary-600); border-bottom-color:var(--primary-300)}
+.business-about{
+  margin-top:10px;
+  font-size:13px;
+  line-height:1.75;
+  color:var(--text-2);
+  background:linear-gradient(135deg,rgba(20,184,166,.06),rgba(14,165,233,.04));
+  border:1px solid var(--primary-100);
+  border-radius:12px;
+  padding:10px 12px;
 }
-.tags-preview{margin-top:10px; display:flex; flex-wrap:wrap; gap:4px;}
+.business-about::before{content:"💬 ";}
+[data-theme="dark"] .business-about{
+  background:rgba(20,184,166,.08);
+  border-color:rgba(20,184,166,.2);
+}
+.owner-notif-banner{
+  display:none;
+  margin:0 0 12px;
+  padding:12px 14px;
+  border-radius:14px;
+  background:linear-gradient(135deg,#ecfdf5,#e0f2fe);
+  border:1px solid var(--primary-100);
+  color:var(--primary-800);
+  font-size:13px;
+  font-weight:700;
+  line-height:1.7;
+}
+.owner-notif-banner.show{display:block}
+.owner-notif-banner button{
+  margin-top:8px;
+  border:0;border-radius:10px;padding:8px 12px;
+  background:var(--primary-500);color:#fff;
+  font:inherit;font-size:12.5px;font-weight:700;cursor:pointer;
+}
+.business-discount{
+  margin-top:10px;
+  display:flex; align-items:center; gap:8px;
+  background:linear-gradient(135deg,#fff7ed,#ffedd5);
+  color:#9a3412;
+  border:1px dashed #fdba74;
+  border-radius:12px;
+  padding:9px 12px;
+  font-size:12.5px; font-weight:700;
+}
+[data-theme="dark"] .business-discount{
+  background:rgba(245,158,11,.12); color:#fcd34d; border-color:rgba(245,158,11,.3);
+}
+.tags-preview{margin-top:10px; display:flex; flex-wrap:wrap; gap:5px}
 .tag-mini{
-  font-size:11px; background:var(--muted); color:var(--text-2);
-  padding:3px 9px; border-radius:100px;
-  border:1px solid var(--border);
+  font-size:11px; background:var(--surface); color:var(--text-2);
+  padding:4px 10px; border-radius:100px;
+  border:1px solid var(--border); font-weight:600;
 }
-
-/* Call button */
+.business-cta{
+  display:grid;
+  grid-template-columns:1.15fr 1fr;
+  gap:8px;
+  margin-top:12px;
+}
+@media (max-width:420px){.business-cta{grid-template-columns:1fr}}
 .call-btn{
   display:flex; align-items:center; justify-content:center; gap:8px;
-  background:linear-gradient(135deg,var(--accent-500),var(--accent-600));
+  background:linear-gradient(135deg,var(--primary-500),var(--primary-600));
   color:#fff; text-decoration:none;
-  padding:12px; border-radius:11px; margin-top:14px;
-  font-size:14px; font-weight:700;
+  padding:12px 14px; border-radius:12px;
+  font-size:13.5px; font-weight:800;
   transition:all .2s var(--ease-smooth);
-  box-shadow:var(--shadow-accent);
-  position:relative; overflow:hidden;
+  box-shadow:var(--shadow-primary);
+  position:relative; overflow:hidden; border:0;
 }
 .call-btn:hover{
-  background:linear-gradient(135deg,var(--accent-600),var(--accent-700));
+  background:linear-gradient(135deg,var(--primary-600),var(--primary-700));
   transform:translateY(-1px);
-  box-shadow:0 8px 24px rgba(245,158,11,.45);
+  box-shadow:0 10px 26px rgba(13,148,136,.35);
 }
 .call-btn:active{transform:translateY(0) scale(.98)}
 .call-btn::before{
   content:""; position:absolute; top:0; left:-100%;
   width:100%; height:100%;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,.3),transparent);
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.28),transparent);
   transition:left .5s;
 }
 .call-btn:hover::before{left:100%}
@@ -429,9 +711,16 @@ body, button, input, select, textarea{
 .business-actions{
   display:grid;
   grid-template-columns:repeat(auto-fit, minmax(0, 1fr));
-  gap:8px; margin-top:8px;
+  gap:6px;
+  margin-top:0;
+  align-items:stretch;
 }
 .business-actions > *:only-child{grid-column:1 / -1}
+.business-actions .action-btn{
+  min-height:44px;
+  border-radius:12px;
+  background:var(--surface);
+}
 
 .action-btn{
   display:flex; align-items:center; justify-content:center;
@@ -1668,12 +1957,232 @@ body, button, input, select, textarea{
   transition:all .2s;
 }
 .quick-modal .btn-save-add-another:hover{background:var(--primary-100);}
+
+/* ============ TERMS GATE ============ */
+.terms-gate{
+  position:fixed; inset:0; z-index:3000;
+  background:rgba(15,23,42,.62);
+  backdrop-filter:blur(6px);
+  display:flex; align-items:center; justify-content:center;
+  padding:16px;
+}
+.terms-gate.hidden{display:none}
+.terms-card{
+  width:min(520px, 100%);
+  max-height:min(88vh, 720px);
+  overflow:auto;
+  background:var(--surface);
+  color:var(--text);
+  border:1px solid var(--border);
+  border-radius:20px;
+  box-shadow:0 24px 60px rgba(0,0,0,.28);
+  padding:22px 20px 18px;
+  text-align:right;
+  animation:fadeUp .35s var(--ease-smooth) both;
+}
+.terms-card h2{
+  margin:0 0 8px; font-size:18px; font-weight:800;
+  display:flex; align-items:center; gap:8px;
+}
+.terms-card .terms-lead{
+  font-size:13px; color:var(--text-2); line-height:1.9; margin-bottom:14px;
+}
+.terms-scroll{
+  background:var(--muted);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:12px 14px;
+  max-height:42vh;
+  overflow:auto;
+  font-size:12.5px;
+  line-height:2;
+  color:var(--text-2);
+  margin-bottom:14px;
+}
+.terms-scroll h3{
+  margin:12px 0 4px; font-size:13px; font-weight:800; color:var(--text);
+}
+.terms-scroll h3:first-child{margin-top:0}
+.terms-scroll ul{margin:4px 0 8px; padding-right:18px}
+.terms-check{
+  display:flex; align-items:flex-start; gap:10px;
+  padding:12px;
+  border:1.5px solid var(--primary-200);
+  background:var(--primary-50);
+  border-radius:12px;
+  margin-bottom:12px;
+  cursor:pointer;
+  font-size:13px; font-weight:600; color:var(--primary-800);
+  line-height:1.8;
+}
+.terms-check input{
+  width:18px; height:18px; margin-top:3px;
+  accent-color:var(--primary-500); cursor:pointer; flex-shrink:0;
+}
+.terms-accept{
+  width:100%; border:0; border-radius:12px; padding:13px;
+  font:inherit; font-size:14px; font-weight:800; cursor:pointer;
+  color:#fff;
+  background:linear-gradient(135deg,var(--primary-500),var(--primary-600));
+  box-shadow:var(--shadow-primary);
+  transition:all .2s;
+}
+.terms-accept:disabled{
+  opacity:.45; cursor:not-allowed; box-shadow:none;
+}
+.terms-accept:not(:disabled):hover{
+  background:linear-gradient(135deg,var(--primary-600),var(--primary-700));
+  transform:translateY(-1px);
+}
+.terms-note{
+  margin-top:10px; font-size:11px; color:var(--text-3); line-height:1.8; text-align:center;
+}
+[data-theme="dark"] .terms-check{color:var(--primary-100)}
+
+/* ============ MOBILE NOTIFY PROMPT ============ */
+.notif-prompt{
+  display:none;
+  position:fixed;
+  inset:0;
+  z-index:3200;
+  background:rgba(15,23,42,.55);
+  backdrop-filter:blur(5px);
+  padding:16px;
+  align-items:flex-end;
+  justify-content:center;
+}
+.notif-prompt.show{display:flex}
+.notif-prompt-card{
+  width:min(420px, 100%);
+  background:var(--surface);
+  color:var(--text);
+  border:1px solid var(--border);
+  border-radius:20px 20px 16px 16px;
+  box-shadow:0 20px 50px rgba(0,0,0,.28);
+  padding:18px 16px 14px;
+  animation:fadeUp .32s var(--ease-smooth) both;
+  text-align:right;
+}
+.notif-prompt-icon{
+  width:48px;height:48px;border-radius:14px;
+  background:linear-gradient(135deg,var(--primary-500),var(--primary-600));
+  color:#fff;display:flex;align-items:center;justify-content:center;
+  font-size:24px;margin-bottom:12px;
+}
+.notif-prompt-card h3{
+  margin:0 0 8px;font-size:16px;font-weight:800;
+}
+.notif-prompt-card p{
+  margin:0 0 14px;font-size:13px;line-height:1.9;color:var(--text-2);
+}
+.notif-prompt-actions{
+  display:grid;grid-template-columns:1.2fr 1fr;gap:8px;
+}
+.notif-prompt-actions button{
+  border:0;border-radius:12px;padding:12px 10px;
+  font:inherit;font-size:13px;font-weight:800;cursor:pointer;
+}
+.notif-prompt-enable{
+  background:linear-gradient(135deg,var(--primary-500),var(--primary-600));
+  color:#fff;box-shadow:var(--shadow-primary);
+}
+.notif-prompt-later{
+  background:var(--muted);color:var(--text-2);
+}
+@media (min-width:769px){
+  .notif-prompt{align-items:center}
+  .notif-prompt-card{border-radius:20px}
+}
+
 </style>
 </head>
 <body>
 
+
+<!-- ============ MOBILE NOTIFY PROMPT ============ -->
+<div class="notif-prompt" id="notifPrompt" aria-modal="true" role="dialog">
+  <div class="notif-prompt-card">
+    <div class="notif-prompt-icon">🔔</div>
+    <h3>اعلان درخواست مشتری را فعال کنید</h3>
+    <p>
+      اگر صاحب کسب‌وکار هستید، با فعال‌سازی اعلان، وقتی مشتری درخواست خدمت می‌دهد
+      سریع‌تر خبردار می‌شوید و می‌توانید پاسخ دهید.
+      <br><span style="font-size:12px;color:var(--text-3)">می‌توانید بعداً از پنل مالک هم فعال کنید.</span>
+    </p>
+    <div class="notif-prompt-actions">
+      <button type="button" class="notif-prompt-enable" id="notifPromptEnable">فعال کردن اعلان</button>
+      <button type="button" class="notif-prompt-later" id="notifPromptLater">بعداً</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ TERMS GATE ============ -->
+<div class="terms-gate hidden" id="termsGate" aria-modal="true" role="dialog" aria-labelledby="termsTitle">
+  <div class="terms-card">
+    <h2 id="termsTitle">📜 قوانین استفاده از شماره‌یاب بهبهان</h2>
+    <div class="terms-lead">
+      لطفاً قوانین زیر را مطالعه کنید.
+      این سامانه یک <b>فهرست عمومی کسب‌وکارهای محلی</b> است و اطلاعات تماس برای ارتباط مشتریان با کسب‌وکارها نمایش داده می‌شود.
+    </div>
+    <div class="terms-scroll">
+      <h3>۱. ماهیت سامانه</h3>
+      <ul>
+        <li>شماره‌یاب بهبهان یک بستر اطلاع‌رسانی محلی برای معرفی کسب‌وکارها و خدمات شهر بهبهان است.</li>
+        <li>اطلاعات ثبت‌شده (از جمله نام کسب‌وکار، حوزه فعالیت، آدرس و شماره تماس) در قالب فهرست عمومی در دسترس کاربران قرار می‌گیرد.</li>
+      </ul>
+      <h3>۲. رضایت نسبت به شماره تماس و جستجو</h3>
+      <ul>
+        <li>با ثبت کسب‌وکار یا استفاده از سامانه، می‌پذیرید که <b>شماره تماس و نام صاحب کسب‌وکار</b> در فهرست عمومی قابل مشاهده باشد.</li>
+        <li>همچنین موافقت می‌کنید که کاربران بتوانند از طریق <b>جستجوی نام کسب‌وکار، نام مالک، شماره تلفن، خدمات و آدرس</b> به اطلاعات شما دسترسی پیدا کنند.</li>
+        <li>هدف از جستجوی شماره، تسهیل پیدا کردن کسب‌وکار مرتبط است؛ استفاده از شماره‌ها صرفاً باید برای ارتباط مشروع و متعارف تجاری/خدماتی باشد.</li>
+      </ul>
+      <h3>۳. تعهدات کاربر و صاحب کسب‌وکار</h3>
+      <ul>
+        <li>اطلاعات واردشده باید صحیح، به‌روز و متعلق به خود شما یا با اجازه ذی‌نفع باشد.</li>
+        <li>در صورت اعلام «دارای پروانه کسب»، ابتدا توسط مدیر بررسی می‌شود و فقط پس از تأیید، نشان اعتماد نمایش داده می‌شود؛ صحت مجوز همچنان بر عهده صاحب کسب‌وکار است.</li>
+        <li>ثبت شماره یا مشخصات دیگران بدون اجازه، یا انتشار محتوای خلاف واقع، توهین‌آمیز، مجرمانه یا ناقض حقوق اشخاص ممنوع است.</li>
+        <li>سوءاستفاده از اطلاعات تماس برای تبلیغ مزاحم، تهدید، کلاهبرداری یا هر اقدام غیرقانونی ممنوع است و مسئولیت آن با مرتکب است.</li>
+      </ul>
+      <h3>۴. حریم خصوصی و داده‌ها</h3>
+      <ul>
+        <li>سامانه اطلاعات ضروری برای عملکرد فهرست (مانند مشخصات کسب‌وکار، نظرات و درخواست‌ها) را نگهداری می‌کند.</li>
+        <li>اطلاعات صرفاً برای ارائه همین خدمت محلی استفاده می‌شود و فروش یا واگذاری تجاری غیرمرتبط آن‌ها مورد نظر نیست.</li>
+        <li>کاربر می‌تواند برای ویرایش یا حذف اطلاعات کسب‌وکار خود از بخش مدیریت یا از طریق مدیر سامانه اقدام کند.</li>
+      </ul>
+      <h3>۵. محتوا، نظرات و مسئولیت</h3>
+      <ul>
+        <li>نظرات کاربران پس از بررسی نمایش داده می‌شوند؛ با این حال صحت کامل همه محتوا تضمین نمی‌شود.</li>
+        <li>هرگونه معامله، پرداخت یا توافق بین کاربر و کسب‌وکار خارج از مسئولیت مستقیم سامانه است و طرفین باید خود احتیاط‌های متعارف را رعایت کنند.</li>
+      </ul>
+      <h3>۶. چارچوب حقوقی</h3>
+      <ul>
+        <li>استفاده از سامانه باید مطابق قوانین جاری کشور از جمله مقررات مربوط به تجارت الکترونیکی، جرائم رایانه‌ای، و احترام به حیثیت و حقوق اشخاص باشد.</li>
+        <li>مدیر سامانه حق دارد محتوای مغایر قوانین یا شرایط استفاده را حذف، یا دسترسی متخلف را محدود کند.</li>
+      </ul>
+      <h3>۷. تغییرات</h3>
+      <ul>
+        <li>این شرایط ممکن است به‌روزرسانی شود؛ ادامه استفاده پس از اعمال تغییرات به معنای پذیرش نسخه جدید است.</li>
+      </ul>
+    </div>
+    <label class="terms-check" id="termsCheckRow" style="display:none">
+      <input type="checkbox" id="termsAcceptCheck">
+      <span>قوانین را خواندم و می‌پذیرم.</span>
+    </label>
+    <button type="button" class="terms-accept" id="termsAcceptBtn">موافقم</button>
+    <div class="terms-note">این متن جنبه اطلاع‌رسانی و تنظیم رابطه استفاده از سامانه را دارد و جایگزین مشاوره حقوقی تخصصی نیست.</div>
+  </div>
+</div>
+
 <!-- ============ HEADER ============ -->
 <header class="header">
+  <div class="header-menu-anchor" id="categoryMenuWrap">
+    <button class="header-menu-toggle" id="headerMenuToggle" type="button" aria-label="باز کردن دسته‌بندی‌ها" title="دسته‌بندی‌ها" aria-expanded="false" aria-controls="categoryMenuPanel">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+        <path d="M4 6h16M4 12h16M4 18h16"/>
+      </svg>
+    </button>
+    <div class="category-menu-panel" id="categoryMenuPanel" role="menu"></div>
+  </div>
   <button class="theme-toggle" id="themeToggle" aria-label="تغییر حالت شب و روز" title="حالت شب / روز">
     <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
@@ -1714,29 +2223,15 @@ body, button, input, select, textarea{
       دنبال چی می‌گردی؟
     </h2>
 
-    <div id="stickySearchWrap" style="position:sticky; top:0; z-index:30; background:var(--bg); padding:8px 0; box-shadow:0 2px 8px rgba(0,0,0,.06);">
+    <div id="stickySearchWrap" style="position:sticky; top:0; z-index:30; background:var(--surface); padding:10px 0 6px; margin:0 -2px; box-shadow:0 2px 8px rgba(0,0,0,.04);">
       <div class="search-box" id="searchBox">
-        <input id="searchInput" type="text" placeholder="مثلاً شمع، لنت، لوله پلیکا..." autocomplete="off">
+        <input id="searchInput" type="text" placeholder="نام، خدمت، شماره تماس یا نام صاحب..." autocomplete="off">
         <div class="spinner"></div>
         <button type="button" id="searchButton">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
           جستجو
         </button>
       </div>
-      
-      <div class="category-menu-wrap" id="categoryMenuWrap">
-        <button type="button" class="category-menu-trigger" id="categoryMenuTrigger" aria-expanded="false" aria-controls="categoryMenuPanel">
-          <span class="menu-left"><span class="hamburger" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg></span><span class="menu-label" id="categoryMenuLabel">دسته‌بندی‌ها</span><span class="menu-count" id="categoryMenuCount"></span></span>
-          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-        </button>
-        <div class="category-menu-panel" id="categoryMenuPanel"></div>
-      </div>
-
-    <div class="examples">
-      پیشنهاد:
-      <span class="example" id="exampleSpark">شمع</span>
-      <span class="example" id="exampleBrake">لنت</span>
-      <span class="example" id="examplePipe">لوله پلیکا</span>
     </div>
   </div>
 
@@ -1811,8 +2306,18 @@ body, button, input, select, textarea{
         <input id="businessName" type="text" placeholder="مثلاً فروشگاه قطعات بهبهان">
         <div class="err-msg">نام کسب‌وکار را وارد کنید.</div>
       </div>
+
+      <div class="field" id="f-profile-image">
+        <label>تصویر پروفایل / عکس کسب‌وکار <span style="color:var(--text-3);font-weight:400">(اختیاری)</span></label>
+        <input id="businessProfileImage" type="file" accept="image/*" capture="environment" style="width:100%;font-size:13px">
+        <div class="hint">اگر عکس نگذارید، آواتار رنگی بر اساس رسته شغلی نمایش داده می‌شود. تصویر به‌صورت خودکار فشرده می‌شود.</div>
+        <div id="profileImagePreview" style="display:none;margin-top:8px">
+          <img id="profileImagePreviewImg" alt="پیش‌نمایش پروفایل" style="width:72px;height:72px;border-radius:16px;object-fit:cover;border:1px solid var(--border);box-shadow:var(--shadow-sm)">
+          <button type="button" id="clearProfileImageBtn" style="margin-right:10px;border:0;background:var(--muted);color:var(--text-2);border-radius:8px;padding:6px 10px;font:inherit;font-size:12px;cursor:pointer">حذف عکس</button>
+        </div>
+      </div>
       
-      <div class="field">
+      <div class="field" id="f-owner">
         <label>نام و نام خانوادگی صاحب</label>
         <input id="businessOwner" type="text" placeholder="مثلاً علی محمدی">
         <div class="hint">اختیاری — اگه پر کنی، روی کارت نمایش داده می‌شه</div>
@@ -1842,6 +2347,15 @@ body, button, input, select, textarea{
   </div>
   <div class="err-msg">توضیح کسب‌وکار را وارد کنید.</div>
 </div>
+
+      <div class="field" id="f-about">
+        <label>معرفی کوتاه کسب‌وکار <span style="color:var(--text-3);font-weight:400">(پیشنهادی — حداکثر ۱۰۰ حرف)</span></label>
+        <textarea id="businessAbout" maxlength="100" placeholder="مثلاً: بیش از ۱۰ سال تجربه در تعویض روغن و جلوبندی؛ خدمات در محل هم انجام می‌دهیم." style="min-height:64px"></textarea>
+        <div style="display:flex;justify-content:space-between;gap:8px;margin-top:6px">
+          <div class="hint" style="margin:0">یک جمله کوتاه برای کارت (حدود ۱۵ تا ۲۰ کلمه).</div>
+          <div id="aboutCounter" style="font-size:11px;color:var(--text-3);font-weight:700;white-space:nowrap">۰ / ۱۰۰</div>
+        </div>
+      </div>
     
       <!-- ⭐ نمایش پیشنهاد خودکار -->
       <div id="categorySuggestion" class="notice" style="display:none;background:var(--primary-50);border-color:var(--primary-100);color:var(--primary-700);margin-bottom:14px">
@@ -1901,10 +2415,52 @@ body, button, input, select, textarea{
         <input id="businessInstagram" type="text" placeholder="مثلاً @behbahan_parts" dir="ltr" style="text-align:left">
         <div class="hint">آیدی پیج اینستاگرام</div>
       </div>
+
+      <div class="field" id="f-license">
+        <label>پروانه کسب <span style="color:var(--text-3);font-weight:400">(اختیاری — نشان اعتماد)</span></label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-weight:600;margin-bottom:8px">
+          <input type="checkbox" id="businessHasLicense" style="width:18px;height:18px;accent-color:var(--primary-500);margin:0">
+          <span>پروانه کسب دارم</span>
+        </label>
+        <div id="licenseExtraFields" style="display:none;margin-top:8px;padding:12px;border:1.5px dashed var(--primary-200);border-radius:12px;background:var(--primary-50)">
+          <div class="field" style="margin-bottom:12px" id="f-license-number">
+            <label>شماره / شناسه صنفی پروانه <span class="req">*</span></label>
+            <input id="businessLicenseNumber" type="text" placeholder="مثلاً شناسه ۱۰ رقمی روی پروانه" inputmode="numeric">
+            <div class="err-msg">شماره پروانه را وارد کنید.</div>
+          </div>
+          <div class="field" style="margin-bottom:10px" id="f-license-image">
+            <label>تصویر پروانه کسب <span class="req">*</span></label>
+            <input id="businessLicenseImage" type="file" accept="image/*" capture="environment" style="width:100%;font-size:13px">
+            <div class="hint">حجم تصویر به‌صورت خودکار کم می‌شود (حداکثر حدود ۱۵۰KB). فقط برای بررسی مدیر ذخیره می‌شود.</div>
+            <div class="err-msg">تصویر پروانه را انتخاب کنید.</div>
+            <div id="licenseImagePreview" style="display:none;margin-top:8px">
+              <img id="licenseImagePreviewImg" alt="پیش‌نمایش پروانه" style="max-width:100%;max-height:140px;border-radius:10px;border:1px solid var(--border);object-fit:contain;background:#fff">
+              <div id="licenseImageMeta" style="font-size:11px;color:var(--text-3);margin-top:4px"></div>
+            </div>
+          </div>
+          <button type="button" id="licenseApiInquiryBtn" disabled title="به‌زودی" style="width:100%;border:1.5px dashed var(--border);border-radius:10px;padding:10px;background:var(--muted);color:var(--text-3);font:inherit;font-size:12.5px;font-weight:700;cursor:not-allowed;opacity:.75">
+            🔌 استعلام خودکار از سامانه اصناف (به‌زودی — فعلاً غیرفعال)
+          </button>
+        </div>
+        <div class="hint" style="margin-top:8px">اگر تیک بزنید، شماره و تصویر پروانه اجباری است. پس از بررسی مدیر، نشان اعتماد فعال می‌شود.</div>
+      </div>
     
       <div class="field" id="f-address">
         <label>آدرس</label>
         <textarea id="businessAddress" placeholder="آدرس کسب‌وکار"></textarea>
+      </div>
+
+      <div class="field" id="f-location">
+        <label>📍 موقعیت جغرافیایی کسب‌وکار <span style="color:var(--text-3);font-weight:400">(اختیاری)</span></label>
+        <div class="location-box">
+          <div class="location-status" id="businessLocationStatus">هنوز موقعیت جغرافیایی ثبت نشده است.</div>
+          <div class="location-actions">
+            <button type="button" class="location-btn" id="getBusinessLocationBtn">📍 ثبت موقعیت فعلی</button>
+            <button type="button" class="location-clear-btn" id="clearBusinessLocationBtn">پاک کردن</button>
+          </div>
+          <div class="location-coords" id="businessLocationCoords" dir="ltr"></div>
+          <div class="hint">برای ثبت موقعیت، اجازه دسترسی به موقعیت مکانی مرورگر را تأیید کنید. مختصات در اطلاعات همین کسب‌وکار ذخیره می‌شود.</div>
+        </div>
       </div>
     
       <button type="button" class="menu-btn green" id="toStep2">مرحله بعد ←</button>
@@ -1950,6 +2506,15 @@ body, button, input, select, textarea{
 
     <div class="form-step" data-step="3">
       <div id="previewBox" class="items-box" style="display:block;background:var(--muted);padding:16px"></div>
+      <label class="field" id="f-register-terms" style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;padding:12px;border:1.5px solid var(--border);border-radius:12px;background:var(--muted);margin:12px 0">
+        <input type="checkbox" id="registerTermsCheck" style="width:18px;height:18px;margin-top:3px;accent-color:var(--primary-500);flex-shrink:0">
+        <span style="font-size:13px;line-height:1.9;font-weight:600;color:var(--text)">
+          <a href="#" id="registerTermsLink" style="color:var(--primary-700);text-decoration:underline;font-weight:800">قوانین شماره‌یاب</a>
+          را خوانده و با آن موافقم.
+          <span class="req">*</span>
+        </span>
+      </label>
+      <div class="err-msg" id="registerTermsErr" style="display:none;color:var(--danger);font-size:12px;margin:-4px 0 10px">برای ثبت، باید قوانین را بپذیرید.</div>
       <button type="button" class="menu-btn green" id="saveBusinessButton">✓ ثبت نهایی</button>
       <button type="button" class="menu-btn" id="backToStep2">→ مرحله قبل</button>
     </div>
@@ -1979,6 +2544,10 @@ body, button, input, select, textarea{
     </div>
   
     <div id="myRequestsBox" style="display:none">
+      <div class="owner-notif-banner" id="ownerNotifBanner">
+        <div id="ownerNotifBannerText">اعلان جدیدی ندارید.</div>
+        <button type="button" id="enableBrowserNotifBtn">🔔 فعال‌سازی اعلان مرورگر</button>
+      </div>
       <div id="myRequests"></div>
     </div>
   
@@ -2252,10 +2821,20 @@ body, button, input, select, textarea{
             <label>نام کسب‌وکار *</label>
             <input id="qaName" type="text" placeholder="مثلاً فروشگاه قطعات بهبهان">
           </div>
-    
+          <div class="qfield">
+            <label>تصویر پروفایل (اختیاری)</label>
+            <input id="qaProfileImage" type="file" accept="image/*" style="width:100%;font-size:12.5px">
+            <div id="qaProfileImagePreview" style="display:none;margin-top:8px">
+              <img id="qaProfileImagePreviewImg" alt="پروفایل" style="width:64px;height:64px;border-radius:14px;object-fit:cover;border:1px solid var(--border)">
+            </div>
+          </div>
           <div class="qfield">
             <label>نام و نام خانوادگی صاحب</label>
             <input id="qaOwner" type="text" placeholder="مثلاً علی محمدی">
+          </div>
+          <div class="qfield">
+            <label>معرفی کوتاه (حداکثر ۱۰۰ حرف)</label>
+            <textarea id="qaAbout" maxlength="100" placeholder="یک جمله درباره کسب‌وکار" style="min-height:56px"></textarea>
           </div>
     
           <div class="qrow">
@@ -2282,6 +2861,32 @@ body, button, input, select, textarea{
             <label>آدرس</label>
             <input id="qaAddress" type="text" placeholder="بهبهان، خیابان اصلی">
           </div>
+
+          <div class="qfield" id="qaLocationField">
+            <label>📍 موقعیت جغرافیایی روی نقشه <span style="color:var(--text-3);font-weight:400">(اختیاری)</span></label>
+            <div class="location-box">
+              <div class="location-status" id="qaLocationStatus">هنوز موقعیت جغرافیایی ثبت نشده است.</div>
+              <div class="location-actions">
+                <button type="button" class="location-btn" id="qaGetLocationBtn">📍 ثبت موقعیت فعلی</button>
+                <button type="button" class="location-clear-btn" id="qaClearLocationBtn">پاک کردن</button>
+              </div>
+              <div class="qrow" style="margin-top:10px">
+                <div class="qfield" style="margin-bottom:0">
+                  <label style="font-size:11.5px;color:var(--text-3)">عرض جغرافیایی (lat)</label>
+                  <input id="qaLat" type="text" inputmode="decimal" placeholder="30.5956" dir="ltr" style="text-align:left">
+                </div>
+                <div class="qfield" style="margin-bottom:0">
+                  <label style="font-size:11.5px;color:var(--text-3)">طول جغرافیایی (lng)</label>
+                  <input id="qaLng" type="text" inputmode="decimal" placeholder="50.2417" dir="ltr" style="text-align:left">
+                </div>
+              </div>
+              <div class="location-coords" id="qaLocationCoords" dir="ltr"></div>
+              <div class="hint" style="margin-top:8px">می‌توانید موقعیت فعلی را بگیرید یا مختصات را دستی وارد کنید. با ثبت، روی نقشه قابل مسیریابی می‌شود.</div>
+              <div style="margin-top:8px">
+                <a id="qaMapPreview" href="#" target="_blank" rel="noopener" style="display:none;font-size:12.5px;font-weight:700;color:var(--primary-700);text-decoration:none">🗺️ پیش‌نمایش روی نقشه</a>
+              </div>
+            </div>
+          </div>
     
           <div class="qfield">
             <label>اینستاگرام (اختیاری)</label>
@@ -2290,6 +2895,25 @@ body, button, input, select, textarea{
           <div class="qfield">
             <label>تخفیف ویژه (اختیاری)</label>
             <input id="qaDiscount" type="text" placeholder="مثلاً ۱۵٪ تخفیف روی تعویض روغن">
+          </div>
+          <label class="qcheck verify-check" style="background:rgba(59,130,246,.08);border-color:rgba(59,130,246,.2);color:#1d4ed8">
+            <input type="checkbox" id="qaHasLicense" style="accent-color:#2563eb">
+            <span>📜 پروانه کسب / تأیید نشان اعتماد</span>
+          </label>
+          <div id="qaLicenseExtraFields" style="display:none;margin-bottom:12px;padding:10px;border:1.5px dashed rgba(59,130,246,.35);border-radius:12px;background:rgba(59,130,246,.06)">
+            <div class="qfield">
+              <label>شماره / شناسه صنفی <span style="color:var(--danger)">*</span></label>
+              <input id="qaLicenseNumber" type="text" placeholder="مثلاً ۱۲۳۴۵۶۷۸۹۰" inputmode="numeric">
+            </div>
+            <div class="qfield">
+              <label>تصویر پروانه <span style="color:var(--danger)">*</span></label>
+              <input id="qaLicenseImage" type="file" accept="image/*" style="width:100%;font-size:12.5px">
+              <div class="hint">تصویر فشرده می‌شود. برای کسب‌وکارهای ثبت‌شده توسط ادمین هم قابل استفاده است.</div>
+              <div id="qaLicenseImagePreview" style="display:none;margin-top:6px">
+                <img id="qaLicenseImagePreviewImg" alt="پیش‌نمایش" style="max-width:100%;max-height:120px;border-radius:8px;border:1px solid var(--border);object-fit:contain;background:#fff">
+              </div>
+            </div>
+            <button type="button" disabled style="width:100%;border:1.5px dashed var(--border);border-radius:9px;padding:9px;background:var(--muted);color:var(--text-3);font:inherit;font-size:12px;font-weight:700;cursor:not-allowed">🔌 استعلام خودکار اصناف (به‌زودی — غیرفعال)</button>
           </div>
           <label class="qcheck verify-check">
             <input type="checkbox" id="qaVerified">
@@ -2507,6 +3131,152 @@ body, button, input, select, textarea{
   /* ============ REQUESTS (درخواست‌های کاربران) ============ */
 var requests = [];
 
+  var OWNER_NOTIF_KEY = "behbahan_owner_notifs_v1";
+  function readOwnerNotifs(){ try{ return JSON.parse(localStorage.getItem(OWNER_NOTIF_KEY)||"[]")||[]; }catch(e){ return []; } }
+  function writeOwnerNotifs(list){ try{ localStorage.setItem(OWNER_NOTIF_KEY, JSON.stringify(list||[])); }catch(e){} }
+  function pushOwnerNotification(ownerId, payload){
+    if(!ownerId) return;
+    var list = readOwnerNotifs();
+    list.unshift({
+      id: "n_"+Date.now()+"_"+Math.floor(Math.random()*9999),
+      ownerId: String(ownerId),
+      type: payload.type||"request",
+      title: payload.title||"اعلان جدید",
+      body: payload.body||"",
+      requestId: payload.requestId||null,
+      businessId: payload.businessId||null,
+      createdAt: Date.now(),
+      read: false
+    });
+    if(list.length>200) list=list.slice(0,200);
+    writeOwnerNotifs(list);
+    tryBrowserNotify(payload.title, payload.body);
+  }
+  function tryBrowserNotify(title, body){
+    try{
+      if(!("Notification" in window)) return;
+      if(Notification.permission==="granted"){
+        new Notification(title||"شماره‌یاب بهبهان", { body: body||"", dir:"rtl" });
+      }
+    }catch(e){}
+  }
+  function requestBrowserNotifyPermission(){
+    try{
+      if(!("Notification" in window)){ showToast("مرورگر شما اعلان سیستمی را پشتیبانی نمی‌کند.","info"); return; }
+      if(Notification.permission==="granted"){ showToast("اعلان مرورگر از قبل فعال است.","success"); return; }
+      Notification.requestPermission().then(function(p){
+        if(p==="granted") showToast("اعلان مرورگر فعال شد ✓","success");
+        else showToast("اجازه اعلان داده نشد؛ از نشان داخل پنل استفاده می‌شود.","info");
+      });
+    }catch(e){}
+  }
+  window.requestBrowserNotifyPermission = requestBrowserNotifyPermission;
+
+  /* ============ MOBILE NOTIFY PROMPT (ابتدای ورود) ============ */
+  (function(){
+    var KEY = "behbahan_notif_prompt_v1";
+    var prompt = document.getElementById("notifPrompt");
+    if(!prompt) return;
+
+    function isMobileLike(){
+      try{
+        if(window.matchMedia && window.matchMedia("(max-width: 768px)").matches) return true;
+        if("ontouchstart" in window && Math.min(screen.width, screen.height) <= 900) return true;
+      }catch(e){}
+      return false;
+    }
+
+    function canAsk(){
+      if(!("Notification" in window)) return false;
+      if(Notification.permission === "granted") return false;
+      if(Notification.permission === "denied") return false;
+      try{
+        var st = JSON.parse(localStorage.getItem(KEY) || "null");
+        if(!st) return true;
+        /* اگر بعداً زده، تا ۷ روز نشان نده */
+        if(st.action === "later" && st.at && (Date.now() - st.at) < 7*24*60*60*1000) return false;
+        if(st.action === "enabled") return false;
+      }catch(e){}
+      return true;
+    }
+
+    function hide(){ prompt.classList.remove("show"); document.body.style.overflow = ""; }
+
+    function show(){
+      if(!isMobileLike() || !canAsk()) return;
+      /* کمی بعد از لود تا با قوانین تداخل کمتر داشته باشد */
+      setTimeout(function(){
+        if(!canAsk()) return;
+        var terms = document.getElementById("termsGate");
+        if(terms && !terms.classList.contains("hidden")) return;
+        prompt.classList.add("show");
+      }, 1800);
+    }
+
+    var en = document.getElementById("notifPromptEnable");
+    var later = document.getElementById("notifPromptLater");
+    if(en){
+      en.onclick = function(){
+        try{ localStorage.setItem(KEY, JSON.stringify({action:"enabled", at:Date.now()})); }catch(e){}
+        hide();
+        if(typeof requestBrowserNotifyPermission === "function"){
+          requestBrowserNotifyPermission();
+        } else if("Notification" in window){
+          Notification.requestPermission().then(function(p){
+            if(p==="granted") showToast("اعلان فعال شد ✓","success");
+            else showToast("اجازه اعلان داده نشد.","info");
+          });
+        }
+      };
+    }
+    if(later){
+      later.onclick = function(){
+        try{ localStorage.setItem(KEY, JSON.stringify({action:"later", at:Date.now()})); }catch(e){}
+        hide();
+      };
+    }
+    prompt.addEventListener("click", function(e){ if(e.target === prompt){ later && later.click(); } });
+
+    if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", show);
+    else show();
+
+    /* وقتی مالک وارد پنل می‌شود هم اگر هنوز اجازه نداده، یادآوری کن */
+    window.maybePromptOwnerNotify = function(){
+      if(!isMobileLike() || !canAsk()) return;
+      setTimeout(function(){ if(canAsk()) prompt.classList.add("show"); }, 600);
+    };
+  })();
+
+  function countUnreadOwnerNotifs(ownerId){
+    if(!ownerId) return 0;
+    var list=readOwnerNotifs(), n=0;
+    for(var i=0;i<list.length;i++) if(String(list[i].ownerId)===String(ownerId) && !list[i].read) n++;
+    return n;
+  }
+  function markOwnerNotifsRead(ownerId){
+    var list=readOwnerNotifs(), ch=false;
+    for(var i=0;i<list.length;i++) if(String(list[i].ownerId)===String(ownerId) && !list[i].read){ list[i].read=true; ch=true; }
+    if(ch) writeOwnerNotifs(list);
+  }
+  function notifyOwnersForRequest(req, matchedBusinesses){
+    if(!req || !matchedBusinesses) return;
+    var targets = matchedBusinesses.slice(0,3);
+    req.targetBusinessIds = targets.map(function(b){ return b.id; });
+    var seen={};
+    for(var i=0;i<targets.length;i++){
+      var b=targets[i];
+      if(!b.ownerId || seen[b.ownerId]) continue;
+      seen[b.ownerId]=true;
+      pushOwnerNotification(b.ownerId, {
+        type:"request",
+        title:"📨 درخواست جدید برای «"+(b.name||"کسب‌وکار")+"»",
+        body:(req.service||"یک خدمت")+(req.area?" — "+req.area:""),
+        requestId:req.id,
+        businessId:b.id
+      });
+    }
+  }
+
 /* ============ REQUEST MODAL ============ */
 function openRequestModal(prefillService){
   document.getElementById("requestModal").classList.add("show");
@@ -2553,13 +3323,23 @@ function submitRequest(){
   };
   
   requests.push(newRequest);
+  var matched = [];
+  try{ matched = (typeof findMatchingBusinesses==="function") ? findMatchingBusinesses(newRequest) : []; }catch(e){ matched=[]; }
+  if(matched && matched.length){
+    notifyOwnersForRequest(newRequest, matched);
+    newRequest.matchedCount = Math.min(3, matched.length);
+  } else {
+    newRequest.matchedCount = 0;
+  }
   saveToStorage();
-  
   closeRequestModal();
-  showToast("✓ درخواست شما ثبت شد! به کسب‌وکارهای مرتبط ارسال می‌شه.", "success");
-  
-  // بستن کارت نتیجه
+  if(newRequest.matchedCount > 0){
+    showToast("✓ درخواست ثبت شد و برای " + toFa(newRequest.matchedCount) + " کسب‌وکار مرتبط ارسال شد.", "success");
+  } else {
+    showToast("✓ درخواست ثبت شد. فعلاً کسب‌وکار کاملاً مرتبطی پیدا نشد.", "info");
+  }
   document.getElementById("resultsCard").classList.add("hidden");
+  if(typeof updateOwnerRequestsBadgeV2==="function") updateOwnerRequestsBadgeV2();
 }
 
 /* ============ REQUEST MATCHING (یافتن کسب‌وکارهای مرتبط) ============ */
@@ -2597,8 +3377,9 @@ function findMatchingBusinesses(req){
       }
     }
     
-    // امتیاز بر اساس توضیحات
+    // امتیاز بر اساس توضیحات و معرفی کوتاه
     if(b.description && normalize(b.description).indexOf(q) !== -1) score += 15;
+    if(b.about && normalize(b.about).indexOf(q) !== -1) score += 25;
     
     if(score > 0){
       matches.push({ business: b, score: score });
@@ -3680,11 +4461,34 @@ function migrateOldBusinesses(){
     for(var i=0;i<name.length;i++) sum += name.charCodeAt(i);
     return palette[sum % palette.length];
   }
-  function avatarHTML(name, size){
-    var c = avatarColor(name);
-    var letter = name.trim().charAt(0);
-    var s = size === "sm" ? "width:36px;height:36px;font-size:15px;border-radius:10px" : "";
-    return '<div class="avatar" style="background:linear-gradient(135deg,'+c[0]+','+c[1]+');'+s+'">'+esc(letter)+'</div>';
+  function avatarHTML(bOrName, size){
+    var b = null, name = "";
+    if(bOrName && typeof bOrName === "object"){
+      b = bOrName;
+      name = String(b.name || b.owner || "");
+    } else {
+      name = String(bOrName || "");
+    }
+    var isSm = size === "sm";
+    var dim = isSm ? "width:36px;height:36px;border-radius:10px;" : "";
+    /* 1) عکس پروفایل بارگذاری‌شده */
+    if(b && b.profileImage){
+      return '<div class="avatar avatar-photo" style="'+dim+'padding:0"><img src="'+String(b.profileImage).replace(/"/g,"&quot;")+'" alt="'+esc(name)+'"></div>';
+    }
+    /* 2) آواتار رنگی بر اساس رسته شغلی + ایموجی دسته */
+    var catId = b ? (typeof getBusinessCategoryId === "function" ? getBusinessCategoryId(b) : (b.categoryId || "")) : "";
+    var cat = (catId && typeof getCategoryById === "function") ? getCategoryById(catId) : null;
+    var seed = catId || name || "x";
+    var c = avatarColor(seed);
+    var style = "background:linear-gradient(135deg,"+c[0]+","+c[1]+");"+dim;
+    if(cat && cat.emoji){
+      var fs = isSm ? "font-size:18px;" : "font-size:22px;";
+      return '<div class="avatar avatar-cat" style="'+style+fs+'">'+cat.emoji+'</div>';
+    }
+    /* 3) fallback حرف اول نام */
+    var letter = name.trim() ? name.trim().charAt(0) : "؟";
+    var fs2 = isSm ? "font-size:15px;" : "";
+    return '<div class="avatar" style="'+style+fs2+'">'+esc(letter)+'</div>';
   }
   function showToast(msg, type){
     var t = document.getElementById("toast");
@@ -4323,20 +5127,334 @@ function fuzzyContains(text, q){
   }
   return false;
 }
+
+  function businessHasLicense(b){
+    /* نشان عمومی فقط بعد از تأیید ادمین */
+    return !!(b && b.licenseVerified);
+  }
+  function businessLicenseClaimed(b){
+    if(!b) return false;
+    if(b.licenseVerified) return true;
+    if(b.licenseClaimed) return true;
+    if(b.hasLicense) return true; // سازگاری با داده قدیمی
+    if(b.licenseNumber && String(b.licenseNumber).trim()) return true;
+    return false;
+  }
+  function licenseBadgeHTML(b){
+    if(!businessHasLicense(b)) return "";
+    return '<span class="license-badge" title="پروانه کسب توسط مدیر تأیید شده است">📜 پروانه کسب</span>';
+  }
+  function licensePendingBadgeHTML(b){
+    if(!b || b.licenseVerified || !businessLicenseClaimed(b)) return "";
+    return '<span class="license-badge" style="background:var(--accent-50);color:var(--accent-700);border-color:var(--accent-100)" title="در انتظار تأیید مدیر">⏳ پروانه در انتظار تأیید</span>';
+  }
+
+
+  /* ============ LICENSE IMAGE + FIELDS ============ */
+  var pendingLicenseImageData = null; // {dataUrl, size, width, height, name}
+  var pendingQaLicenseImageData = null;
+
+  function compressImageFile(file, maxSide, maxBytes, cb){
+    maxSide = maxSide || 1280;
+    maxBytes = maxBytes || 150 * 1024;
+    if(!file || !file.type || file.type.indexOf('image/') !== 0){
+      cb(new Error('فایل تصویر معتبر نیست'), null);
+      return;
+    }
+    var reader = new FileReader();
+    reader.onload = function(){
+      var img = new Image();
+      img.onload = function(){
+        var w = img.width, h = img.height;
+        var scale = Math.min(1, maxSide / Math.max(w, h));
+        var cw = Math.max(1, Math.round(w * scale));
+        var ch = Math.max(1, Math.round(h * scale));
+        var canvas = document.createElement('canvas');
+        canvas.width = cw; canvas.height = ch;
+        var ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, cw, ch);
+        var quality = 0.72;
+        var dataUrl = canvas.toDataURL('image/jpeg', quality);
+        // reduce quality until under maxBytes (approx base64 size)
+        var guard = 0;
+        while(dataUrl.length * 0.75 > maxBytes && quality > 0.35 && guard < 8){
+          quality -= 0.08;
+          dataUrl = canvas.toDataURL('image/jpeg', quality);
+          guard++;
+        }
+        if(dataUrl.length * 0.75 > maxBytes * 1.35){
+          // second pass smaller
+          scale *= 0.75;
+          cw = Math.max(1, Math.round(w * scale));
+          ch = Math.max(1, Math.round(h * scale));
+          canvas.width = cw; canvas.height = ch;
+          ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, cw, ch);
+          dataUrl = canvas.toDataURL('image/jpeg', 0.55);
+        }
+        cb(null, {
+          dataUrl: dataUrl,
+          size: Math.round(dataUrl.length * 0.75),
+          width: cw,
+          height: ch,
+          name: file.name || 'license.jpg',
+          mime: 'image/jpeg'
+        });
+      };
+      img.onerror = function(){ cb(new Error('خواندن تصویر ناموفق بود'), null); };
+      img.src = reader.result;
+    };
+    reader.onerror = function(){ cb(new Error('خواندن فایل ناموفق بود'), null); };
+    reader.readAsDataURL(file);
+  }
+
+  function toggleLicenseExtraFields(){
+    var chk = document.getElementById('businessHasLicense');
+    var box = document.getElementById('licenseExtraFields');
+    if(!chk || !box) return;
+    box.style.display = chk.checked ? 'block' : 'none';
+    if(!chk.checked){
+      pendingLicenseImageData = null;
+      var prev = document.getElementById('licenseImagePreview');
+      if(prev) prev.style.display = 'none';
+      var file = document.getElementById('businessLicenseImage');
+      if(file) file.value = '';
+      showError('f-license-number', false);
+      showError('f-license-image', false);
+    }
+  }
+
+  function toggleQaLicenseExtraFields(){
+    var chk = document.getElementById('qaHasLicense');
+    var box = document.getElementById('qaLicenseExtraFields');
+    if(!chk || !box) return;
+    box.style.display = chk.checked ? 'block' : 'none';
+    if(!chk.checked){
+      pendingQaLicenseImageData = null;
+      var prev = document.getElementById('qaLicenseImagePreview');
+      if(prev) prev.style.display = 'none';
+      var file = document.getElementById('qaLicenseImage');
+      if(file) file.value = '';
+    }
+  }
+
+  function readLicenseFieldsFromRegister(){
+    var claimed = !!(document.getElementById('businessHasLicense') && document.getElementById('businessHasLicense').checked);
+    var number = (document.getElementById('businessLicenseNumber') && document.getElementById('businessLicenseNumber').value || '').trim();
+    var image = pendingLicenseImageData ? pendingLicenseImageData.dataUrl : null;
+    return { claimed: claimed, number: number, image: image, imageMeta: pendingLicenseImageData };
+  }
+
+  function validateLicenseClaim(fields, prefix){
+    // prefix: register | qa
+    if(!fields.claimed) return true;
+    if(!fields.number){
+      if(prefix === 'register') showError('f-license-number', true);
+      showToast('شماره پروانه کسب را وارد کنید.', 'error');
+      return false;
+    }
+    if(prefix === 'register') showError('f-license-number', false);
+    if(!fields.image){
+      if(prefix === 'register') showError('f-license-image', true);
+      showToast('تصویر پروانه کسب را ارسال کنید.', 'error');
+      return false;
+    }
+    if(prefix === 'register') showError('f-license-image', false);
+    return true;
+  }
+
+  function initLicenseFieldUI(){
+    var chk = document.getElementById('businessHasLicense');
+    if(chk){
+      chk.addEventListener('change', toggleLicenseExtraFields);
+      toggleLicenseExtraFields();
+    }
+    var file = document.getElementById('businessLicenseImage');
+    if(file){
+      file.addEventListener('change', function(){
+        var f = file.files && file.files[0];
+        if(!f){ pendingLicenseImageData = null; return; }
+        showToast('در حال فشرده‌سازی تصویر...', 'info');
+        compressImageFile(f, 1280, 150*1024, function(err, data){
+          if(err){
+            pendingLicenseImageData = null;
+            showToast(err.message || 'خطا در تصویر', 'error');
+            file.value = '';
+            return;
+          }
+          pendingLicenseImageData = data;
+          var wrap = document.getElementById('licenseImagePreview');
+          var img = document.getElementById('licenseImagePreviewImg');
+          var meta = document.getElementById('licenseImageMeta');
+          if(img) img.src = data.dataUrl;
+          if(meta) meta.textContent = 'حجم تقریبی: ' + Math.round(data.size/1024) + 'KB — ' + data.width + '×' + data.height;
+          if(wrap) wrap.style.display = 'block';
+          showError('f-license-image', false);
+          showToast('تصویر پروانه آماده شد.', 'success');
+        });
+      });
+    }
+    var apiBtn = document.getElementById('licenseApiInquiryBtn');
+    if(apiBtn){
+      apiBtn.onclick = function(e){
+        e.preventDefault();
+        showToast('استعلام خودکار به‌زودی فعال می‌شود.', 'info');
+      };
+    }
+
+    var qaChk = document.getElementById('qaHasLicense');
+    if(qaChk){
+      qaChk.addEventListener('change', toggleQaLicenseExtraFields);
+      toggleQaLicenseExtraFields();
+    }
+    var qaFile = document.getElementById('qaLicenseImage');
+    if(qaFile){
+      qaFile.addEventListener('change', function(){
+        var f = qaFile.files && qaFile.files[0];
+        if(!f){ pendingQaLicenseImageData = null; return; }
+        compressImageFile(f, 1280, 150*1024, function(err, data){
+          if(err){
+            pendingQaLicenseImageData = null;
+            showToast(err.message || 'خطا در تصویر', 'error');
+            qaFile.value = '';
+            return;
+          }
+          pendingQaLicenseImageData = data;
+          var wrap = document.getElementById('qaLicenseImagePreview');
+          var img = document.getElementById('qaLicenseImagePreviewImg');
+          if(img) img.src = data.dataUrl;
+          if(wrap) wrap.style.display = 'block';
+          showToast('تصویر پروانه آماده شد.', 'success');
+        });
+      });
+    }
+  }
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', initLicenseFieldUI);
+  } else {
+    initLicenseFieldUI();
+  }
+
+
+  /* ============ PROFILE IMAGE ============ */
+  var pendingProfileImageData = null;
+  var pendingQaProfileImageData = null;
+
+  function setProfilePreview(data, wrapId, imgId){
+    var wrap = document.getElementById(wrapId);
+    var img = document.getElementById(imgId);
+    if(!wrap || !img) return;
+    if(data && data.dataUrl){
+      img.src = data.dataUrl;
+      wrap.style.display = 'flex';
+      wrap.style.alignItems = 'center';
+      wrap.style.gap = '10px';
+    } else {
+      img.src = '';
+      wrap.style.display = 'none';
+    }
+  }
+
+  function initProfileImageUI(){
+    var file = document.getElementById('businessProfileImage');
+    if(file){
+      file.addEventListener('change', function(){
+        var f = file.files && file.files[0];
+        if(!f){ pendingProfileImageData = null; setProfilePreview(null,'profileImagePreview','profileImagePreviewImg'); return; }
+        if(typeof compressImageFile !== 'function'){ showToast('فشرده‌ساز تصویر آماده نیست.','error'); return; }
+        showToast('در حال آماده‌سازی تصویر پروفایل...', 'info');
+        compressImageFile(f, 640, 100*1024, function(err, data){
+          if(err){ pendingProfileImageData=null; showToast(err.message||'خطا','error'); file.value=''; return; }
+          pendingProfileImageData = data;
+          setProfilePreview(data,'profileImagePreview','profileImagePreviewImg');
+          showToast('تصویر پروفایل آماده شد.', 'success');
+        });
+      });
+    }
+    var clearBtn = document.getElementById('clearProfileImageBtn');
+    if(clearBtn){
+      clearBtn.onclick = function(){
+        pendingProfileImageData = null;
+        window.__profileImageCleared = true;
+        var f = document.getElementById('businessProfileImage'); if(f) f.value='';
+        setProfilePreview(null,'profileImagePreview','profileImagePreviewImg');
+      };
+    }
+    var qaFile = document.getElementById('qaProfileImage');
+    if(qaFile){
+      qaFile.addEventListener('change', function(){
+        var f = qaFile.files && qaFile.files[0];
+        if(!f){ pendingQaProfileImageData=null; setProfilePreview(null,'qaProfileImagePreview','qaProfileImagePreviewImg'); return; }
+        compressImageFile(f, 640, 100*1024, function(err, data){
+          if(err){ pendingQaProfileImageData=null; showToast(err.message||'خطا','error'); qaFile.value=''; return; }
+          pendingQaProfileImageData = data;
+          setProfilePreview(data,'qaProfileImagePreview','qaProfileImagePreviewImg');
+          showToast('تصویر پروفایل آماده شد.', 'success');
+        });
+      });
+    }
+  }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initProfileImageUI);
+  else initProfileImageUI();
+
+  /* short about counter */
+  (function(){
+    var el = document.getElementById('businessAbout');
+    var counter = document.getElementById('aboutCounter');
+    if(!el) return;
+    function upd(){
+      var n = (el.value || '').length;
+      if(counter) counter.textContent = (typeof toFa==='function'?toFa(n):n) + ' / ' + (typeof toFa==='function'?toFa(100):100);
+    }
+    el.addEventListener('input', upd);
+    upd();
+  })();
+
+
+
 function scoreBusiness(b, q){
   if(!q) return 1;
   var nameN = normalize(b.name);
   var typeN = normalize(b.type);
   var addrN = normalize(b.address);
-  var tagsN = b.tags.map(normalize);
+  var ownerN = normalize(b.owner || "");
+  var descN = normalize(b.description || "");
+  var aboutN = normalize(b.about || "");
+  var tagsArr = (b.tags && b.tags.length) ? b.tags : (b.standardTags || []);
+  var tagsN = tagsArr.map(normalize);
   var score = 0;
+
+  /* نام کسب‌وکار */
   if(nameN.indexOf(q) !== -1) score += 100;
-  else if(fuzzyContains(nameN, q)) score += 55; // تطبیق تقریبی، احتمالاً غلط تایپی
+  else if(typeof fuzzyContains === "function" && fuzzyContains(nameN, q)) score += 55;
+
+  /* نام صاحب / مالک */
+  if(ownerN){
+    if(ownerN === q) score += 110;
+    else if(ownerN.indexOf(q) !== -1) score += 95;
+    else if(q.length >= 3 && ownerN.split(" ").some(function(p){ return p.indexOf(q) === 0 || q.indexOf(p) === 0; })) score += 70;
+  }
+
+  /* شماره تلفن (رقم به رقم، بدون توجه به فاصله و پیش‌شماره فارسی) */
+  var qDigits = cleanPhone(q);
+  if(!qDigits){
+    /* اگر کاربر با اعداد فارسی تایپ کرده، normalize ممکن است رقم را نگه ندارد؛ از ورودی خام هم بگیر */
+    qDigits = cleanPhone(document.getElementById("searchInput") ? document.getElementById("searchInput").value : q);
+  }
+  var phoneDigits = cleanPhone(b.phone || "");
+  if(qDigits && phoneDigits){
+    if(phoneDigits === qDigits) score += 140;
+    else if(qDigits.length >= 4 && phoneDigits.indexOf(qDigits) !== -1) score += 120;
+    else if(qDigits.length >= 7 && qDigits.indexOf(phoneDigits) !== -1) score += 100;
+  }
+
   if(typeN.indexOf(q) !== -1) score += 40;
+  if(descN && descN.indexOf(q) !== -1) score += 35;
+  if(aboutN && aboutN.indexOf(q) !== -1) score += 45;
   for(var i=0;i<tagsN.length;i++){
     if(tagsN[i] === q) score += 80;
     else if(tagsN[i].indexOf(q) !== -1) score += 50;
-    else if(fuzzyContains(tagsN[i], q)) score += 25;
+    else if(typeof fuzzyContains === "function" && fuzzyContains(tagsN[i], q)) score += 25;
   }
   if(addrN.indexOf(q) !== -1) score += 10;
   return score;
@@ -4467,6 +5585,7 @@ function scoreBusiness(b, q){
       if(b.verified){
         badgesHtml += '<span class="verified-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>تأیید شده</span>';
       }
+      badgesHtml += licenseBadgeHTML(b);
   
       var actionsHtml = "";
   
@@ -4507,24 +5626,29 @@ function scoreBusiness(b, q){
           '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 11h8V3H3v8zm2-6h4v4H5V5zM3 21h8v-8H3v8zm2-6h4v4H5v-4zM13 3v8h8V3h-8zm6 6h-4V5h4v4zM13 13h2v2h-2zM15 15h2v2h-2zM13 17h2v2h-2zM17 13h2v2h-2zM19 15h2v2h-2zM17 17h2v2h-2zM19 19h2v2h-2zM15 19h2v2h-2zM13 21h2v2h-2z"/></svg>' +
         '</button>';
   
-        html += '<div class="business">' +
+        html += '<div class="business" style="animation-delay:' + (Math.min(j,8)*0.04) + 's">' +
+        '<div class="business-inner">' +
         '<div class="business-head">' +
-          avatarHTML(b.name) +
+          avatarHTML(b) +
           '<div class="business-head-text">' +
-            '<h3>' + highlight(b.name, query) + badgesHtml + '</h3>' +
+            '<h3>' + highlight(b.name, query) + '</h3>' +
+            (badgesHtml ? '<div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:6px">' + badgesHtml + '</div>' : '') +
             '<span class="type">' + esc(b.type) + '</span>' +
           '</div>' +
         '</div>' +
         '<div class="business-info">' +
           '<div class="row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg><span>' + esc(b.address) + '</span></div>' +
           '<div class="row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0122 16.92z"/></svg><a href="tel:' + cleanPhone(b.phone) + '">' + toFa(esc(b.phone)) + '</a></div>' +
-          (b.discount ? '<div class="row" style="color:#b45309;font-weight:600;background:rgba(245,158,11,.08);padding:6px 10px;border-radius:8px;border:1px dashed rgba(245,158,11,.35);margin-top:2px"><span style="font-size:15px">🎁</span><span>' + esc(b.discount) + '</span></div>' : '') +
+          (b.owner ? '<div class="row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="7" r="4"/><path d="M5.5 21a6.5 6.5 0 0113 0"/></svg><span>' + esc(b.owner) + '</span></div>' : '') +
         '</div>' +
-        (b.owner ? '<div class="business-info" style="margin-top:4px"><div class="row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="7" r="4"/><path d="M5.5 21a6.5 6.5 0 0113 0"/></svg><span>' + esc(b.owner) + '</span></div></div>' : '') +
+        (b.about ? '<div class="business-about">' + esc(b.about) + '</div>' : '') +(b.discount ? '<div class="business-discount">🎁 ' + esc(b.discount) + '</div>' : '') +
         (tagsHtml ? '<div class="tags-preview">' + tagsHtml + '</div>' : '') +
-        '<a class="call-btn" href="tel:' + cleanPhone(b.phone) + '"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0122 16.92z"/></svg>تماس</a>' +
-        '<div class="business-actions">' + actionsHtml + '</div>' +
+        '<div class="business-cta">' +
+          '<a class="call-btn" href="tel:' + cleanPhone(b.phone) + '"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0122 16.92z"/></svg>تماس سریع</a>' +
+          '<div class="business-actions">' + actionsHtml + '</div>' +
+        '</div>' +
         ratingRowHTML(b) +
+        '</div>' +
       '</div>';
     }
     results.innerHTML = html;
@@ -4535,7 +5659,7 @@ function scoreBusiness(b, q){
   var q = normalize(document.getElementById("searchInput").value);
   var card = document.getElementById("resultsCard");
   var found = getFiltered();
-  if(!q && !activeCategory){
+  if(!q && !activeCategory && !activeCategoryId && !activeSubcategoryId){
     card.classList.add("hidden");
     return;
   }
@@ -4556,23 +5680,121 @@ function scoreBusiness(b, q){
       var cid=getBusinessCategoryId(b), sid=getBusinessSubcategoryId(b);
       catCounts[cid]=(catCounts[cid]||0)+1; subCounts[cid+"::"+sid]=(subCounts[cid+"::"+sid]||0)+1;
     }
-    var html='<button type="button" class="category-menu-all'+(!activeCategoryId&&!activeSubcategoryId?' active':'')+'">همه دسته‌ها <span style="opacity:.75">('+toFa(visibleCount)+')</span></button>';
+    var html = '';
+    html += '<div class="category-menu-head">';
+    html +=   '<div class="cm-title"><span>📂</span> دسته‌بندی‌ها <small style="font-weight:600;color:var(--text-3);font-size:11px">(' + toFa(categories.length) + ')</small></div>';
+    html +=   '<button type="button" class="cm-close" id="categoryMenuCloseBtn" aria-label="بستن">×</button>';
+    html += '</div>';
+    html += '<div class="category-menu-body" id="categoryMenuBody">';
+    html += '<button type="button" class="category-menu-all'+(!activeCategoryId&&!activeSubcategoryId?' active':'')+'">همه دسته‌ها <span style="opacity:.75">('+toFa(visibleCount)+')</span></button>';
     for(var c=0;c<categories.length;c++){
       var cat=categories[c], count=catCounts[cat.id]||0;
       html+='<div class="category-group'+(activeCategoryId===cat.id?' open':'')+'" data-cat-group="'+esc(cat.id)+'">';
-      html+='<button type="button" class="category-group-head" data-cat-id="'+esc(cat.id)+'"><span class="cat-emoji">'+(cat.emoji||'📁')+'</span><span class="cat-name">'+esc(cat.name)+'</span><span class="cat-count">'+toFa(count)+'</span><svg class="cat-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></button><div class="category-sublist">';
-      for(var j=0;j<cat.subcategories.length;j++){var sub=cat.subcategories[j], sc=subCounts[cat.id+"::"+sub.id]||0; html+='<button type="button" class="category-subitem'+(activeCategoryId===cat.id&&activeSubcategoryId===sub.id?' active':'')+'" data-cat-id="'+esc(cat.id)+'" data-sub-id="'+esc(sub.id)+'"><span class="sub-emoji">'+(sub.emoji||'•')+'</span><span class="sub-name">'+esc(sub.name)+'</span><span class="sub-count">'+toFa(sc)+'</span></button>';}
+      html+='<button type="button" class="category-group-head" data-cat-id="'+esc(cat.id)+'"><span class="cat-emoji">'+(cat.emoji||'📁')+'</span><span class="cat-name">'+esc(cat.name)+'</span><span class="cat-count">'+toFa(count)+'</span><svg class="cat-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m6 9 6 6 6-6"/></svg></button>';
+      html+='<div class="category-sublist">';
+      // filter whole category
+      html+='<button type="button" class="category-subitem'+(activeCategoryId===cat.id&&!activeSubcategoryId?' active':'')+'" data-cat-id="'+esc(cat.id)+'" data-sub-id=""><span class="sub-emoji">✨</span><span class="sub-name">همه موارد این دسته</span><span class="sub-count">'+toFa(count)+'</span></button>';
+      for(var j=0;j<cat.subcategories.length;j++){
+        var sub=cat.subcategories[j], sc=subCounts[cat.id+"::"+sub.id]||0;
+        html+='<button type="button" class="category-subitem'+(activeCategoryId===cat.id&&activeSubcategoryId===sub.id?' active':'')+'" data-cat-id="'+esc(cat.id)+'" data-sub-id="'+esc(sub.id)+'"><span class="sub-emoji">'+(sub.emoji||'•')+'</span><span class="sub-name">'+esc(sub.name)+'</span><span class="sub-count">'+toFa(sc)+'</span></button>';
+      }
       html+='</div></div>';
     }
+    html += '</div>';
     panel.innerHTML=html;
-    panel.querySelector('.category-menu-all').onclick=function(){activeCategory="";activeCategoryId="";activeSubcategoryId="";updateCategoryMenuLabel();searchBusinesses();closeCategoryMenu();};
-    var heads=panel.querySelectorAll('.category-group-head'); for(var h=0;h<heads.length;h++) heads[h].onclick=function(){var group=this.parentNode, was=group.classList.contains('open'), groups=panel.querySelectorAll('.category-group'); for(var x=0;x<groups.length;x++)groups[x].classList.remove('open'); if(!was)group.classList.add('open');};
-    var subs=panel.querySelectorAll('.category-subitem'); for(var k=0;k<subs.length;k++) subs[k].onclick=function(){activeCategoryId=this.getAttribute('data-cat-id')||"";activeSubcategoryId=this.getAttribute('data-sub-id')||"";activeCategory="";updateCategoryMenuLabel();searchBusinesses();closeCategoryMenu();};
+
+    var closeBtn=panel.querySelector('#categoryMenuCloseBtn');
+    if(closeBtn) closeBtn.onclick=function(e){ e.preventDefault(); e.stopPropagation(); closeCategoryMenu(); };
+
+    var allBtn=panel.querySelector('.category-menu-all');
+    if(allBtn) allBtn.onclick=function(){
+      activeCategory=""; activeCategoryId=""; activeSubcategoryId="";
+      updateCategoryMenuLabel(); searchBusinesses(); closeCategoryMenu();
+    };
+
+    var body=panel.querySelector('#categoryMenuBody');
+    var heads=panel.querySelectorAll('.category-group-head');
+    for(var h=0;h<heads.length;h++) heads[h].onclick=function(){
+      var group=this.parentNode;
+      var was=group.classList.contains('open');
+      var groups=panel.querySelectorAll('.category-group');
+      for(var x=0;x<groups.length;x++) groups[x].classList.remove('open');
+      if(!was){
+        group.classList.add('open');
+        // ensure expanded group (especially last ones) is fully visible
+        setTimeout(function(){
+          if(!body || !group) return;
+          /* فقط اگر زیر‌دسته‌ها از پایین بیرون زدند، کمی اسکرول کن */
+          var gTop = group.offsetTop;
+          var gBottom = gTop + group.offsetHeight;
+          var viewBottom = body.scrollTop + body.clientHeight;
+          if(gBottom > viewBottom - 8){
+            body.scrollTo({ top: Math.max(0, gBottom - body.clientHeight + 12), behavior: 'smooth' });
+          }
+        }, 40);
+      }
+    };
+
+    var subs=panel.querySelectorAll('.category-subitem');
+    for(var k=0;k<subs.length;k++) subs[k].onclick=function(){
+      activeCategoryId=this.getAttribute('data-cat-id')||"";
+      activeSubcategoryId=this.getAttribute('data-sub-id')||"";
+      activeCategory="";
+      updateCategoryMenuLabel(); searchBusinesses(); closeCategoryMenu();
+    };
     updateCategoryMenuLabel();
   }
-  function updateCategoryMenuLabel(){var label=document.getElementById('categoryMenuLabel'),count=document.getElementById('categoryMenuCount');if(!label)return;if(activeSubcategoryId){var sub=getSubcategoryById(activeCategoryId,activeSubcategoryId),cat=getCategoryById(activeCategoryId);label.textContent=sub?sub.name:'دسته‌بندی‌ها';count.textContent=cat?'‹ '+cat.name:'';}else if(activeCategoryId){var c=getCategoryById(activeCategoryId);label.textContent=c?c.name:'دسته‌بندی‌ها';count.textContent='';}else{label.textContent='دسته‌بندی‌ها';count.textContent='';}}
-  function closeCategoryMenu(){var p=document.getElementById('categoryMenuPanel'),t=document.getElementById('categoryMenuTrigger');if(p)p.classList.remove('open');if(t){t.classList.remove('open');t.setAttribute('aria-expanded','false');}}
-  function initCategoryMenu(){var t=document.getElementById('categoryMenuTrigger'),p=document.getElementById('categoryMenuPanel');if(!t||!p)return;t.onclick=function(){var open=p.classList.toggle('open');t.classList.toggle('open',open);t.setAttribute('aria-expanded',open?'true':'false');};document.addEventListener('click',function(e){var w=document.getElementById('categoryMenuWrap');if(w&&!w.contains(e.target))closeCategoryMenu();});}
+  function updateCategoryMenuLabel(){ /* label is only the header button now */ }
+  function closeCategoryMenu(){
+    var p=document.getElementById('categoryMenuPanel');
+    var hb=document.getElementById('headerMenuToggle');
+    if(p) p.classList.remove('open');
+    if(hb){ hb.classList.remove('open'); hb.setAttribute('aria-expanded','false'); }
+  }
+  function openCategoryMenu(){
+    var p=document.getElementById('categoryMenuPanel');
+    var hb=document.getElementById('headerMenuToggle');
+    if(!p||!hb) return;
+    try{
+      var r = hb.getBoundingClientRect();
+      var width = Math.min(380, window.innerWidth - 20);
+      var right = Math.max(10, window.innerWidth - r.right);
+      var top = Math.min(r.bottom + 10, window.innerHeight - 120);
+      p.style.top = top + 'px';
+      p.style.right = right + 'px';
+      p.style.left = 'auto';
+      p.style.width = width + 'px';
+      p.style.maxHeight = Math.max(280, window.innerHeight - top - 12) + 'px';
+    }catch(e){}
+    /* ensure all categories rendered */
+    if(typeof buildCategories === 'function') buildCategories();
+    p.classList.add('open');
+    hb.classList.add('open');
+    hb.setAttribute('aria-expanded','true');
+  }
+  function toggleCategoryMenu(){
+    var p=document.getElementById('categoryMenuPanel');
+    if(!p) return;
+    if(p.classList.contains('open')) closeCategoryMenu();
+    else openCategoryMenu();
+  }
+  function initCategoryMenu(){
+    var hb=document.getElementById('headerMenuToggle');
+    var p=document.getElementById('categoryMenuPanel');
+    if(!hb||!p) return;
+    hb.onclick=function(e){
+      e.preventDefault();
+      e.stopPropagation();
+      toggleCategoryMenu();
+    };
+    document.addEventListener('click',function(e){
+      var w=document.getElementById('categoryMenuWrap');
+      if(w && !w.contains(e.target)) closeCategoryMenu();
+    });
+    document.addEventListener('keydown',function(e){
+      if(e.key==='Escape') closeCategoryMenu();
+    });
+  }
 
   /* ============ FILTER PILLS ============ */
   function bindFilterPills(){
@@ -4621,15 +5843,6 @@ function scoreBusiness(b, q){
     clearTimeout(debounceTid);
     searchBox.classList.remove("loading");
     searchBusinesses();
-  };
-  document.getElementById("exampleSpark").onclick = function(){
-    document.getElementById("searchInput").value = "شمع"; searchBusinesses();
-  };
-  document.getElementById("exampleBrake").onclick = function(){
-    document.getElementById("searchInput").value = "لنت"; searchBusinesses();
-  };
-  document.getElementById("examplePipe").onclick = function(){
-    document.getElementById("searchInput").value = "لوله پلیکا"; searchBusinesses();
   };
   
   /* ============ REGISTER ============ */
@@ -4682,11 +5895,136 @@ function goToStep(n){
   if(n === 3) renderPreview();
 }
 
-function showError(fieldId, show){
+function showError(fieldId, show, msg){
   var f = document.getElementById(fieldId);
   if(!f) return;
-  f.classList.toggle("has-error", show);
+  f.classList.toggle("has-error", !!show);
+  if(typeof msg === "string"){
+    var em = f.querySelector(".err-msg");
+    if(em && msg) em.textContent = msg;
+  }
 }
+
+  /* اعتبارسنجی فیلدهای ثبت کسب‌وکار */
+  function isPersianText(str, minLen){
+    var s = String(str||"").trim();
+    if(s.length < (minLen||2)) return false;
+    /* حداقل یک حرف فارسی؛ ارقام و فاصله و علائم رایج مجاز */
+    if(!/[؀-ۿ]/.test(s)) return false;
+    /* اگر بیشتر حروف لاتین باشد رد شود */
+    var letters = s.replace(/[^A-Za-z؀-ۿ]/g,"");
+    if(!letters) return false;
+    var latin = (letters.match(/[A-Za-z]/g)||[]).length;
+    if(latin > letters.length * 0.5) return false;
+    return true;
+  }
+  function isDigitsOnly(str){
+    return /^[0-9۰-۹٠-٩]+$/.test(String(str||"").trim());
+  }
+  function countPhoneDigits(phone){
+    return cleanPhone(phone).replace(/\D/g,"").length;
+  }
+  function validateIranPhone(phone){
+    var p = cleanPhone(phone).replace(/\D/g,"");
+    if(/^09\d{9}$/.test(p)) return {ok:true, normalized:p, kind:"mobile"};
+    if(/^0\d{10}$/.test(p)) return {ok:true, normalized:p, kind:"landline"}; /* 11 رقم ثابت با صفر */
+    if(/^0\d{9}$/.test(p)) return {ok:true, normalized:p, kind:"landline"}; /* 10 رقم */
+    return {ok:false, normalized:p, kind:null};
+  }
+  function setFieldErrorMsg(fieldId, msg){
+    var f = document.getElementById(fieldId);
+    if(!f) return;
+    var em = f.querySelector(".err-msg");
+    if(em) em.textContent = msg;
+  }
+  function validateRegisterStep1(){
+    var ok = true;
+    var firstBad = null;
+    function fail(id, msg){
+      showError(id, true, msg);
+      if(!firstBad) firstBad = id;
+      ok = false;
+    }
+    function pass(id){ showError(id, false); }
+
+    var name = (document.getElementById("businessName")||{}).value || "";
+    name = name.trim();
+    if(!name) fail("f-name", "نام کسب‌وکار را وارد کنید.");
+    else if(name.length < 2) fail("f-name", "نام کسب‌وکار خیلی کوتاه است.");
+    else if(!isPersianText(name, 2)) fail("f-name", "نام را فارسی بنویسید (نه فقط انگلیسی).");
+    else pass("f-name");
+
+    var ownerEl = document.getElementById("businessOwner");
+    var owner = ownerEl ? ownerEl.value.trim() : "";
+    if(owner){
+      if(!isPersianText(owner, 2)) { showError("f-owner", true, "نام صاحب را فارسی بنویسید."); if(!firstBad) firstBad="f-owner"; ok=false; }
+      else showError("f-owner", false);
+    }
+
+    var desc = (document.getElementById("businessDescription")||{}).value || "";
+    desc = desc.trim();
+    if(!desc) fail("f-description", "توضیح کسب‌وکار را وارد کنید.");
+    else if(desc.length < 5) fail("f-description", "توضیح را کامل‌تر بنویسید (حداقل چند کلمه).");
+    else if(!isPersianText(desc, 5)) fail("f-description", "توضیح را فارسی بنویسید.");
+    else pass("f-description");
+
+    var phoneRaw = (document.getElementById("businessPhone")||{}).value || "";
+    var phoneTrim = phoneRaw.trim();
+    if(!phoneTrim) fail("f-phone", "شماره تماس را وارد کنید.");
+    else if(/[A-Za-z؀-ۿ]/.test(phoneTrim.replace(/[۰-۹٠-٩]/g,""))) fail("f-phone", "در فیلد شماره فقط عدد وارد کنید.");
+    else {
+      var pv = validateIranPhone(phoneTrim);
+      var dlen = countPhoneDigits(phoneTrim);
+      if(!pv.ok){
+        if(dlen < 10) fail("f-phone", "شماره کوتاه است. موبایل ۱۱ رقم (مثل 09161234567).");
+        else if(dlen > 11) fail("f-phone", "شماره نباید بیشتر از ۱۱ رقم باشد.");
+        else fail("f-phone", "فرمت شماره معتبر نیست. موبایل: 09xxxxxxxxx");
+      } else {
+        pass("f-phone");
+        document.getElementById("businessPhone").value = pv.normalized;
+      }
+    }
+
+    /* پروانه در صورت تیک */
+    var lic = readLicenseFieldsFromRegister();
+    if(lic.claimed){
+      if(!lic.number) fail("f-license-number", "شماره پروانه را وارد کنید.");
+      else if(!isDigitsOnly(lic.number) && !/^[0-9۰-۹٠-٩\-\s]+$/.test(lic.number)) fail("f-license-number", "شماره پروانه باید عددی باشد.");
+      else if(lic.number.replace(/\D/g,"").length < 5) fail("f-license-number", "شماره پروانه خیلی کوتاه است.");
+      else pass("f-license-number");
+      if(!lic.image) fail("f-license-image", "تصویر پروانه را انتخاب کنید.");
+      else pass("f-license-image");
+    }
+
+    if(!ok){
+      showToast("لطفاً فیلدهای ستاره‌دار و خطاها را اصلاح کنید.", "error");
+      if(firstBad){
+        var el = document.getElementById(firstBad);
+        if(el) el.scrollIntoView({behavior:"smooth", block:"center"});
+      }
+    }
+    return ok;
+  }
+  function validateRegisterStep2(){
+    /* برچسب‌ها اختیاری‌اند؛ فقط اگر حالت other و توضیح لازم باشد */
+    var ok = true;
+    if(manualMode){
+      var subId = document.getElementById("businessSubcategory") ? document.getElementById("businessSubcategory").value : "";
+      if(subId === "other"){
+        var other = (document.getElementById("businessOtherDesc")||{}).value || "";
+        if(other.trim().length < 3){
+          showToast("توضیح زیر‌دسته «سایر» را بنویسید.", "error");
+          ok = false;
+        }
+      }
+    }
+    return ok;
+  }
+  function validateRegisterStep3(){
+    if(!requireTermsAccepted("registerTermsCheck", "registerTermsErr")) return false;
+    return true;
+  }
+
 
 /* ============ CATEGORY FORM INIT ============ */
 var suggestedCategoryId = null;
@@ -4937,21 +6275,8 @@ function submitCategorySuggestion(){
 var toStep2Btn = document.getElementById("toStep2");
 if(toStep2Btn){
   toStep2Btn.onclick = function(){
-    var ok = true;
-    var name = document.getElementById("businessName").value.trim();
-    var desc = document.getElementById("businessDescription").value.trim();
-    var phone = document.getElementById("businessPhone").value.trim();
-    
-    // اعتبارسنجی اولیه
-    if(!name){ showError("f-name", true); ok = false; } else showError("f-name", false);
-    if(!desc){ showError("f-description", true); ok = false; } else showError("f-description", false);
-    
-    var digits = phone.replace(/[^\d]/g,"");
-    if(digits.length < 8){ showError("f-phone", true); ok = false; } else showError("f-phone", false);
-    
-    if(!ok){ showToast("لطفاً خطاها را برطرف کنید.", "error"); return; }
-    
-    // 🔧 حالت ۱: کاربر روی «✓ درسته» زده
+    if(!validateRegisterStep1()) return;
+
     if(!manualMode){
       if(suggestedCategoryId){
         // اگه زیردسته پیشنهاد نشده بود، از کاربر بخواه انتخاب کنه
@@ -5023,7 +6348,7 @@ var backToStep1Btn = document.getElementById("backToStep1");
 if(backToStep1Btn) backToStep1Btn.onclick = function(){ goToStep(1); };
 
 var toStep3Btn = document.getElementById("toStep3");
-if(toStep3Btn) toStep3Btn.onclick = function(){ goToStep(3); };
+if(toStep3Btn) toStep3Btn.onclick = function(){ if(!validateRegisterStep1()){ goToStep(1); return; } if(!validateRegisterStep2()) return; goToStep(3); };
 
 var backToStep2Btn = document.getElementById("backToStep2");
 if(backToStep2Btn) backToStep2Btn.onclick = function(){ goToStep(2); };
@@ -5255,7 +6580,7 @@ function renderPreview(){
   }
   box.innerHTML =
     '<div style="text-align:center;margin-bottom:12px">' +
-      avatarHTML(name) +
+      avatarHTML({name:name, categoryId: (typeof suggestedCategoryId!=='undefined'?suggestedCategoryId:null) || (document.getElementById('businessCategory')&&document.getElementById('businessCategory').value) || null, profileImage: (typeof pendingProfileImageData!=='undefined'&&pendingProfileImageData)?pendingProfileImageData.dataUrl:null }) +
       '<h3 style="margin:10px 0 4px;font-size:16px;font-weight:700">' + esc(name) + '</h3>' +
       '<span class="type">' + esc(type) + '</span>' +
     '</div>' +
@@ -5270,6 +6595,9 @@ function renderPreview(){
 var saveBizBtn = document.getElementById("saveBusinessButton");
 if(saveBizBtn){
   saveBizBtn.onclick = function(){
+    if(!validateRegisterStep1()){ goToStep(1); return; }
+    if(!validateRegisterStep3()){ goToStep(3); return; }
+    if(!requireTermsAccepted('registerTermsCheck','registerTermsErr')){ if(typeof goToStep==='function') goToStep(3); return; }
     var name = document.getElementById("businessName").value.trim();
     var owner = document.getElementById("businessOwner").value.trim();
     var description = document.getElementById("businessDescription").value.trim();
@@ -5277,6 +6605,12 @@ if(saveBizBtn){
     var phone = cleanPhone(document.getElementById("businessPhone").value.trim());
     var address = document.getElementById("businessAddress").value.trim();
     var instagram = document.getElementById("businessInstagram").value.trim();
+    var lic = readLicenseFieldsFromRegister();
+    if(!validateLicenseClaim(lic, 'register')){ if(typeof goToStep==='function') goToStep(1); return; }
+    var licenseNumber = lic.number;
+    var hasLicense = lic.claimed;
+    var licenseImage = lic.image;
+    var profileImage = pendingProfileImageData ? pendingProfileImageData.dataUrl : null;
     var tags = getTags();
     
     var catId, subId, otherDesc = "";
@@ -5331,12 +6665,26 @@ if(saveBizBtn){
 }
 
 function resetForm(){
+  pendingBusinessLocation=null;
+  if(typeof renderBusinessLocation === "function") renderBusinessLocation(null);
   document.getElementById("businessName").value = "";
   document.getElementById("businessOwner").value = "";
   document.getElementById("businessDescription").value = "";
+  if(document.getElementById("businessAbout")) document.getElementById("businessAbout").value = "";
+  var ac=document.getElementById("aboutCounter"); if(ac) ac.textContent = (typeof toFa==="function"?toFa(0):"0")+" / "+(typeof toFa==="function"?toFa(100):"100");
   document.getElementById("businessPhone").value = "";
   document.getElementById("businessAddress").value = "";
   document.getElementById("businessInstagram").value = "";
+  if(document.getElementById("businessLicenseNumber")) document.getElementById("businessLicenseNumber").value = "";
+  if(document.getElementById("businessHasLicense")) document.getElementById("businessHasLicense").checked = false;
+  pendingLicenseImageData = null;
+  pendingProfileImageData = null; window.__profileImageCleared=false;
+  setProfilePreview(null,'profileImagePreview','profileImagePreviewImg');
+  var bpf=document.getElementById('businessProfileImage'); if(bpf) bpf.value='';
+
+  var lip = document.getElementById("licenseImagePreview"); if(lip) lip.style.display = "none";
+  var lif = document.getElementById("businessLicenseImage"); if(lif) lif.value = "";
+  if(typeof toggleLicenseExtraFields === "function") toggleLicenseExtraFields();
   document.getElementById("itemsBox").innerHTML = "ابتدا نوع فعالیت را انتخاب کنید.";
   document.getElementById("categorySuggestion").style.display = "none";
   document.getElementById("manualCategoryBox").style.display = "none";
@@ -5398,17 +6746,7 @@ async function syncToSupabase(){
 }
 
 function loadFromStorage(){
-  // اول از حافظه محلی مرورگر (برای نمایش سریع)
-  try{
-    var rawB = localStorage.getItem("behbahan_directory_v4");
-    if(rawB){ var parsedB = JSON.parse(rawB); if(Array.isArray(parsedB) && parsedB.length) businesses = parsedB; }
-    var rawR = localStorage.getItem("behbahan_reviews_v1");
-    if(rawR){ var parsedR = JSON.parse(rawR); if(Array.isArray(parsedR)) reviews = parsedR; }
-    var rawReq = localStorage.getItem("behbahan_requests_v1");
-    if(rawReq){ var parsedReq = JSON.parse(rawReq); if(Array.isArray(parsedReq)) requests = parsedReq; }
-  }catch(e){}
-
-  // بعد از Supabase (منبع اصلی و مشترک بین همه کاربرها)
+  // منبع اصلی: Supabase (بدون وابستگی به دادهٔ لوکال)
   loadFromSupabase();
 }
 
@@ -5597,7 +6935,7 @@ function getTimeAgo(ts){
       var b = businesses[i];
       html += '<div class="owner-business">' +
         '<div class="owner-head">' +
-          avatarHTML(b.name, "sm") +
+          avatarHTML(b, "sm") +
           '<div class="owner-head-text">' +
             '<h3>' + esc(b.name) + (b.verified ? ' <span class="verified-badge" style="margin-right:4px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>تأیید شده</span>' : '') + '</h3>' +
             '<div class="meta">' + esc(b.type) + ' • ثبت: ' + formatDate(b.createdAt||Date.now()) + '</div>' +
@@ -5664,6 +7002,18 @@ function getTimeAgo(ts){
     document.getElementById("businessPhone").value = b.phone;
     document.getElementById("businessAddress").value = b.address;
     document.getElementById("businessInstagram").value = b.instagram || "";
+    if(document.getElementById("businessLicenseNumber")) document.getElementById("businessLicenseNumber").value = b.licenseNumber || "";
+    if(document.getElementById("businessHasLicense")) document.getElementById("businessHasLicense").checked = businessLicenseClaimed(b);
+    if(b.licenseImage){
+      pendingLicenseImageData = { dataUrl: b.licenseImage, size: 0, width: 0, height: 0, name: "saved.jpg" };
+      var wrap = document.getElementById("licenseImagePreview");
+      var img = document.getElementById("licenseImagePreviewImg");
+      var meta = document.getElementById("licenseImageMeta");
+      if(img) img.src = b.licenseImage;
+      if(meta) meta.textContent = "تصویر قبلی ذخیره شده است";
+      if(wrap) wrap.style.display = "block";
+    }
+    if(typeof toggleLicenseExtraFields === "function") toggleLicenseExtraFields();
     document.getElementById("businessDiscount").value = b.discount || "";
     document.getElementById("businessEmergency").checked = !!b.emergency;
     document.getElementById("businessType").onchange();
@@ -5744,7 +7094,8 @@ function getTimeAgo(ts){
   
   function handleMap(event, address){
     event.preventDefault();
-    var fullAddr = address + "، بهبهان، خوزستان";
+    var coordMatch = /^__coords__\s*(-?\d+(?:\.\d+)?),\s*(-?\d+(?:\.\d+)?)$/.exec(String(address||""));
+    var fullAddr = coordMatch ? (coordMatch[1] + "," + coordMatch[2]) : (address + "، بهبهان، خوزستان");
     var encoded = encodeURIComponent(fullAddr);
     var ua = navigator.userAgent || "";
     var isAndroid = /android/i.test(ua);
@@ -5848,6 +7199,90 @@ function getTimeAgo(ts){
     document.fonts.ready.then(function(){ buildCategories(); });
   }
   
+
+  /* ============ TERMS MODAL ============ */
+  
+  function requireTermsAccepted(checkId, errId){
+    var c = document.getElementById(checkId);
+    var err = errId ? document.getElementById(errId) : null;
+    if(!c || !c.checked){
+      if(err) err.style.display = "block";
+      showToast("برای ادامه، پذیرش قوانین شماره‌یاب الزامی است.", "error");
+      return false;
+    }
+    if(err) err.style.display = "none";
+    return true;
+  }
+
+  window.openTermsModal = function(opts){
+    var gate = document.getElementById("termsGate");
+    var checkRow = document.getElementById("termsCheckRow");
+    var check = document.getElementById("termsAcceptCheck");
+    var btn = document.getElementById("termsAcceptBtn");
+    if(!gate) return;
+    opts = opts || {};
+    gate.classList.remove("hidden");
+    document.body.style.overflow = "hidden";
+    /* در صفحه قوانین، تیک داخلی نداریم؛ فقط دکمه موافقم */
+    if(checkRow) checkRow.style.display = "none";
+    if(check) check.checked = true;
+    if(btn){
+      btn.disabled = false;
+      btn.textContent = opts.buttonText || "موافقم";
+    }
+  };
+  window.closeTermsModal = function(){
+    var gate = document.getElementById("termsGate");
+    if(gate) gate.classList.add("hidden");
+    document.body.style.overflow = "";
+  };
+  (function(){
+    var gate = document.getElementById("termsGate");
+    var btn = document.getElementById("termsAcceptBtn");
+    if(!gate || !btn) return;
+    gate.classList.add("hidden");
+    btn.addEventListener("click", function(){
+      try{ localStorage.setItem("behbahan_terms_accepted_v1", "1"); }catch(e){}
+      /* با زدن موافقم، تیک‌های اجباری فرم‌ها هم پر می‌شود */
+      var reg = document.getElementById("registerTermsCheck");
+      if(reg) reg.checked = true;
+      var own = document.getElementById("ownerSignupTermsCheck");
+      if(own) own.checked = true;
+      var regErr = document.getElementById("registerTermsErr");
+      if(regErr) regErr.style.display = "none";
+      closeTermsModal();
+      showToast("با قوانین موافقت شد.", "success");
+    });
+    gate.addEventListener("click", function(e){
+      if(e.target === gate) closeTermsModal();
+    });
+  })();
+
+  (function(){
+    function wireRegisterTerms(){
+      var link = document.getElementById("registerTermsLink");
+      if(link){
+        link.onclick = function(e){
+          e.preventDefault();
+          e.stopPropagation();
+          openTermsModal({ buttonText: "موافقم" });
+        };
+      }
+    }
+    wireRegisterTerms();
+    document.addEventListener("click", function(e){
+      var t = e.target;
+      if(t && t.id === "registerTermsLink"){
+        e.preventDefault();
+        openTermsModal({ buttonText: "موافقم" });
+      }
+      if(t && t.id === "ownerSignupTermsLink"){
+        e.preventDefault();
+        openTermsModal({ buttonText: "موافقم" });
+      }
+    });
+  })();
+
   /* ============ THEME ============ */
   (function(){
     var STORAGE_KEY = "behbahan_theme";
@@ -5893,14 +7328,125 @@ function getTimeAgo(ts){
   })();
 
   /* ============ QUICK ADD / EDIT (یکپارچه، توسط ادمین) ============ */
+  var qaPendingLocation = null;
+
+  function renderQaLocation(location){
+    var status = document.getElementById("qaLocationStatus");
+    var coords = document.getElementById("qaLocationCoords");
+    var preview = document.getElementById("qaMapPreview");
+    var latEl = document.getElementById("qaLat");
+    var lngEl = document.getElementById("qaLng");
+    if(location && Number.isFinite(Number(location.lat)) && Number.isFinite(Number(location.lng))){
+      qaPendingLocation = {
+        lat: Number(location.lat),
+        lng: Number(location.lng),
+        accuracy: location.accuracy != null ? Number(location.accuracy) : null,
+        source: location.source || "manual",
+        updatedAt: location.updatedAt || Date.now()
+      };
+      if(status){
+        status.textContent = "موقعیت جغرافیایی ثبت شده است.";
+        status.classList.add("success");
+      }
+      if(coords) coords.textContent = qaPendingLocation.lat.toFixed(6) + " , " + qaPendingLocation.lng.toFixed(6);
+      if(latEl) latEl.value = String(qaPendingLocation.lat);
+      if(lngEl) lngEl.value = String(qaPendingLocation.lng);
+      if(preview){
+        preview.href = "https://www.google.com/maps?q=" + qaPendingLocation.lat + "," + qaPendingLocation.lng;
+        preview.style.display = "inline-block";
+      }
+    } else {
+      qaPendingLocation = null;
+      if(status){
+        status.textContent = "هنوز موقعیت جغرافیایی ثبت نشده است.";
+        status.classList.remove("success");
+      }
+      if(coords) coords.textContent = "";
+      if(latEl) latEl.value = "";
+      if(lngEl) lngEl.value = "";
+      if(preview){
+        preview.href = "#";
+        preview.style.display = "none";
+      }
+    }
+  }
+
+  function applyQaManualCoords(){
+    var latEl = document.getElementById("qaLat");
+    var lngEl = document.getElementById("qaLng");
+    if(!latEl || !lngEl) return;
+    var lat = parseFloat(String(latEl.value).trim().replace(",", "."));
+    var lng = parseFloat(String(lngEl.value).trim().replace(",", "."));
+    if(Number.isFinite(lat) && Number.isFinite(lng)){
+      renderQaLocation({ lat: lat, lng: lng, source: "manual", updatedAt: Date.now() });
+    } else if(!String(latEl.value).trim() && !String(lngEl.value).trim()){
+      renderQaLocation(null);
+    }
+  }
+
+  function requestQaLocation(){
+    if(!navigator.geolocation){
+      showToast("مرورگر شما از موقعیت مکانی پشتیبانی نمی‌کند.", "error");
+      return;
+    }
+    var btn = document.getElementById("qaGetLocationBtn");
+    if(btn){ btn.disabled = true; btn.textContent = "⏳ در حال دریافت موقعیت..."; }
+    navigator.geolocation.getCurrentPosition(function(pos){
+      renderQaLocation({
+        lat: pos.coords.latitude,
+        lng: pos.coords.longitude,
+        accuracy: pos.coords.accuracy || null,
+        source: "browser",
+        updatedAt: Date.now()
+      });
+      if(btn){ btn.disabled = false; btn.textContent = "📍 بروزرسانی موقعیت"; }
+      showToast("موقعیت جغرافیایی با موفقیت ثبت شد.", "success");
+    }, function(err){
+      var msg = err && err.code === 1 ? "اجازه دسترسی به موقعیت مکانی داده نشد." : "دریافت موقعیت مکانی ناموفق بود.";
+      showToast(msg, "error");
+      if(btn){ btn.disabled = false; btn.textContent = "📍 ثبت موقعیت فعلی"; }
+    }, { enableHighAccuracy: true, timeout: 12000, maximumAge: 60000 });
+  }
+
+  function initQaLocationControls(){
+    var getBtn = document.getElementById("qaGetLocationBtn");
+    var clearBtn = document.getElementById("qaClearLocationBtn");
+    var latEl = document.getElementById("qaLat");
+    var lngEl = document.getElementById("qaLng");
+    if(getBtn) getBtn.onclick = function(e){ e.preventDefault(); requestQaLocation(); };
+    if(clearBtn) clearBtn.onclick = function(e){
+      e.preventDefault();
+      renderQaLocation(null);
+      showToast("موقعیت جغرافیایی پاک شد.", "info");
+    };
+    if(latEl) latEl.addEventListener("change", applyQaManualCoords);
+    if(lngEl) lngEl.addEventListener("change", applyQaManualCoords);
+    if(latEl) latEl.addEventListener("blur", applyQaManualCoords);
+    if(lngEl) lngEl.addEventListener("blur", applyQaManualCoords);
+  }
+  initQaLocationControls();
+
   function openQuickAdd(){
-    document.getElementById("qaModalTitle").textContent = "📝 افزودن کسب‌وکار";
-    document.getElementById("qaEditId").value = "";
-    clearQuickAddFormFields();
-    document.getElementById("qaSaveAddAnotherBtn").style.display = "";
-    document.getElementById("quickAddModal").classList.add("show");
-    document.body.style.overflow = "hidden";
-    setTimeout(function(){ document.getElementById("qaName").focus(); }, 200);
+    try{
+      document.getElementById("qaModalTitle").textContent = "📝 افزودن کسب‌وکار";
+      document.getElementById("qaEditId").value = "";
+      clearQuickAddFormFields();
+      fillQaCategories();
+      renderQaLocation(null);
+      var saveAddBtn = document.getElementById("qaSaveAddAnotherBtn");
+      if(saveAddBtn) saveAddBtn.style.display = "";
+      var modal = document.getElementById("quickAddModal");
+      if(!modal){ showToast("فرم افزودن پیدا نشد.","error"); return; }
+      modal.classList.add("show");
+      document.body.style.overflow = "hidden";
+      setTimeout(function(){
+        var nameEl = document.getElementById("qaName");
+        if(nameEl) nameEl.focus();
+      }, 200);
+    }catch(err){
+      console.error("openQuickAdd error:", err);
+      showToast("خطا در باز کردن فرم افزودن.","error");
+    }
   }
 
   function openQuickEditFromAdmin(id){
@@ -5910,10 +7456,22 @@ function getTimeAgo(ts){
   document.getElementById("qaEditId").value = b.id;
   document.getElementById("qaName").value = b.name || "";
   document.getElementById("qaOwner").value = b.owner || "";
+  if(document.getElementById("qaAbout")) document.getElementById("qaAbout").value = b.about || "";
+  if(b.profileImage){ pendingQaProfileImageData={dataUrl:b.profileImage}; setProfilePreview(pendingQaProfileImageData,"qaProfileImagePreview","qaProfileImagePreviewImg"); }
   document.getElementById("qaPhone").value = b.phone || "";
   document.getElementById("qaAddress").value = b.address || "";
   document.getElementById("qaInsta").value = b.instagram || "";
   document.getElementById("qaDiscount").value = b.discount || "";
+  if(document.getElementById("qaLicenseNumber")) document.getElementById("qaLicenseNumber").value = b.licenseNumber || "";
+  if(document.getElementById("qaHasLicense")) document.getElementById("qaHasLicense").checked = !!(b.licenseVerified || businessLicenseClaimed(b));
+  if(b.licenseImage){
+    pendingQaLicenseImageData = { dataUrl: b.licenseImage, size: 0, width: 0, height: 0, name: "saved.jpg" };
+    var qwrap = document.getElementById("qaLicenseImagePreview");
+    var qimg = document.getElementById("qaLicenseImagePreviewImg");
+    if(qimg) qimg.src = b.licenseImage;
+    if(qwrap) qwrap.style.display = "block";
+  }
+  if(typeof toggleQaLicenseExtraFields === "function") toggleQaLicenseExtraFields();
   document.getElementById("qaVerified").checked = !!b.verified;
   document.getElementById("qaEmergency").checked = !!b.emergency;
   fillQaCategories();
@@ -5922,6 +7480,7 @@ function getTimeAgo(ts){
   setTimeout(function(){
     document.getElementById("qaSubcategory").value = b.subcategoryId || "";
   }, 30);
+  renderQaLocation(b.location || null);
   document.getElementById("qaSaveAddAnotherBtn").style.display = "none";
   document.getElementById("quickAddModal").classList.add("show");
   document.body.style.overflow = "hidden";
@@ -5934,16 +7493,32 @@ function getTimeAgo(ts){
   }
 
   function clearQuickAddFormFields(){
-    document.getElementById("qaEditId").value = "";
-    document.getElementById("qaName").value = "";
-    document.getElementById("qaOwner").value = "";
-    document.getElementById("qaType").value = "";
-    document.getElementById("qaPhone").value = "";
-    document.getElementById("qaAddress").value = "";
-    document.getElementById("qaInsta").value = "";
-    document.getElementById("qaDiscount").value = "";
-    document.getElementById("qaEmergency").checked = false;
-    document.getElementById("qaVerified").checked = false;
+    var setVal = function(id, val){ var el=document.getElementById(id); if(el) el.value = val; };
+    var setChk = function(id, val){ var el=document.getElementById(id); if(el) el.checked = val; };
+    setVal("qaEditId", "");
+    setVal("qaName", "");
+    setVal("qaOwner", "");
+    setVal("qaAbout", "");
+    pendingQaProfileImageData = null;
+    setProfilePreview(null,"qaProfileImagePreview","qaProfileImagePreviewImg");
+    var qpf=document.getElementById("qaProfileImage"); if(qpf) qpf.value="";
+    setVal("qaPhone", "");
+    setVal("qaAddress", "");
+    setVal("qaInsta", "");
+    setVal("qaDiscount", "");
+    setVal("qaLicenseNumber", "");
+    setChk("qaHasLicense", false);
+    pendingQaLicenseImageData = null;
+    var qap = document.getElementById("qaLicenseImagePreview"); if(qap) qap.style.display = "none";
+    var qaf = document.getElementById("qaLicenseImage"); if(qaf) qaf.value = "";
+    toggleQaLicenseExtraFields();
+    setChk("qaEmergency", false);
+    setChk("qaVerified", false);
+    var cat = document.getElementById("qaCategory");
+    if(cat) cat.value = "";
+    var sub = document.getElementById("qaSubcategory");
+    if(sub) sub.innerHTML = '<option value="">ابتدا دسته اصلی را انتخاب کنید</option>';
+    renderQaLocation(null);
   }
 
   function saveQuickAdd(addAnother){
@@ -5952,12 +7527,29 @@ function getTimeAgo(ts){
 
   var name = document.getElementById("qaName").value.trim();
   var owner = document.getElementById("qaOwner").value.trim();
+  var about = (document.getElementById("qaAbout") && document.getElementById("qaAbout").value || "").trim().slice(0,100);
+  var profileImage = pendingQaProfileImageData ? pendingQaProfileImageData.dataUrl : null;
   var catId = document.getElementById("qaCategory").value;
   var subId = document.getElementById("qaSubcategory").value;
   var phone = cleanPhone(document.getElementById("qaPhone").value.trim());
   var address = document.getElementById("qaAddress").value.trim();
   var insta = document.getElementById("qaInsta").value.trim().replace(/^@/, "");
   var discount = document.getElementById("qaDiscount").value.trim();
+  var hasLicense = !!(document.getElementById("qaHasLicense") && document.getElementById("qaHasLicense").checked);
+  var licenseNumber = (document.getElementById("qaLicenseNumber")||{}).value ? document.getElementById("qaLicenseNumber").value.trim() : "";
+  var licenseImage = pendingQaLicenseImageData ? pendingQaLicenseImageData.dataUrl : null;
+  if(hasLicense){
+    if(!licenseNumber){ showToast("شماره پروانه را وارد کنید.", "error"); return; }
+    /* در ویرایش اگر تصویر قبلی هست، فایل جدید اجباری نیست */
+    var editIdTmp = document.getElementById("qaEditId").value;
+    var existingImg = null;
+    if(editIdTmp){
+      var eb = getBusinessById(+editIdTmp);
+      existingImg = eb && eb.licenseImage ? eb.licenseImage : null;
+    }
+    if(!licenseImage && !existingImg){ showToast("تصویر پروانه را ارسال کنید.", "error"); return; }
+    if(!licenseImage && existingImg) licenseImage = existingImg;
+  }
   var emergency = document.getElementById("qaEmergency").checked;
   var verified = document.getElementById("qaVerified").checked;
 
@@ -5982,6 +7574,9 @@ function getTimeAgo(ts){
     if(!b){ showToast("کسب‌وکار پیدا نشد.", "error"); return; }
     b.name = name;
     b.owner = owner;
+    if(profileImage) b.profileImage = profileImage;
+    else if(window.__qaProfileCleared){ b.profileImage=null; window.__qaProfileCleared=false; }
+    b.about = about;
     b.categoryId = catId;
     b.subcategoryId = subId;
     b.type = type;
@@ -5989,18 +7584,28 @@ function getTimeAgo(ts){
     b.address = address || "بهبهان";
     b.instagram = insta;
     b.discount = discount;
+    b.licenseNumber = licenseNumber;
+    b.hasLicense = hasLicense;
+    b.licenseClaimed = hasLicense;
+    b.licenseVerified = hasLicense; /* ادمین مستقیم تأیید می‌کند */
+    b.licenseImage = hasLicense ? licenseImage : null;
     b.emergency = emergency;
     b.verified = verified;
+    applyQaManualCoords();
+    b.location = qaPendingLocation ? Object.assign({}, qaPendingLocation) : null;
     if(!b.tags || b.tags.length === 0){
       b.tags = getStandardTagsFor(catId, subId);
     }
     showToast("✓ کسب‌وکار «" + name + "» ویرایش شد", "success");
   } else {
+    applyQaManualCoords();
     var tags = getStandardTagsFor(catId, subId);
     businesses.push({
       id: Date.now(),
       name: name,
       owner: owner,
+      profileImage: profileImage || null,
+      about: about || "",
       categoryId: catId,
       subcategoryId: subId,
       type: type,
@@ -6008,6 +7613,12 @@ function getTimeAgo(ts){
       address: address || "بهبهان",
       instagram: insta,
       discount: discount,
+      location: qaPendingLocation ? Object.assign({}, qaPendingLocation) : null,
+      licenseNumber: licenseNumber,
+      hasLicense: hasLicense,
+      licenseClaimed: hasLicense,
+      licenseVerified: hasLicense,
+      licenseImage: hasLicense ? licenseImage : null,
       tags: tags,
       createdAt: Date.now(),
       verified: verified,
@@ -6031,30 +7642,44 @@ function getTimeAgo(ts){
     closeQuickAdd();
   }
 }
-  document.getElementById("addBizBtn").onclick = function(){
-    openQuickAdd();
-  };
   function fillQaCategories(){
-  var sel = document.getElementById("qaCategory");
-  if(!sel) return;
-  var html = '<option value="">انتخاب کنید</option>';
-  for(var i=0;i<categories.length;i++){
-    html += '<option value="' + categories[i].id + '">' + categories[i].emoji + ' ' + categories[i].name + '</option>';
+    var sel = document.getElementById("qaCategory");
+    if(!sel) return;
+    var html = '<option value="">انتخاب کنید</option>';
+    for(var i=0;i<categories.length;i++){
+      html += '<option value="' + categories[i].id + '">' + (categories[i].emoji||'') + ' ' + categories[i].name + '</option>';
+    }
+    sel.innerHTML = html;
   }
-  sel.innerHTML = html;
-}
-fillQaCategories();
-document.getElementById("qaCategory").onchange = function(){
-  var catId = this.value;
-  var subSel = document.getElementById("qaSubcategory");
-  if(!catId){ subSel.innerHTML = '<option value="">ابتدا دسته اصلی را انتخاب کنید</option>'; return; }
-  var cat = getCategoryById(catId);
-  var html = '<option value="">انتخاب کنید</option>';
-  for(var i=0;i<cat.subcategories.length;i++){
-    html += '<option value="' + cat.subcategories[i].id + '">' + (cat.subcategories[i].emoji||"❓") + ' ' + cat.subcategories[i].name + '</option>';
+  fillQaCategories();
+  var qaCatEl = document.getElementById("qaCategory");
+  if(qaCatEl){
+    qaCatEl.onchange = function(){
+      var catId = this.value;
+      var subSel = document.getElementById("qaSubcategory");
+      if(!subSel) return;
+      if(!catId){ subSel.innerHTML = '<option value="">ابتدا دسته اصلی را انتخاب کنید</option>'; return; }
+      var cat = getCategoryById(catId);
+      if(!cat){ subSel.innerHTML = '<option value="">انتخاب کنید</option>'; return; }
+      var html = '<option value="">انتخاب کنید</option>';
+      for(var i=0;i<(cat.subcategories||[]).length;i++){
+        html += '<option value="' + cat.subcategories[i].id + '">' + (cat.subcategories[i].emoji||"❓") + ' ' + cat.subcategories[i].name + '</option>';
+      }
+      subSel.innerHTML = html;
+    };
   }
-  subSel.innerHTML = html;
-};
+  window.openQuickAdd = openQuickAdd;
+  window.closeQuickAdd = closeQuickAdd;
+  window.saveQuickAdd = saveQuickAdd;
+  window.openQuickEditFromAdmin = openQuickEditFromAdmin;
+  var addBizBtn = document.getElementById("addBizBtn");
+  if(addBizBtn){
+    addBizBtn.onclick = function(e){
+      e.preventDefault();
+      e.stopPropagation();
+      openQuickAdd();
+    };
+  }
 
   /* ============ ADMIN BIZ MANAGE ============ */
   var adminBizFilter = "all";
@@ -6131,23 +7756,25 @@ document.getElementById("qaCategory").onchange = function(){
     var html = "";
     for(var i=0;i<filtered.length;i++){
       var b = filtered[i];
-      var c = avatarColor(b.name);
-      var letter = b.name.trim().charAt(0);
-
       var verifiedBadge = b.verified
         ? '<span class="verified-badge" style="font-size:9px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>تأیید شده</span>'
         : '';
+      var licenseBadge = businessHasLicense(b)
+        ? '<span class="license-badge" style="font-size:9px">📜 پروانه کسب</span>'
+        : (businessLicenseClaimed(b) ? '<span class="license-badge" style="font-size:9px;background:var(--accent-50);color:var(--accent-700);border-color:var(--accent-100)">⏳ پروانه در انتظار</span>' : '');
+      var licenseView = (b.licenseImage ? '<button type="button" class="biz-action-btn edit-a" onclick="viewLicenseImage('+b.id+')">👁 تصویر پروانه</button>' : '');
       var emergencyBadge = b.emergency
         ? '<span class="emergency-badge" style="font-size:9px">⚡ اورژانسی</span>'
         : '';
 
       html +=
         '<div class="biz-manage-row' + (b.emergency ? ' is-emergency' : '') + '">' +
-          '<div class="biz-manage-avatar" style="background:linear-gradient(135deg,' + c[0] + ',' + c[1] + ')">' + esc(letter) + '</div>' +
+          avatarHTML(b, 'sm') +
           '<div class="biz-manage-info">' +
             '<div class="biz-manage-title">' +
               '<h4>' + esc(b.name) + '</h4>' +
               verifiedBadge +
+              licenseBadge +
               emergencyBadge +
             '</div>' +
             (b.owner ? '<div class="biz-manage-owner">👤 ' + esc(b.owner) + '</div>' : '') +
@@ -6159,6 +7786,10 @@ document.getElementById("qaCategory").onchange = function(){
               '<button class="biz-action-btn ' + (b.verified ? 'verify-on' : 'verify-off') + '" onclick="toggleBizVerified(' + b.id + ')">' +
                 (b.verified ? '✓ تأیید شده' : '⊘ تأیید') +
               '</button>' +
+              '<button class="biz-action-btn ' + (b.licenseVerified ? 'verify-on' : 'verify-off') + '" onclick="toggleBizLicenseVerified(' + b.id + ')" title="تأیید پروانه کسب">' +
+                (b.licenseVerified ? '📜 پروانه تأیید شد' : (businessLicenseClaimed(b) ? '⏳ تأیید پروانه' : '📜 پروانه')) +
+              '</button>' +
+              (b.licenseImage ? '<button type="button" class="biz-action-btn edit-a" onclick="viewLicenseImage(' + b.id + ')">👁 تصویر پروانه</button>' : '') +
               '<button class="biz-action-btn ' + (b.emergency ? 'emerg-on' : 'emerg-off') + '" onclick="toggleBizEmergency(' + b.id + ')">' +
                 (b.emergency ? '⚡ اورژانسی' : '⚡ عادی') +
               '</button>' +
@@ -6180,6 +7811,34 @@ document.getElementById("qaCategory").onchange = function(){
     if(!document.getElementById("resultsCard").classList.contains("hidden")) searchBusinesses();
     showToast(b.verified ? "✓ تأیید شد" : "تأیید لغو شد", "success");
   }
+
+  function toggleBizLicenseVerified(id){
+    var b = getBusinessById(id);
+    if(!b) return;
+    if(b.licenseVerified){
+      b.licenseVerified = false;
+      showToast("نشان پروانه کسب برداشته شد.", "success");
+    } else {
+      b.licenseVerified = true;
+      b.licenseClaimed = true;
+      b.hasLicense = true;
+      showToast("📜 پروانه کسب تأیید شد؛ نشان اعتماد فعال است.", "success");
+    }
+    saveToStorage();
+    renderAdminBizManage();
+    if(!document.getElementById("resultsCard").classList.contains("hidden")) searchBusinesses();
+  }
+  window.toggleBizLicenseVerified = toggleBizLicenseVerified;
+  function viewLicenseImage(id){
+    var b = getBusinessById(id);
+    if(!b || !b.licenseImage){ showToast("تصویر پروانه موجود نیست.", "error"); return; }
+    var w = window.open("", "_blank");
+    if(!w){ showToast("پنجره جدید مسدود شد.", "error"); return; }
+    w.document.write('<html dir="rtl"><head><title>پروانه - '+esc(b.name)+'</title></head><body style="margin:0;background:#111;display:flex;flex-direction:column;align-items:center;font-family:Tahoma,sans-serif;color:#fff"><div style="padding:12px;width:100%;box-sizing:border-box">'+esc(b.name)+' — '+esc(b.licenseNumber||"")+'</div><img src="'+b.licenseImage+'" style="max-width:100%;height:auto"/></body></html>');
+  }
+  window.viewLicenseImage = viewLicenseImage;
+
+
 
   function toggleBizEmergency(id){
     var b = getBusinessById(id);
@@ -6344,6 +8003,7 @@ document.getElementById("qaCategory").onchange = function(){
       var badgesHtml="";
       if(b.emergency) badgesHtml+='<span class="emergency-badge">⚡ اورژانسی</span>';
       if(b.verified) badgesHtml+='<span class="verified-badge">✓ تأیید شده</span>';
+      badgesHtml+=licenseBadgeHTML(b);
       var actionsHtml = "";
 
       if(isMobilePhone(b.phone)){
@@ -6383,17 +8043,25 @@ document.getElementById("qaCategory").onchange = function(){
           '<svg viewBox="0 0 24 24" fill="currentColor" style="width:22px;height:22px;display:block;flex-shrink:0"><path d="M3 11h8V3H3v8zm2-6h4v4H5V5zM3 21h8v-8H3v8zm2-6h4v4H5v-4zM13 3v8h8V3h-8zm6 6h-4V5h4v4zM13 13h2v2h-2zM15 15h2v2h-2zM13 17h2v2h-2zM17 13h2v2h-2zM19 15h2v2h-2zM17 17h2v2h-2zM19 19h2v2h-2zM15 19h2v2h-2zM13 21h2v2h-2z"/></svg>' +
         '</button>';
 
-      html+='<div class="business">'+
-        '<div class="business-head">'+avatarHTML(b.name)+
-        '<div class="business-head-text"><h3>'+highlight(b.name,query)+badgesHtml+'</h3><span class="type">'+esc2(b.type)+'</span></div></div>'+
-        '<div class="business-info"><div class="row">📍 <span>'+esc2(b.address)+'</span></div>'+
-        '<div class="row">☎ <a href="tel:'+cleanPhone(b.phone)+'">'+toFa(esc2(b.phone))+'</a></div>'+
-        (b.discount?'<div class="row">🎁 <span>'+esc2(b.discount)+'</span></div>':'')+'</div>'+
-        (b.owner?'<div class="business-info" style="margin-top:4px"><div class="row">👤 <span>'+esc2(b.owner)+'</span></div></div>':'')+
+      html+='<div class="business" style="animation-delay:'+(Math.min(j,8)*0.04)+'s">'+
+        '<div class="business-inner">'+
+        '<div class="business-head">'+avatarHTML(b)+
+        '<div class="business-head-text"><h3>'+highlight(b.name,query)+'</h3>'+
+        (badgesHtml?'<div class="business-badges" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:6px">'+badgesHtml+'</div>':'')+
+        '<span class="type">'+esc2(b.type||'')+'</span></div></div>'+
+        '<div class="business-info">'+
+          '<div class="row">📍 <span>'+esc2(b.address||'بهبهان')+'</span></div>'+
+          '<div class="row">☎ <a href="tel:'+cleanPhone(b.phone)+'">'+toFa(esc2(b.phone))+'</a></div>'+
+          (b.owner?'<div class="row">👤 <span>'+esc2(b.owner)+'</span></div>':'')+
+        '</div>'+
+        (b.about?'<div class="business-about">'+esc2(b.about)+'</div>':'')+(b.discount?'<div class="business-discount">🎁 '+esc2(b.discount)+'</div>':'')+
         (tagsHtml?'<div class="tags-preview">'+tagsHtml+'</div>':'')+
-        '<a class="call-btn" href="tel:'+cleanPhone(b.phone)+'">☎ تماس</a>'+
-        '<div class="business-actions">'+actionsHtml+'</div>'+
-        ratingRowHTML(b)+'</div>';
+        '<div class="business-cta">'+
+          '<a class="call-btn" href="tel:'+cleanPhone(b.phone)+'">☎ تماس سریع</a>'+
+          '<div class="business-actions">'+actionsHtml+'</div>'+
+        '</div>'+
+        ratingRowHTML(b)+
+        '</div>'+'</div>';
     }
     results.innerHTML=html;
     card.classList.remove("hidden");
@@ -6454,7 +8122,7 @@ document.getElementById("qaCategory").onchange = function(){
     var html="";
     for(var i=0;i<list.length;i++){
       var b=list[i];
-      html+='<div class="owner-business"><div class="owner-head">'+avatarHTML(b.name)+
+      html+='<div class="owner-business"><div class="owner-head">'+avatarHTML(b)+
         '<div class="owner-head-text"><h3>'+esc2(b.name)+'</h3><div class="meta">'+esc2(b.type||"")+'</div></div></div>'+
         '<div class="owner-info"><div class="row"><span>📍</span><span>'+esc2(b.address||"")+'</span></div>'+
         '<div class="row"><span>☎</span><span>'+esc2(b.phone||"")+'</span></div>'+
@@ -6647,6 +8315,10 @@ document.getElementById("qaCategory").onchange = function(){
         '<div class="field"><label>نام و نام خانوادگی</label><input id="ownerSignupName" type="text" placeholder="مثلاً علی محمدی"></div>'+ 
         '<div class="field"><label>شماره موبایل</label><input id="ownerSignupPhone" type="tel" inputmode="tel" placeholder="مثلاً 09161234567"></div>'+
         '<div class="field"><label>رمز عبور</label><input id="ownerSignupPass" type="password" placeholder="حداقل ۴ کاراکتر"></div>'+
+        '<label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;padding:10px;border:1.5px solid var(--border);border-radius:12px;background:var(--muted);margin:0 0 12px;text-align:right">'+
+          '<input type="checkbox" id="ownerSignupTermsCheck" style="width:18px;height:18px;margin-top:3px;accent-color:var(--primary-500);flex-shrink:0">'+
+          '<span style="font-size:12.5px;line-height:1.85;font-weight:600;color:var(--text)"><a href="#" id="ownerSignupTermsLink" style="color:var(--primary-700);text-decoration:underline;font-weight:800">قوانین شماره‌یاب</a> را خوانده و با آن موافقم. <span style="color:var(--danger)">*</span></span>'+
+        '</label>'+
         '<button type="button" class="btn-submit" id="ownerSignupBtn" style="width:100%">ساخت حساب مالک</button>'+
       '</div>'+
       '<div id="ownerAuthMsg" style="margin-top:10px;font-size:12px;line-height:1.8;color:var(--text-2)">این نسخه برای تست UX است؛ حساب و اطلاعات کسب‌وکار فقط روی همین مرورگر ذخیره می‌شوند و هنوز احراز هویت/امنیت سروری فعال نیست.</div>'+
@@ -6670,6 +8342,8 @@ document.getElementById("qaCategory").onchange = function(){
       if(name.length<2){msg.textContent='نام و نام خانوادگی را وارد کنید.';return;}
       if(phone.replace(/\D/g,'').length<10){msg.textContent='شماره موبایل معتبر وارد کنید.';return;}
       if(pass.length<4){msg.textContent='رمز عبور باید حداقل ۴ کاراکتر باشد.';return;}
+      var termsOk=document.getElementById('ownerSignupTermsCheck');
+      if(!termsOk||!termsOk.checked){msg.textContent='برای ثبت‌نام، پذیرش قوانین شماره‌یاب الزامی است. روی «قوانین شماره‌یاب» بزنید و موافقم را انتخاب کنید.';return;}
       var us=ownerUsers();
       for(var i=0;i<us.length;i++) if(us[i].phone===phone){msg.textContent='این شماره قبلاً ثبت شده است. وارد شوید.';tab('login');document.getElementById('ownerLoginPhone').value=phone;return;}
       var u={id:'owner_'+Date.now()+'_'+Math.floor(Math.random()*10000),name:name,phone:phone,password:pass,createdAt:Date.now()};
@@ -6701,6 +8375,9 @@ document.getElementById("qaCategory").onchange = function(){
   }
 
   function showOwnerWorkspace(){
+    try{ updateOwnerRequestsBadgeV2(); }catch(e){}
+    try{ if(typeof maybePromptOwnerNotify==="function") maybePromptOwnerNotify(); }catch(e){}
+
     var card=document.getElementById('ownerCard'); if(!card)return;
     document.getElementById('registerCard').classList.add('hidden'); card.classList.remove('hidden');
     ownerPanelHeader(); renderOwnerBusinessesV2(); updateOwnerRequestsBadgeV2();
@@ -6715,7 +8392,7 @@ document.getElementById("qaCategory").onchange = function(){
     for(var i=0;i<list.length;i++){
       var b=list[i];
       var status=b.status==='pending_approval'?'در انتظار تأیید مدیر':(b.status==='rejected'?'رد شده':'فعال');
-      html+='<div class="owner-business"><div class="owner-head"><div class="avatar">'+avatarHTML(b.name)+'</div><div class="owner-head-text"><h3>'+esc(b.name)+'</h3><div class="meta">'+esc(b.type||'دسته‌بندی نشده')+' · '+esc(status)+'</div></div></div><div class="owner-info"><div class="row"><span>📞</span><span>'+toFa(esc(b.phone||''))+'</span></div><div class="row"><span>📍</span><span>'+esc(b.address||'بهبهان')+'</span></div></div><div class="owner-actions"><button class="edit-btn" data-own-edit="'+b.id+'">✏️ ویرایش</button><button class="delete-btn" data-own-delete="'+b.id+'">🗑 حذف</button></div></div>';
+      html+='<div class="owner-business"><div class="owner-head"><div class="avatar">'+avatarHTML(b)+'</div><div class="owner-head-text"><h3>'+esc(b.name)+'</h3><div class="meta">'+esc(b.type||'دسته‌بندی نشده')+' · '+esc(status)+'</div></div></div><div class="owner-info"><div class="row"><span>📞</span><span>'+toFa(esc(b.phone||''))+'</span></div><div class="row"><span>📍</span><span>'+esc(b.address||'بهبهان')+'</span></div></div><div class="owner-actions"><button class="edit-btn" data-own-edit="'+b.id+'">✏️ ویرایش</button><button class="delete-btn" data-own-delete="'+b.id+'">🗑 حذف</button></div></div>';
     }
     box.innerHTML=html;
     box.querySelectorAll('[data-own-edit]').forEach(function(btn){btn.onclick=function(){editBusinessV2(+btn.getAttribute('data-own-edit'));};});
@@ -6731,9 +8408,11 @@ document.getElementById("qaCategory").onchange = function(){
     document.getElementById('businessName').value=b.name||'';
     document.getElementById('businessOwner').value=u.name||b.owner||'';
     document.getElementById('businessDescription').value=b.description||'';
+    if(document.getElementById('businessAbout')){ document.getElementById('businessAbout').value=b.about||''; var ac=document.getElementById('aboutCounter'); if(ac) ac.textContent=(typeof toFa==='function'?toFa((b.about||'').length):(b.about||'').length)+' / '+(typeof toFa==='function'?toFa(100):100); }
     document.getElementById('businessPhone').value=b.phone||u.phone||'';
     document.getElementById('businessAddress').value=b.address||'';
     document.getElementById('businessInstagram').value=b.instagram||'';
+    renderBusinessLocation(b.location||null);
     manualMode=true; document.getElementById('manualCategoryBox').style.display='block';
     var cat=document.getElementById('businessCategory'); cat.value=b.categoryId||''; cat.dispatchEvent(new Event('change'));
     setTimeout(function(){document.getElementById('businessSubcategory').value=b.subcategoryId||''; renderItemsBox(); goToStep(1);},30);
@@ -6752,14 +8431,37 @@ document.getElementById("qaCategory").onchange = function(){
       var bs=ownerBusinessList();
       for(var i=0;i<requests.length;i++){
         var r=requests[i]; if(r.status!=='pending'||(r.responders||[]).length>=3)continue;
+        var targets=r.targetBusinessIds||[];
         for(var j=0;j<bs.length;j++){
-          var bid=bs[j].id; if((r.ignoredBy||[]).indexOf(bid)>=0)continue;
-          var done=(r.responders||[]).some(function(x){return x.businessId===bid;}); if(done)continue;
-          if(findMatchingBusinesses(r).some(function(x){return x.id===bid;})){count++;break;}
+          var bid=bs[j].id;
+          var targeted = targets.length ? targets.some(function(id){return String(id)===String(bid);}) : true;
+          if(!targeted) continue;
+          if((r.responders||[]).some(function(x){return String(x.businessId)===String(bid);})) continue;
+          if((r.ignoredBy||[]).some && (r.ignoredBy||[]).some(function(x){return String(x)===String(bid);})) continue;
+          count++; break;
         }
       }
+      count += countUnreadOwnerNotifs(u.id);
     }
-    badge.textContent=toFa(count); badge.style.display=count?'inline-block':'none';
+    if(count>0){ badge.style.display='inline'; badge.textContent=toFa(count); }
+    else { badge.style.display='none'; }
+
+    var banner=document.getElementById('ownerNotifBanner');
+    var bannerText=document.getElementById('ownerNotifBannerText');
+    if(banner && u){
+      var unread=countUnreadOwnerNotifs(u.id);
+      if(unread>0){
+        banner.classList.add('show');
+        if(bannerText) bannerText.textContent='شما '+toFa(unread)+' اعلان خوانده‌نشده دارید. بخش درخواست‌ها را بررسی کنید.';
+      } else if(count>0){
+        banner.classList.add('show');
+        if(bannerText) bannerText.textContent='درخواست جدید برای کسب‌وکار شما ثبت شده است.';
+      } else {
+        banner.classList.remove('show');
+      }
+    }
+    var en=document.getElementById('enableBrowserNotifBtn');
+    if(en && !en._wired){ en._wired=true; en.onclick=function(){ requestBrowserNotifyPermission(); }; }
   }
 
   function renderOwnerInboxV2(){
@@ -6868,6 +8570,8 @@ document.getElementById("qaCategory").onchange = function(){
   var newBiz=document.getElementById('newBusinessButton');
   if(newBiz)newBiz.onclick=function(){ var u=currentOwner(); if(!u){openOwnerAuth();return;} editingOwnerBusinessId=null; openRegister(); document.getElementById('businessOwner').value=u.name; document.getElementById('businessPhone').value=u.phone; };
 
+  var pendingBusinessLocation=null;
+
   /* Public registration button: authenticate first, then open form. */
   var regBtn=document.getElementById('registerButton');
   if(regBtn)regBtn.onclick=function(){ if(currentOwner()){editingOwnerBusinessId=null;openRegister();document.getElementById('businessOwner').value=currentOwner().name;document.getElementById('businessPhone').value=currentOwner().phone;} else openOwnerAuth(); };
@@ -6898,32 +8602,91 @@ document.getElementById("qaCategory").onchange = function(){
     goToStep(2);
   };
 
+  /* ============ BUSINESS LOCATION ============ */
+  function renderBusinessLocation(location){
+    var status=document.getElementById('businessLocationStatus');
+    var coords=document.getElementById('businessLocationCoords');
+    var clear=document.getElementById('clearBusinessLocationBtn');
+    if(!status)return;
+    if(location && Number.isFinite(Number(location.lat)) && Number.isFinite(Number(location.lng))){
+      pendingBusinessLocation={lat:Number(location.lat),lng:Number(location.lng),accuracy:location.accuracy?Number(location.accuracy):null,source:location.source||'browser',updatedAt:location.updatedAt||Date.now()};
+      status.textContent='موقعیت جغرافیایی ثبت شده است.';
+      status.classList.add('success');
+      if(coords)coords.textContent=Number(pendingBusinessLocation.lat).toFixed(6)+' , '+Number(pendingBusinessLocation.lng).toFixed(6);
+      if(clear)clear.disabled=false;
+    }else{
+      pendingBusinessLocation=null;
+      status.textContent='هنوز موقعیت جغرافیایی ثبت نشده است.';
+      status.classList.remove('success');
+      if(coords)coords.textContent='';
+      if(clear)clear.disabled=false;
+    }
+  }
+  function requestBusinessLocation(){
+    if(!navigator.geolocation){showToast('مرورگر شما از موقعیت مکانی پشتیبانی نمی‌کند.','error');return;}
+    var btn=document.getElementById('getBusinessLocationBtn');
+    if(btn){btn.disabled=true;btn.textContent='⏳ در حال دریافت موقعیت...';}
+    navigator.geolocation.getCurrentPosition(function(pos){
+      pendingBusinessLocation={lat:pos.coords.latitude,lng:pos.coords.longitude,accuracy:pos.coords.accuracy||null,source:'browser',updatedAt:Date.now()};
+      renderBusinessLocation(pendingBusinessLocation);
+      if(btn){btn.disabled=false;btn.textContent='📍 بروزرسانی موقعیت';}
+      showToast('موقعیت جغرافیایی با موفقیت ثبت شد.','success');
+    },function(err){
+      var msg=err&&err.code===1?'اجازه دسترسی به موقعیت مکانی داده نشد.':'دریافت موقعیت مکانی ناموفق بود.';
+      showToast(msg,'error');
+      if(btn){btn.disabled=false;btn.textContent='📍 ثبت موقعیت فعلی';}
+    },{enableHighAccuracy:true,timeout:12000,maximumAge:60000});
+  }
+  function initBusinessLocation(){
+    var btn=document.getElementById('getBusinessLocationBtn');
+    var clear=document.getElementById('clearBusinessLocationBtn');
+    if(btn)btn.onclick=requestBusinessLocation;
+    if(clear)clear.onclick=function(){pendingBusinessLocation=null;renderBusinessLocation(null);showToast('موقعیت جغرافیایی پاک شد.','info');};
+  }
+  initBusinessLocation();
+
   /* Save: مالک ثبت می‌کند، اما انتشار عمومی فقط بعد از تأیید ادمین. */
   var saveBtn=document.getElementById('saveBusinessButton');
   if(saveBtn)saveBtn.onclick=function(){
-    var u=currentOwner(); if(!u){openOwnerAuth();return;}
+    if(!validateRegisterStep1()){ goToStep(1); return; }
+    if(!validateRegisterStep2()){ goToStep(2); return; }
+    if(!validateRegisterStep3()){ goToStep(3); return; }
+    var u=currentOwner();
+    if(!u){
+      showToast('برای ثبت کسب‌وکار ابتدا وارد حساب مالک شوید یا ثبت‌نام کنید.','error');
+      openOwnerAuth();
+      return;
+    }
     var name=document.getElementById('businessName').value.trim();
     var desc=document.getElementById('businessDescription').value.trim();
     var phone=cleanPhone(document.getElementById('businessPhone').value.trim());
-    if(!name||!desc||phone.replace(/\D/g,'').length<8){
-      showToast('لطفاً اطلاعات اصلی کسب‌وکار را کامل کنید.','error');goToStep(1);return;
-    }
-
     var catId=manualMode?document.getElementById('businessCategory').value:suggestedCategoryId;
     var subId=manualMode?document.getElementById('businessSubcategory').value:suggestedSubcategoryId;
+    if(!catId || !subId){
+      showToast('دسته و زیر‌دسته را انتخاب کنید.','error');
+      goToStep(1);
+      return;
+    }
     var cat=catId?getCategoryById(catId):null;
     var sub=(catId&&subId)?getSubcategoryById(catId,subId):null;
     var tags=getTags();
     var address=document.getElementById('businessAddress').value.trim();
     var instagram=document.getElementById('businessInstagram').value.trim();
+    var lic = readLicenseFieldsFromRegister();
+    if(!validateLicenseClaim(lic, 'register')){goToStep(1);return;}
+    var licenseNumber = lic.number;
+    var hasLicense = lic.claimed;
+    var licenseImage = lic.image;
+    var profileImage = (pendingProfileImageData && pendingProfileImageData.dataUrl) ? pendingProfileImageData.dataUrl : null;
+    var about = (document.getElementById('businessAbout') && document.getElementById('businessAbout').value || '').trim().slice(0,100);
 
     if(editingOwnerBusinessId){
       var old=getBusinessById(editingOwnerBusinessId);
       if(!old||old.ownerId!==u.id){showToast('دسترسی ویرایش این کسب‌وکار معتبر نیست.','error');return;}
-      old.name=name; old.owner=u.name; old.description=desc;
+      old.name=name; old.owner=u.name; old.description=desc; old.about=about;
       old.categoryId=catId||null; old.subcategoryId=subId||null;
       old.type=cat&&sub ? (cat.name+' → '+sub.name) : 'در انتظار دسته‌بندی';
-      old.phone=phone; old.address=address||'بهبهان'; old.instagram=instagram;
+      old.phone=phone; old.address=address||'بهبهان'; old.instagram=instagram; if(window.__profileImageCleared){ old.profileImage=null; window.__profileImageCleared=false; } else if(profileImage){ old.profileImage=profileImage; } old.licenseNumber=licenseNumber; old.licenseClaimed=hasLicense; old.hasLicense=hasLicense; old.licenseImage=hasLicense?(licenseImage||old.licenseImage||null):null; if(hasLicense){ if(!old.licenseVerified) old.licenseVerified=false; } else { old.licenseVerified=false; old.licenseClaimed=false; old.licenseImage=null; } old.location=pendingBusinessLocation ? Object.assign({},pendingBusinessLocation) : null;
       old.tags=tags.slice(); old.standardTags=tags.slice(); old.ownerId=u.id;
       old.status='pending_approval'; old.verified=false; old.updatedAt=Date.now();
       saveToStorage(); buildCategories(); updateStats();
@@ -6937,7 +8700,7 @@ document.getElementById("qaCategory").onchange = function(){
       description:desc,
       type:cat&&sub ? (cat.name+' → '+sub.name) : 'در انتظار دسته‌بندی',
       categoryId:catId||null, subcategoryId:subId||null, otherDescription:'',
-      phone:phone, address:address||'بهبهان', instagram:instagram,
+      phone:phone, address:address||'بهبهان', instagram:instagram, profileImage: profileImage || null, about: about || '', licenseNumber:licenseNumber, hasLicense:hasLicense, licenseClaimed:hasLicense, licenseVerified:false, licenseImage:hasLicense?licenseImage:null, location:pendingBusinessLocation ? Object.assign({},pendingBusinessLocation) : null,
       tags:tags, standardTags:tags.slice(), pendingTags:tags.slice(),
       approvedTags:[], rejectedTags:[], createdAt:Date.now(),
       verified:false, emergency:false, status:'pending_approval'
@@ -6960,6 +8723,17 @@ document.getElementById("qaCategory").onchange = function(){
 </script>
 
 <style id="owner-approval-ux">
+    .categories-wrapper {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease-in-out, opacity 0.3s ease;
+    opacity: 0;
+}
+
+.categories-wrapper.active {
+    max-height: 1200px;
+    opacity: 1;
+}
 .owner-form-note{margin-bottom:16px}
 .owner-status{display:inline-flex;align-items:center;gap:5px;padding:3px 8px;border-radius:999px;font-size:10.5px;font-weight:700}
 .owner-status.pending{background:var(--accent-50);color:var(--accent-700);border:1px solid var(--accent-100)}
@@ -7063,7 +8837,7 @@ document.getElementById("qaCategory").onchange = function(){
 
     var html=summary;
     for(var i=0;i<filtered.length;i++){
-      var b=filtered[i], c=avatarColor(b.name||"?"), letter=(b.name||"?").trim().charAt(0);
+      var b=filtered[i];
       var pending=b.status==="pending_approval";
       var statusBadge=pending
         ? '<span class="owner-status pending">⏳ در انتظار تأیید</span>'
@@ -7071,12 +8845,13 @@ document.getElementById("qaCategory").onchange = function(){
           ? '<span class="owner-status rejected">✕ رد شده</span>'
           : '<span class="owner-status approved">✓ منتشرشده</span>');
       var verifiedBadge=b.verified?'<span class="verified-badge" style="font-size:9px">✓ تأیید هویت/اطلاعات</span>':'';
+      var licenseBadge=businessHasLicense(b)?'<span class="license-badge" style="font-size:9px">📜 پروانه کسب</span>':(businessLicenseClaimed(b)?'<span class="license-badge" style="font-size:9px;background:var(--accent-50);color:var(--accent-700);border-color:var(--accent-100)">⏳ پروانه در انتظار</span>':'');
       var emergencyBadge=b.emergency?'<span class="emergency-badge" style="font-size:9px">⚡ اورژانسی</span>':'';
 
       html+='<div class="biz-manage-row'+(pending?' is-pending':'')+'">'+
-        '<div class="biz-manage-avatar" style="background:linear-gradient(135deg,'+c[0]+','+c[1]+')">'+esc(letter)+'</div>'+
+        avatarHTML(b,'sm')+
         '<div class="biz-manage-info">'+
-          '<div class="biz-manage-title"><h4>'+esc(b.name)+'</h4>'+statusBadge+verifiedBadge+emergencyBadge+'</div>'+
+          '<div class="biz-manage-title"><h4>'+esc(b.name)+'</h4>'+statusBadge+verifiedBadge+licenseBadge+emergencyBadge+'</div>'+
           (b.owner?'<div class="biz-manage-owner">👤 '+esc(b.owner)+'</div>':'')+
           '<div class="biz-manage-meta">🏷️ '+esc(b.type||"در انتظار دسته‌بندی")+' • 📞 '+toFa(esc(b.phone||""))+'</div>'+
           (b.description?'<div class="biz-status-line '+(pending?'pending':'approved')+'">📝 '+esc(b.description)+'</div>':'')+
@@ -7085,6 +8860,7 @@ document.getElementById("qaCategory").onchange = function(){
             (pending
               ? '<button class="biz-action-btn verify-on" onclick="adminApproveBusiness('+b.id+')">✓ تأیید و انتشار</button><button class="biz-action-btn del-a" onclick="adminRejectBusiness('+b.id+')">✕ رد درخواست</button>'
               : '<button class="biz-action-btn '+(b.verified?'verify-on':'verify-off')+'" onclick="toggleBizVerified('+b.id+')">'+(b.verified?'✓ تأیید شده':'⊘ تأیید')+'</button>')+
+            '<button class="biz-action-btn '+(b.licenseVerified?'verify-on':'verify-off')+'" onclick="toggleBizLicenseVerified('+b.id+')">'+(b.licenseVerified?'📜 پروانه تأیید شد':(businessLicenseClaimed(b)?'⏳ تأیید پروانه':'📜 پروانه'))+'</button>'+
             '<button class="biz-action-btn '+(b.emergency?'emerg-on':'emerg-off')+'" onclick="toggleBizEmergency('+b.id+')">'+(b.emergency?'⚡ اورژانسی':'⚡ عادی')+'</button>'+
             '<button class="biz-action-btn edit-a" onclick="openQuickEditFromAdmin('+b.id+')">✏️ ویرایش</button>'+
             '<button class="biz-action-btn del-a" onclick="deleteBizFromAdmin('+b.id+')">🗑 حذف</button>'+
@@ -7113,6 +8889,8 @@ if(migratedAny){ saveToStorage(); }
 buildCategories();
 updateStats();
 })();
+
 </script>
+
 </body>
   </html>
