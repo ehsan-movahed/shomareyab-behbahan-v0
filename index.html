@@ -1727,14 +1727,20 @@ body, button, input, select, textarea{
       دنبال چی می‌گردی؟
     </h2>
 
-    <div class="search-box" id="searchBox">
-      <input id="searchInput" type="text" placeholder="مثلاً شمع، لنت، لوله پلیکا..." autocomplete="off">
-      <div class="spinner"></div>
-      <button type="button" id="searchButton">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-        جستجو
-      </button>
-    </div>
+    <div id="stickySearchWrap" style="position:sticky; top:0; z-index:30; background:var(--bg); padding:8px 0; box-shadow:0 2px 8px rgba(0,0,0,.06);">
+      <div class="search-box" id="searchBox">
+        <input id="searchInput" type="text" placeholder="مثلاً شمع، لنت، لوله پلیکا..." autocomplete="off">
+        <div class="spinner"></div>
+        <button type="button" id="searchButton">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          جستجو
+        </button>
+      </div>
+      
+      <div class="categories" id="categoriesBar">
+        <button class="chip active" data-cat="">همه</button>
+      </div>
+      </div>
 
     <div class="categories" id="categoriesBar">
       <button class="chip active" data-cat="">همه</button>
@@ -4553,33 +4559,32 @@ function scoreBusiness(b, q){
   
   /* ============ CATEGORIES ============ */
   function buildCategories(){
-    var bar = document.getElementById("categoriesBar");
-    var types = [], counts = {}, seen = {};
-    var visibleCount = 0;
-    for(var i=0;i<businesses.length;i++){
-      var b = businesses[i];
-      if(b.status !== "approved") continue;
-      var t = b.type || "سایر";
-      counts[t] = (counts[t]||0) + 1;
-      visibleCount++;
-      if(!seen[t]){seen[t]=1;types.push(t)}
-    }
-    var html = '<button class="chip' + (activeCategory===""?' active':'') + '" data-cat="">همه <span class="num">' + toFa(visibleCount) + '</span></button>';
-    for(var j=0;j<types.length;j++){
-      var t2 = types[j];
-      html += '<button class="chip' + (activeCategory===t2?' active':'') + '" data-cat="' + esc(t2) + '">' + esc(t2) + ' <span class="num">' + toFa(counts[t2]) + '</span></button>';
-    }
-    bar.innerHTML = html;
-    var chips = bar.querySelectorAll(".chip");
-    for(var k=0;k<chips.length;k++){
-      chips[k].onclick = function(){
-        for(var m=0;m<chips.length;m++) chips[m].classList.remove("active");
-        this.classList.add("active");
-        activeCategory = this.getAttribute("data-cat");
-        searchBusinesses();
-      };
-    }
+  var bar = document.getElementById("categoriesBar");
+  var types = [], counts = {}, seen = {};
+  var visibleCount = 0;
+  for(var i=0;i<businesses.length;i++){
+    var b = businesses[i];
+    if(b.status !== "approved") continue;
+    var t = b.type || "سایر";
+    counts[t] = (counts[t]||0) + 1;
+    visibleCount++;
+    if(!seen[t]){seen[t]=1;types.push(t)}
   }
+  var html = '<select id="categorySelect" style="width:100%;padding:10px 12px;border-radius:12px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:inherit;font-size:14px">';
+  html += '<option value="">همه دسته‌ها (' + toFa(visibleCount) + ')</option>';
+  for(var j=0;j<types.length;j++){
+    var t2 = types[j];
+    html += '<option value="' + esc(t2) + '">' + esc(t2) + ' (' + toFa(counts[t2]) + ')</option>';
+  }
+  html += '</select>';
+  bar.innerHTML = html;
+  var sel = document.getElementById("categorySelect");
+  sel.value = activeCategory || "";
+  sel.onchange = function(){
+    activeCategory = this.value;
+    searchBusinesses();
+  };
+}
 
   /* ============ FILTER PILLS ============ */
   function bindFilterPills(){
