@@ -6428,35 +6428,8 @@ function getTimeAgo(ts){
 
   /* Owner context: local demo identity is selected from owned businesses. */
   function ensureOwnerContext(){
-    var card=document.getElementById("ownerCard");
-    if(!card) return;
-    var old=document.getElementById("localOwnerContext");
-    if(old) old.remove();
-    var box=document.createElement("div");
-    box.id="localOwnerContext"; box.className="owner-context";
-    var opts='<option value="">انتخاب کسب‌وکار شما</option>';
-    for(var i=0;i<businesses.length;i++){
-      var b=businesses[i];
-      opts+='<option value="'+b.id+'">'+esc2(b.name)+(b.owner?' — '+esc2(b.owner):'')+'</option>';
-    }
-    box.innerHTML='<div style="font-size:12.5px;font-weight:700;color:var(--primary-700)">👤 حالت مالک کسب‌وکار (لوکال)</div>'+
-      '<div style="font-size:11.5px;color:var(--text-2);margin-top:3px">برای شبیه‌سازی ورود مالک، کسب‌وکار خودت را انتخاب کن.</div>'+
-      '<select id="localOwnerSelect">'+opts+'</select>';
-    card.insertBefore(box,card.children[1]||null);
-    var sel=document.getElementById("localOwnerSelect");
-    if(currentOwnerBusinessId) sel.value=currentOwnerBusinessId;
-    sel.onchange=function(){
-      currentOwnerBusinessId=this.value?Number(this.value):null;
-      try{localStorage.setItem("behbahan_owner_session_v1",String(currentOwnerBusinessId||""));}catch(e){}
-      renderMyBusinesses();
-      renderMyRequests();
-      updateOwnerRequestsBadge();
-    };
-    try{
-      var saved=localStorage.getItem("behbahan_owner_session_v1");
-      if(saved && getBusiness2(saved)){ currentOwnerBusinessId=Number(saved); sel.value=saved; }
-    }catch(e){}
-  }
+  return;
+}
 
   window.renderMyBusinesses=function(){
     var box=document.getElementById("myBusinesses");
