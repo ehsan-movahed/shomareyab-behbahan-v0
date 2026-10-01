@@ -1727,23 +1727,24 @@ body, button, input, select, textarea{
       دنبال چی می‌گردی؟
     </h2>
 
-    <div id="stickySearchWrap" style="position:fixed; top:0; left:0; right:0; z-index:30; background:var(--bg); padding:10px 16px; box-shadow:0 2px 8px rgba(0,0,0,.08);">
-  <div style="max-width:720px; margin:auto;">
-    <div class="search-box" id="searchBox">
-      <input id="searchInput" type="text" placeholder="مثلاً شمع، لنت، لوله پلیکا..." autocomplete="off">
-      <div class="spinner"></div>
-      <button type="button" id="searchButton">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-        جستجو
-      </button>
-    </div>
+    <div id="stickySearchWrap" style="position:sticky; top:0; z-index:30; background:var(--bg); padding:8px 0; box-shadow:0 2px 8px rgba(0,0,0,.06);">
+      <div class="search-box" id="searchBox">
+        <input id="searchInput" type="text" placeholder="مثلاً شمع، لنت، لوله پلیکا..." autocomplete="off">
+        <div class="spinner"></div>
+        <button type="button" id="searchButton">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          جستجو
+        </button>
+      </div>
+      
+      <div class="categories" id="categoriesBar">
+        <button class="chip active" data-cat="">همه</button>
+      </div>
+      </div>
 
     <div class="categories" id="categoriesBar">
       <button class="chip active" data-cat="">همه</button>
     </div>
-  </div>
-</div>
-<div id="stickySpacer"></div>
 
     <div class="examples">
       پیشنهاد:
