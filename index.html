@@ -214,36 +214,23 @@ body, button, input, select, textarea{
 .search-box button:active{transform:scale(.97)}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* ============ CATEGORIES ============ */
-.categories{
-  display:flex; gap:6px; margin-top:14px;
-  overflow-x:auto; padding:2px 2px 6px;
-  scrollbar-width:none; scroll-behavior:smooth;
-}
-.categories::-webkit-scrollbar{display:none}
-.chip{
-  flex-shrink:0; background:var(--muted); color:var(--text-2);
-  padding:7px 14px; border-radius:100px;
-  font-size:12.5px; font-weight:500; cursor:pointer;
-  border:1.5px solid transparent;
-  transition:all .18s var(--ease-smooth);
-  white-space:nowrap;
-  display:inline-flex; align-items:center; gap:6px;
-}
-.chip:hover{background:var(--primary-50); color:var(--primary-700); transform:translateY(-1px)}
-.chip.active{
-  background:var(--primary-500); color:#fff;
-  border-color:var(--primary-500);
-  box-shadow:var(--shadow-primary);
-}
-.chip .num{
-  background:rgba(0,0,0,.08);
-  font-size:10.5px; font-weight:700;
-  padding:1px 6px; border-radius:100px;
-  min-width:18px; text-align:center;
-}
-.chip.active .num{background:rgba(255,255,255,.25)}
-
+/* ============ CATEGORY MENU ============ */
+.category-menu-wrap{position:relative;margin-top:12px}
+.category-menu-trigger{width:100%;min-height:42px;border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:12px;padding:8px 12px;display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;font:inherit;transition:all .18s var(--ease-smooth)}
+.category-menu-trigger:hover,.category-menu-trigger.open{border-color:var(--primary-500);box-shadow:0 0 0 3px rgba(20,184,166,.10)}
+.category-menu-trigger .menu-left{display:flex;align-items:center;gap:9px;min-width:0}
+.category-menu-trigger .hamburger{width:28px;height:28px;border-radius:8px;background:var(--primary-50);color:var(--primary-600);display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.category-menu-trigger .hamburger svg{width:16px;height:16px}
+.category-menu-trigger .menu-label{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.category-menu-trigger .menu-count{font-size:11px;color:var(--text-3);font-weight:600}
+.category-menu-trigger .chevron{width:16px;height:16px;transition:transform .2s}.category-menu-trigger.open .chevron{transform:rotate(180deg)}
+.category-menu-panel{display:none;margin-top:7px;padding:8px;background:var(--surface);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow);max-height:420px;overflow:auto;animation:fadeIn .16s ease}.category-menu-panel.open{display:block}
+.category-menu-all{width:100%;border:0;background:var(--muted);color:var(--text-2);border-radius:10px;padding:9px 11px;text-align:right;font:inherit;font-size:13px;font-weight:700;cursor:pointer;margin-bottom:7px}.category-menu-all.active{background:var(--primary-500);color:#fff}
+.category-group{border-top:1px solid var(--border);padding:7px 0}.category-group:first-of-type{border-top:0}
+.category-group-head{width:100%;display:flex;align-items:center;gap:7px;border:0;background:transparent;color:var(--text);padding:8px 6px;cursor:pointer;font:inherit;text-align:right}.category-group-head .cat-emoji{font-size:18px}.category-group-head .cat-name{flex:1;font-size:13px;font-weight:700}.category-group-head .cat-count{font-size:10.5px;color:var(--text-3);font-weight:600}.category-group-head .cat-arrow{width:15px;height:15px;transition:transform .18s}.category-group.open .cat-arrow{transform:rotate(180deg)}
+.category-sublist{display:none;padding:0 10px 4px 0}.category-group.open .category-sublist{display:block}
+.category-subitem{width:100%;display:flex;align-items:center;gap:7px;border:0;background:transparent;color:var(--text-2);padding:7px 8px;border-radius:9px;cursor:pointer;font:inherit;text-align:right;font-size:12px}.category-subitem:hover{background:var(--primary-50);color:var(--primary-700)}.category-subitem.active{background:var(--primary-50);color:var(--primary-700);font-weight:700}.category-subitem .sub-emoji{font-size:14px}.category-subitem .sub-name{flex:1}.category-subitem .sub-count{font-size:10px;color:var(--text-3)}
+@media (max-width:640px){.category-menu-panel{max-height:55vh}}
 /* ============ EXAMPLES ============ */
 .examples{
   margin-top:12px; color:var(--text-3);
@@ -1737,14 +1724,13 @@ body, button, input, select, textarea{
         </button>
       </div>
       
-      <div class="categories" id="categoriesBar">
-        <button class="chip active" data-cat="">همه</button>
+      <div class="category-menu-wrap" id="categoryMenuWrap">
+        <button type="button" class="category-menu-trigger" id="categoryMenuTrigger" aria-expanded="false" aria-controls="categoryMenuPanel">
+          <span class="menu-left"><span class="hamburger" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg></span><span class="menu-label" id="categoryMenuLabel">دسته‌بندی‌ها</span><span class="menu-count" id="categoryMenuCount"></span></span>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="category-menu-panel" id="categoryMenuPanel"></div>
       </div>
-      </div>
-
-    <div class="categories" id="categoriesBar">
-      <button class="chip active" data-cat="">همه</button>
-    </div>
 
     <div class="examples">
       پیشنهاد:
@@ -4307,6 +4293,8 @@ function migrateOldBusinesses(){
   
   /* ============ SEARCH ============ */
   var activeCategory = "";
+  var activeCategoryId = "";
+  var activeSubcategoryId = "";
   var filterTopActive = false;
   var filterNewestActive = false;
   var filterEmergencyActive = false;
@@ -4364,7 +4352,9 @@ function scoreBusiness(b, q){
       var b = businesses[i];
       /* فقط کسب‌وکارهای تأییدشده در جستجوی عمومی دیده می‌شوند. */
       if(b.status !== "approved") continue;
-      if(activeCategory && b.type !== activeCategory) continue;
+      if(activeSubcategoryId && getBusinessSubcategoryId(b) !== activeSubcategoryId) continue;
+      if(!activeSubcategoryId && activeCategoryId && getBusinessCategoryId(b) !== activeCategoryId) continue;
+      if(!activeSubcategoryId && !activeCategoryId && activeCategory && b.type !== activeCategory) continue;
   
       var rating = getBusinessRating(b.id);
   
@@ -4382,7 +4372,7 @@ function scoreBusiness(b, q){
         var s = scoreBusiness(b, q);
         if(s > 0) list.push({b:b, s:s, rating:rating.avg, count:rating.count});
       } else {
-        if(activeCategory || filterTopActive || filterNewestActive || filterEmergencyActive){
+        if(activeCategory || activeCategoryId || activeSubcategoryId || filterTopActive || filterNewestActive || filterEmergencyActive){
           list.push({b:b, s:1, rating:rating.avg, count:rating.count});
         }
       }
@@ -4557,34 +4547,32 @@ function scoreBusiness(b, q){
   renderResults(found, q);
 }
   
-  /* ============ CATEGORIES ============ */
+  /* ============ CATEGORY MENU ============ */
   function buildCategories(){
-  var bar = document.getElementById("categoriesBar");
-  var types = [], counts = {}, seen = {};
-  var visibleCount = 0;
-  for(var i=0;i<businesses.length;i++){
-    var b = businesses[i];
-    if(b.status !== "approved") continue;
-    var t = b.type || "سایر";
-    counts[t] = (counts[t]||0) + 1;
-    visibleCount++;
-    if(!seen[t]){seen[t]=1;types.push(t)}
+    var panel=document.getElementById("categoryMenuPanel"); if(!panel) return;
+    var catCounts={},subCounts={},visibleCount=0;
+    for(var i=0;i<businesses.length;i++){
+      var b=businesses[i]; if(b.status!=="approved") continue; visibleCount++;
+      var cid=getBusinessCategoryId(b), sid=getBusinessSubcategoryId(b);
+      catCounts[cid]=(catCounts[cid]||0)+1; subCounts[cid+"::"+sid]=(subCounts[cid+"::"+sid]||0)+1;
+    }
+    var html='<button type="button" class="category-menu-all'+(!activeCategoryId&&!activeSubcategoryId?' active':'')+'">همه دسته‌ها <span style="opacity:.75">('+toFa(visibleCount)+')</span></button>';
+    for(var c=0;c<categories.length;c++){
+      var cat=categories[c], count=catCounts[cat.id]||0;
+      html+='<div class="category-group'+(activeCategoryId===cat.id?' open':'')+'" data-cat-group="'+esc(cat.id)+'">';
+      html+='<button type="button" class="category-group-head" data-cat-id="'+esc(cat.id)+'"><span class="cat-emoji">'+(cat.emoji||'📁')+'</span><span class="cat-name">'+esc(cat.name)+'</span><span class="cat-count">'+toFa(count)+'</span><svg class="cat-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></button><div class="category-sublist">';
+      for(var j=0;j<cat.subcategories.length;j++){var sub=cat.subcategories[j], sc=subCounts[cat.id+"::"+sub.id]||0; html+='<button type="button" class="category-subitem'+(activeCategoryId===cat.id&&activeSubcategoryId===sub.id?' active':'')+'" data-cat-id="'+esc(cat.id)+'" data-sub-id="'+esc(sub.id)+'"><span class="sub-emoji">'+(sub.emoji||'•')+'</span><span class="sub-name">'+esc(sub.name)+'</span><span class="sub-count">'+toFa(sc)+'</span></button>';}
+      html+='</div></div>';
+    }
+    panel.innerHTML=html;
+    panel.querySelector('.category-menu-all').onclick=function(){activeCategory="";activeCategoryId="";activeSubcategoryId="";updateCategoryMenuLabel();searchBusinesses();closeCategoryMenu();};
+    var heads=panel.querySelectorAll('.category-group-head'); for(var h=0;h<heads.length;h++) heads[h].onclick=function(){var group=this.parentNode, was=group.classList.contains('open'), groups=panel.querySelectorAll('.category-group'); for(var x=0;x<groups.length;x++)groups[x].classList.remove('open'); if(!was)group.classList.add('open');};
+    var subs=panel.querySelectorAll('.category-subitem'); for(var k=0;k<subs.length;k++) subs[k].onclick=function(){activeCategoryId=this.getAttribute('data-cat-id')||"";activeSubcategoryId=this.getAttribute('data-sub-id')||"";activeCategory="";updateCategoryMenuLabel();searchBusinesses();closeCategoryMenu();};
+    updateCategoryMenuLabel();
   }
-  var html = '<select id="categorySelect" style="width:100%;padding:10px 12px;border-radius:12px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:inherit;font-size:14px">';
-  html += '<option value="">همه دسته‌ها (' + toFa(visibleCount) + ')</option>';
-  for(var j=0;j<types.length;j++){
-    var t2 = types[j];
-    html += '<option value="' + esc(t2) + '">' + esc(t2) + ' (' + toFa(counts[t2]) + ')</option>';
-  }
-  html += '</select>';
-  bar.innerHTML = html;
-  var sel = document.getElementById("categorySelect");
-  sel.value = activeCategory || "";
-  sel.onchange = function(){
-    activeCategory = this.value;
-    searchBusinesses();
-  };
-}
+  function updateCategoryMenuLabel(){var label=document.getElementById('categoryMenuLabel'),count=document.getElementById('categoryMenuCount');if(!label)return;if(activeSubcategoryId){var sub=getSubcategoryById(activeCategoryId,activeSubcategoryId),cat=getCategoryById(activeCategoryId);label.textContent=sub?sub.name:'دسته‌بندی‌ها';count.textContent=cat?'‹ '+cat.name:'';}else if(activeCategoryId){var c=getCategoryById(activeCategoryId);label.textContent=c?c.name:'دسته‌بندی‌ها';count.textContent='';}else{label.textContent='دسته‌بندی‌ها';count.textContent='';}}
+  function closeCategoryMenu(){var p=document.getElementById('categoryMenuPanel'),t=document.getElementById('categoryMenuTrigger');if(p)p.classList.remove('open');if(t){t.classList.remove('open');t.setAttribute('aria-expanded','false');}}
+  function initCategoryMenu(){var t=document.getElementById('categoryMenuTrigger'),p=document.getElementById('categoryMenuPanel');if(!t||!p)return;t.onclick=function(){var open=p.classList.toggle('open');t.classList.toggle('open',open);t.setAttribute('aria-expanded',open?'true':'false');};document.addEventListener('click',function(e){var w=document.getElementById('categoryMenuWrap');if(w&&!w.contains(e.target))closeCategoryMenu();});}
 
   /* ============ FILTER PILLS ============ */
   function bindFilterPills(){
@@ -5451,6 +5439,7 @@ async function loadFromSupabase(){
   }
   // چون داده تازه رسیده، صفحه رو دوباره بروزرسانی کن
   buildCategories();
+  initCategoryMenu();
   updateStats();
 }
   /* ============ OWNER PANEL ============ */
@@ -6042,24 +6031,10 @@ function getTimeAgo(ts){
     closeQuickAdd();
   }
 }
-
-    saveToStorage();
-    buildCategories();
-    updateStats();
-    renderAdminBizManage();
-    if(!document.getElementById("resultsCard").classList.contains("hidden")) searchBusinesses();
-
-    if(addAnother && !isEdit){
-      clearQuickAddFormFields();
-      document.getElementById("qaName").focus();
-    } else {
-      closeQuickAdd();
-    }
-  }
-
   document.getElementById("addBizBtn").onclick = function(){
     openQuickAdd();
-    function fillQaCategories(){
+  };
+  function fillQaCategories(){
   var sel = document.getElementById("qaCategory");
   if(!sel) return;
   var html = '<option value="">انتخاب کنید</option>';
@@ -6080,7 +6055,6 @@ document.getElementById("qaCategory").onchange = function(){
   }
   subSel.innerHTML = html;
 };
-  };
 
   /* ============ ADMIN BIZ MANAGE ============ */
   var adminBizFilter = "all";
