@@ -4304,23 +4304,49 @@ function migrateOldBusinesses(){
   var filterTopActive = false;
   var filterNewestActive = false;
   var filterEmergencyActive = false;
-  
-  function scoreBusiness(b, q){
-    if(!q) return 1;
-    var nameN = normalize(b.name);
-    var typeN = normalize(b.type);
-    var addrN = normalize(b.address);
-    var tagsN = b.tags.map(normalize);
-    var score = 0;
-    if(nameN.indexOf(q) !== -1) score += 100;
-    if(typeN.indexOf(q) !== -1) score += 40;
-    for(var i=0;i<tagsN.length;i++){
-      if(tagsN[i] === q) score += 80;
-      else if(tagsN[i].indexOf(q) !== -1) score += 50;
+  function levenshtein(a, b){
+  var m = a.length, n = b.length;
+  if(m === 0) return n;
+  if(n === 0) return m;
+  var dp = [];
+  for(var i = 0; i <= m; i++){ dp[i] = [i]; }
+  for(var j = 0; j <= n; j++){ dp[0][j] = j; }
+  for(i = 1; i <= m; i++){
+    for(j = 1; j <= n; j++){
+      var cost = a[i-1] === b[j-1] ? 0 : 1;
+      dp[i][j] = Math.min(dp[i-1][j] + 1, dp[i][j-1] + 1, dp[i-1][j-1] + cost);
     }
-    if(addrN.indexOf(q) !== -1) score += 10;
-    return score;
   }
+  return dp[m][n];
+}
+
+function fuzzyContains(text, q){
+  var words = text.split(" ");
+  var maxDist = q.length <= 4 ? 1 : 2; // کلمه‌های کوتاه‌تر، تحمل غلط کمتر
+  for(var i = 0; i < words.length; i++){
+    if(Math.abs(words[i].length - q.length) > maxDist) continue;
+    if(levenshtein(words[i], q) <= maxDist) return true;
+  }
+  return false;
+}
+function scoreBusiness(b, q){
+  if(!q) return 1;
+  var nameN = normalize(b.name);
+  var typeN = normalize(b.type);
+  var addrN = normalize(b.address);
+  var tagsN = b.tags.map(normalize);
+  var score = 0;
+  if(nameN.indexOf(q) !== -1) score += 100;
+  else if(fuzzyContains(nameN, q)) score += 55; // تطبیق تقریبی، احتمالاً غلط تایپی
+  if(typeN.indexOf(q) !== -1) score += 40;
+  for(var i=0;i<tagsN.length;i++){
+    if(tagsN[i] === q) score += 80;
+    else if(tagsN[i].indexOf(q) !== -1) score += 50;
+    else if(fuzzyContains(tagsN[i], q)) score += 25;
+  }
+  if(addrN.indexOf(q) !== -1) score += 10;
+  return score;
+}
   
   function getFiltered(){
     var q = normalize(document.getElementById("searchInput").value);
@@ -4510,15 +4536,18 @@ function migrateOldBusinesses(){
   }
   
   function searchBusinesses(){
-    var q = normalize(document.getElementById("searchInput").value);
-    var card = document.getElementById("resultsCard");
-    var found = getFiltered();
-    if(!q && !activeCategory){
-      card.classList.add("hidden");
-      return;
-    }
-    renderResults(found, q);
+  var q = normalize(document.getElementById("searchInput").value);
+  var card = document.getElementById("resultsCard");
+  var found = getFiltered();
+  if(!q && !activeCategory){
+    card.classList.add("hidden");
+    return;
   }
+  if(q && found.length === 0){
+    sb.from("search_logs").insert({ query: q, result_count: 0 });
+  }
+  renderResults(found, q);
+}
   
   /* ============ CATEGORIES ============ */
   function buildCategories(){
