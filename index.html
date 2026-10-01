@@ -4544,8 +4544,10 @@ function scoreBusiness(b, q){
     return;
   }
   if(q && found.length === 0){
-    sb.from("search_logs").insert({ query: q, result_count: 0 });
-  }
+  sb.from("search_logs").insert({ query: q, result_count: 0 }).then(function(res){
+    console.log("نتیجه ثبت لاگ جستجو:", res);
+  });
+}
   renderResults(found, q);
 }
   
