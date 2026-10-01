@@ -2274,22 +2274,22 @@ body, button, input, select, textarea{
     
           <div class="qrow">
             <div class="qfield">
-              <label>نوع فعالیت *</label>
-              <select id="qaType">
+              <label>دسته اصلی *</label>
+              <select id="qaCategory">
                 <option value="">انتخاب کنید</option>
-                <option value="مکانیک">مکانیک</option>
-                <option value="برق خودرو">برق خودرو</option>
-                <option value="جلوبندی">جلوبندی</option>
-                <option value="قطعات یدکی">قطعات یدکی</option>
-                <option value="لوله کشی">لوله‌کشی</option>
-                <option value="تعمیر موبایل">تعمیر موبایل</option>
-                <option value="رستوران">رستوران</option>
               </select>
             </div>
             <div class="qfield">
-              <label>شماره تماس *</label>
-              <input id="qaPhone" type="tel" placeholder="۰۶۱۵۲۸۲۰۰۰۱" inputmode="tel">
+              <label>زیر‌دسته *</label>
+              <select id="qaSubcategory">
+                <option value="">ابتدا دسته اصلی را انتخاب کنید</option>
+              </select>
             </div>
+          </div>
+          
+          <div class="qfield">
+            <label>شماره تماس *</label>
+            <input id="qaPhone" type="tel" placeholder="۰۶۱۵۲۸۲۰۰۰۱" inputmode="tel">
           </div>
     
           <div class="qfield">
@@ -5915,23 +5915,28 @@ function getTimeAgo(ts){
   }
 
   function openQuickEditFromAdmin(id){
-    var b = getBusinessById(id);
-    if(!b) return;
-    document.getElementById("qaModalTitle").textContent = "✏️ ویرایش کسب‌وکار";
-    document.getElementById("qaEditId").value = b.id;
-    document.getElementById("qaName").value = b.name || "";
-    document.getElementById("qaOwner").value = b.owner || "";
-    document.getElementById("qaType").value = b.type || "";
-    document.getElementById("qaPhone").value = b.phone || "";
-    document.getElementById("qaAddress").value = b.address || "";
-    document.getElementById("qaInsta").value = b.instagram || "";
-    document.getElementById("qaDiscount").value = b.discount || "";
-    document.getElementById("qaVerified").checked = !!b.verified;
-    document.getElementById("qaEmergency").checked = !!b.emergency;
-    document.getElementById("qaSaveAddAnotherBtn").style.display = "none";
-    document.getElementById("quickAddModal").classList.add("show");
-    document.body.style.overflow = "hidden";
-  }
+  var b = getBusinessById(id);
+  if(!b) return;
+  document.getElementById("qaModalTitle").textContent = "✏️ ویرایش کسب‌وکار";
+  document.getElementById("qaEditId").value = b.id;
+  document.getElementById("qaName").value = b.name || "";
+  document.getElementById("qaOwner").value = b.owner || "";
+  document.getElementById("qaPhone").value = b.phone || "";
+  document.getElementById("qaAddress").value = b.address || "";
+  document.getElementById("qaInsta").value = b.instagram || "";
+  document.getElementById("qaDiscount").value = b.discount || "";
+  document.getElementById("qaVerified").checked = !!b.verified;
+  document.getElementById("qaEmergency").checked = !!b.emergency;
+  fillQaCategories();
+  document.getElementById("qaCategory").value = b.categoryId || "";
+  document.getElementById("qaCategory").dispatchEvent(new Event("change"));
+  setTimeout(function(){
+    document.getElementById("qaSubcategory").value = b.subcategoryId || "";
+  }, 30);
+  document.getElementById("qaSaveAddAnotherBtn").style.display = "none";
+  document.getElementById("quickAddModal").classList.add("show");
+  document.body.style.overflow = "hidden";
+}
 
   function closeQuickAdd(){
     document.getElementById("quickAddModal").classList.remove("show");
@@ -5953,78 +5958,90 @@ function getTimeAgo(ts){
   }
 
   function saveQuickAdd(addAnother){
-    var editId = document.getElementById("qaEditId").value;
-    var isEdit = editId !== "";
+  var editId = document.getElementById("qaEditId").value;
+  var isEdit = editId !== "";
 
-    var name = document.getElementById("qaName").value.trim();
-    var owner = document.getElementById("qaOwner").value.trim();
-    var type = document.getElementById("qaType").value;
-    var phone = cleanPhone(document.getElementById("qaPhone").value.trim());
-    var address = document.getElementById("qaAddress").value.trim();
-    var insta = document.getElementById("qaInsta").value.trim().replace(/^@/, "");
-    var discount = document.getElementById("qaDiscount").value.trim();
-    var emergency = document.getElementById("qaEmergency").checked;
-    var verified = document.getElementById("qaVerified").checked;
+  var name = document.getElementById("qaName").value.trim();
+  var owner = document.getElementById("qaOwner").value.trim();
+  var catId = document.getElementById("qaCategory").value;
+  var subId = document.getElementById("qaSubcategory").value;
+  var phone = cleanPhone(document.getElementById("qaPhone").value.trim());
+  var address = document.getElementById("qaAddress").value.trim();
+  var insta = document.getElementById("qaInsta").value.trim().replace(/^@/, "");
+  var discount = document.getElementById("qaDiscount").value.trim();
+  var emergency = document.getElementById("qaEmergency").checked;
+  var verified = document.getElementById("qaVerified").checked;
 
-    if(name === ""){
-      showToast("نام کسب‌وکار را وارد کنید.", "error");
-      document.getElementById("qaName").focus();
+  if(name === ""){ showToast("نام کسب‌وکار را وارد کنید.", "error"); document.getElementById("qaName").focus(); return; }
+  if(!catId){ showToast("دسته اصلی را انتخاب کنید.", "error"); return; }
+  if(!subId){ showToast("زیر‌دسته را انتخاب کنید.", "error"); return; }
+  if(phone.length < 8){ showToast("شماره تماس معتبر وارد کنید.", "error"); document.getElementById("qaPhone").focus(); return; }
+
+  for(var i=0;i<businesses.length;i++){
+    if(normalize(businesses[i].name) === normalize(name) && (!isEdit || businesses[i].id !== +editId)){
+      showToast("کسب‌وکاری با این نام قبلاً ثبت شده.", "error");
       return;
     }
-    if(type === ""){
-      showToast("نوع فعالیت را انتخاب کنید.", "error");
-      document.getElementById("qaType").focus();
-      return;
-    }
-    if(phone.length < 8){
-      showToast("شماره تماس معتبر وارد کنید.", "error");
-      document.getElementById("qaPhone").focus();
-      return;
-    }
+  }
 
-    for(var i=0;i<businesses.length;i++){
-      if(normalize(businesses[i].name) === normalize(name) && (!isEdit || businesses[i].id !== +editId)){
-        showToast("کسب‌وکاری با این نام قبلاً ثبت شده.", "error");
-        return;
-      }
-    }
+  var cat = getCategoryById(catId);
+  var sub = getSubcategoryById(catId, subId);
+  var type = cat.name + " → " + sub.name;
 
-    if(isEdit){
-      var b = getBusinessById(+editId);
-      if(!b){ showToast("کسب‌وکار پیدا نشد.", "error"); return; }
-      b.name = name;
-      b.owner = owner;
-      b.type = type;
-      b.phone = phone;
-      b.address = address || "بهبهان";
-      b.instagram = insta;
+  if(isEdit){
+    var b = getBusinessById(+editId);
+    if(!b){ showToast("کسب‌وکار پیدا نشد.", "error"); return; }
+    b.name = name;
+    b.owner = owner;
+    b.categoryId = catId;
+    b.subcategoryId = subId;
+    b.type = type;
+    b.phone = phone;
+    b.address = address || "بهبهان";
+    b.instagram = insta;
     b.discount = discount;
     b.emergency = emergency;
     b.verified = verified;
-      if(!b.tags || b.tags.length === 0){
-        b.tags = standardItems[type] ? standardItems[type].slice() : [];
-      }
-      showToast("✓ کسب‌وکار «" + name + "» ویرایش شد", "success");
-    } else {
-      var tags = standardItems[type] ? standardItems[type].slice() : [];
-      businesses.push({
-        id: Date.now(),
-        name: name,
-        owner: owner,
-        type: type,
-        phone: phone,
-        address: address || "بهبهان",
-        instagram: insta,
-        discount: discount,
-        tags: tags,
-        createdAt: Date.now(),
-        verified: verified,
-        emergency: emergency,
-        status: "approved",
-        ownerId: null
-        });
-      showToast("✓ کسب‌وکار «" + name + "» اضافه شد", "success");
+    if(!b.tags || b.tags.length === 0){
+      b.tags = getStandardTagsFor(catId, subId);
     }
+    showToast("✓ کسب‌وکار «" + name + "» ویرایش شد", "success");
+  } else {
+    var tags = getStandardTagsFor(catId, subId);
+    businesses.push({
+      id: Date.now(),
+      name: name,
+      owner: owner,
+      categoryId: catId,
+      subcategoryId: subId,
+      type: type,
+      phone: phone,
+      address: address || "بهبهان",
+      instagram: insta,
+      discount: discount,
+      tags: tags,
+      createdAt: Date.now(),
+      verified: verified,
+      emergency: emergency,
+      status: "approved",
+      ownerId: null
+    });
+    showToast("✓ کسب‌وکار «" + name + "» اضافه شد", "success");
+  }
+
+  saveToStorage();
+  buildCategories();
+  updateStats();
+  renderAdminBizManage();
+  if(!document.getElementById("resultsCard").classList.contains("hidden")) searchBusinesses();
+
+  if(addAnother && !isEdit){
+    clearQuickAddFormFields();
+    document.getElementById("qaName").focus();
+  } else {
+    closeQuickAdd();
+  }
+}
 
     saveToStorage();
     buildCategories();
@@ -6042,6 +6059,27 @@ function getTimeAgo(ts){
 
   document.getElementById("addBizBtn").onclick = function(){
     openQuickAdd();
+    function fillQaCategories(){
+  var sel = document.getElementById("qaCategory");
+  if(!sel) return;
+  var html = '<option value="">انتخاب کنید</option>';
+  for(var i=0;i<categories.length;i++){
+    html += '<option value="' + categories[i].id + '">' + categories[i].emoji + ' ' + categories[i].name + '</option>';
+  }
+  sel.innerHTML = html;
+}
+fillQaCategories();
+document.getElementById("qaCategory").onchange = function(){
+  var catId = this.value;
+  var subSel = document.getElementById("qaSubcategory");
+  if(!catId){ subSel.innerHTML = '<option value="">ابتدا دسته اصلی را انتخاب کنید</option>'; return; }
+  var cat = getCategoryById(catId);
+  var html = '<option value="">انتخاب کنید</option>';
+  for(var i=0;i<cat.subcategories.length;i++){
+    html += '<option value="' + cat.subcategories[i].id + '">' + (cat.subcategories[i].emoji||"❓") + ' ' + cat.subcategories[i].name + '</option>';
+  }
+  subSel.innerHTML = html;
+};
   };
 
   /* ============ ADMIN BIZ MANAGE ============ */
