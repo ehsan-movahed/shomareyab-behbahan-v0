@@ -4782,12 +4782,24 @@ function migrateOldBusinesses(){
   });
   
   /* ============ ADMIN PANEL ============ */
-  var ADMIN_PASSWORD = "admin1234";
+  /* Admin authentication is handled by Supabase Auth + public.profiles.role.
+     Set this to the admin email created in Supabase Auth. The password is NEVER stored in this file. */
+  var ADMIN_EMAIL = "YOUR_ADMIN_EMAIL";
   var adminActiveTab = "pending";
   var ownerReplyReviewId = null;
+  var adminAuthChecked = false;
+  var adminAuthState = false;
   
-  function isAdmin(){
-    try{ return localStorage.getItem("behbahan_admin") === "yes"; }catch(e){ return false; }
+  async function isAdmin(){
+    try{
+      var sessionRes = await sb.auth.getSession();
+      var user = sessionRes && sessionRes.data && sessionRes.data.session ? sessionRes.data.session.user : null;
+      if(!user){ adminAuthState=false; adminAuthChecked=true; return false; }
+      var prof = await sb.from("profiles").select("role").eq("id", user.id).maybeSingle();
+      adminAuthState = !!(prof.data && prof.data.role === "admin");
+      adminAuthChecked=true;
+      return adminAuthState;
+    }catch(e){ adminAuthState=false; adminAuthChecked=true; return false; }
   }
   
   var logoClicks = 0;
@@ -4802,8 +4814,7 @@ function migrateOldBusinesses(){
       if(logoClicks >= 5){
         logoClicks = 0;
         clearTimeout(logoClickTimer);
-        if(isAdmin()) openAdminPanel();
-        else openAdminLogin();
+        isAdmin().then(function(ok){ if(ok) openAdminPanel(); else openAdminLogin(); });
       }
     });
   }
@@ -4817,24 +4828,37 @@ function migrateOldBusinesses(){
   function closeAdminLogin(){
     document.getElementById("adminLoginModal").classList.remove("show");
   }
-  document.getElementById("adminLoginBtn").onclick = function(){
+  document.getElementById("adminLoginBtn").onclick = async function(){
     var val = document.getElementById("adminPasswordInput").value;
-    if(val === ADMIN_PASSWORD){
-      try{ localStorage.setItem("behbahan_admin", "yes"); }catch(e){}
+    var err = document.getElementById("adminLoginError");
+    if(ADMIN_EMAIL === "YOUR_ADMIN_EMAIL"){
+      err.textContent = "ابتدا ADMIN_EMAIL را در کد با ایمیل مدیر Supabase تنظیم کنید.";
+      err.classList.add("show");
+      return;
+    }
+    if(!val){ err.textContent="رمز عبور را وارد کنید."; err.classList.add("show"); return; }
+    this.disabled=true;
+    try{
+      var res=await sb.auth.signInWithPassword({email:ADMIN_EMAIL,password:val});
+      if(res.error) throw res.error;
+      var ok=await isAdmin();
+      if(!ok) throw new Error("not_admin");
       closeAdminLogin();
       openAdminPanel();
       showToast("خوش آمدید مدیر ✓", "success");
-    } else {
-      document.getElementById("adminLoginError").classList.add("show");
+    }catch(e){
+      err.textContent = "اطلاعات ورود مدیر معتبر نیست یا این حساب نقش مدیر ندارد.";
+      err.classList.add("show");
       document.getElementById("adminPasswordInput").value = "";
       document.getElementById("adminPasswordInput").focus();
-    }
+    }finally{ this.disabled=false; }
   };
   document.getElementById("adminPasswordInput").addEventListener("keydown", function(e){
     if(e.key === "Enter") document.getElementById("adminLoginBtn").click();
   });
   
-  function openAdminPanel(){
+  async function openAdminPanel(){
+    if(!(await isAdmin())){ openAdminLogin(); return; }
     document.getElementById("adminCard").classList.remove("hidden");
     document.getElementById("ownerCard").classList.add("hidden");
     document.getElementById("registerCard").classList.add("hidden");
@@ -6720,34 +6744,85 @@ function saveToStorage(){
   syncToSupabase(); // ارسال به Supabase در پس‌زمینه
 }
 
+var supabaseLoaded = false;
+var syncedSnapshot = { businesses:{}, reviews:{}, requests:{} };
+
 async function syncToSupabase(){
-  try{
-    if(businesses.length){
-      var bRows = businesses.map(function(b){
-        return { id: String(b.id), status: b.status || "approved", payload: b };
-      });
-      await sb.from("businesses").upsert(bRows);
+  if(!supabaseLoaded) return; // قبل از اولین خواندن موفق، هرگز چیزی ننویس
+  var authRes = await sb.auth.getUser();
+  if(authRes.error || !authRes.data || !authRes.data.user) return;
+  var authUid = String(authRes.data.user.id);
+  var sets = { businesses: businesses, reviews: reviews, requests: requests };
+  var defStatus = { businesses: "approved", reviews: "pending", requests: "pending" };
+
+  for(var table in sets){
+    var changed = [];
+    sets[table].forEach(function(obj){
+      var key = String(obj.id);
+      var json = JSON.stringify(obj);
+      if(syncedSnapshot[table][key] !== json){
+        changed.push({
+          key: key,
+          json: json,
+          row: { id: key, status: obj.status || defStatus[table], owner_id: obj.ownerId || null, payload: obj }
+        });
+      }
+    });
+    if(!changed.length) continue;
+    try{
+      var res = await sb.from(table).upsert(changed.map(function(c){ return c.row; }));
+      if(res.error){ console.error("خطا در ارسال به Supabase:", table, res.error); continue; }
+      changed.forEach(function(c){ syncedSnapshot[table][c.key] = c.json; });
+    }catch(e){
+      console.error("خطا در ارسال به Supabase:", table, e);
     }
-    if(reviews.length){
-      var rRows = reviews.map(function(r){
-        return { id: String(r.id), status: r.status || "pending", payload: r };
-      });
-      await sb.from("reviews").upsert(rRows);
-    }
-    if(requests.length){
-      var reqRows = requests.map(function(r){
-        return { id: String(r.id), status: r.status || "pending", payload: r };
-      });
-      await sb.from("requests").upsert(reqRows);
-    }
-  }catch(e){
-    console.error("خطا در ارسال به Supabase:", e);
   }
 }
 
-function loadFromStorage(){
-  // منبع اصلی: Supabase (بدون وابستگی به دادهٔ لوکال)
-  loadFromSupabase();
+async function loadFromSupabase(){
+  var ok = false;
+  try{
+    var resB = await sb.from("businesses").select("id,status,payload");
+    var resR = await sb.from("reviews").select("id,status,payload");
+    var resReq = await sb.from("requests").select("id,status,payload");
+
+    if(resB.error || resR.error || resReq.error){
+      console.error("خطا در خواندن از Supabase:", resB.error, resR.error, resReq.error);
+      showToast("اتصال به سرور برقرار نشد؛ صفحه را دوباره باز کنید.", "error");
+    } else {
+      businesses = resB.data.map(function(row){
+        var b = row.payload || {};
+        b.id = Number(b.id);
+        if(row.owner_id) b.ownerId = row.owner_id;
+        if(!b.status) b.status = row.status || "approved";
+        return b;
+      });
+      reviews = resR.data.map(function(row){
+        var r = row.payload;
+        r.id = Number(r.id);
+        if(!r.status) r.status = row.status || "pending";
+        return r;
+      });
+      requests = resReq.data.map(function(row){
+        var q = row.payload;
+        if(!q.status) q.status = row.status || "pending";
+        return q;
+      });
+
+      syncedSnapshot = { businesses:{}, reviews:{}, requests:{} };
+      businesses.forEach(function(b){ syncedSnapshot.businesses[String(b.id)] = JSON.stringify(b); });
+      reviews.forEach(function(r){ syncedSnapshot.reviews[String(r.id)] = JSON.stringify(r); });
+      requests.forEach(function(q){ syncedSnapshot.requests[String(q.id)] = JSON.stringify(q); });
+
+      supabaseLoaded = true;
+      ok = true;
+    }
+  }catch(e){
+    console.error("خطا در خواندن از Supabase:", e);
+  }
+  buildCategories();
+  initCategoryMenu();
+  updateStats();
 }
 
 async function loadFromSupabase(){
@@ -6755,8 +6830,9 @@ async function loadFromSupabase(){
     var resB = await sb.from("businesses").select("payload");
     if(resB.data && resB.data.length){
       businesses = resB.data.map(function(row){
-        var b = row.payload;
-        b.id = Number(b.id); // چون در بقیه کد، id کسب‌وکار همیشه عددیه
+        var b = row.payload || {};
+        b.id = Number(b.id);
+        if(row.owner_id) b.ownerId = row.owner_id; // چون در بقیه کد، id کسب‌وکار همیشه عددیه
         return b;
       });
     }
@@ -8272,29 +8348,44 @@ function getTimeAgo(ts){
   
 <script>
 /* =========================================================
-   LOCAL UX V2 — Owner Auth + Owner Workspace + Safer Category AI
-   Prototype only: authentication is localStorage-based.
+   OWNER AUTH V3 — Supabase Auth backed authentication
+   localStorage is UX cache only; authorization MUST be enforced by Supabase RLS.
    ========================================================= */
 (function(){
-  var OWNER_USERS_KEY = 'behbahan_owner_users_v2';
-  var OWNER_SESSION_KEY = 'behbahan_owner_auth_v2';
+  var OWNER_SESSION_KEY = 'behbahan_owner_auth_v3';
+  var OWNER_PROFILE_KEY = 'behbahan_owner_profile_v3';
   var editingOwnerBusinessId = null;
 
   function readJSON(key, fallback){ try{ var x=JSON.parse(localStorage.getItem(key)); return x==null?fallback:x; }catch(e){ return fallback; } }
   function writeJSON(key, value){ try{ localStorage.setItem(key, JSON.stringify(value)); }catch(e){} }
-  function ownerUsers(){ return readJSON(OWNER_USERS_KEY, []); }
   function ownerSession(){ return readJSON(OWNER_SESSION_KEY, null); }
-  function setOwnerSession(u){ writeJSON(OWNER_SESSION_KEY, {id:u.id,name:u.name,phone:u.phone}); }
-  function clearOwnerSession(){ try{localStorage.removeItem(OWNER_SESSION_KEY);}catch(e){} }
+  function setOwnerSession(u){
+    if(!u) return;
+    writeJSON(OWNER_SESSION_KEY, {id:u.id,name:u.name||'',phone:u.phone||''});
+    writeJSON(OWNER_PROFILE_KEY, {id:u.id,name:u.name||'',phone:u.phone||''});
+  }
+  function clearOwnerSession(){
+    try{localStorage.removeItem(OWNER_SESSION_KEY);localStorage.removeItem(OWNER_PROFILE_KEY);}catch(e){}
+  }
   function currentOwner(){
-    var s=ownerSession(); if(!s) return null;
-    var us=ownerUsers();
-    for(var i=0;i<us.length;i++) if(us[i].id===s.id) return us[i];
-    return null;
+    var s=ownerSession();
+    if(!s || !s.id) return null;
+    return {id:String(s.id),name:String(s.name||''),phone:String(s.phone||'')};
+  }
+  async function refreshOwnerAuth(){
+    try{
+      var res=await sb.auth.getSession();
+      if(res.error || !res.data || !res.data.session){ clearOwnerSession(); return null; }
+      var user=res.data.session.user;
+      var meta=user.user_metadata||{};
+      var u={id:user.id,name:meta.name||meta.full_name||'',phone:user.phone||''};
+      setOwnerSession(u);
+      return u;
+    }catch(e){ return null; }
   }
   function ownerBusinessList(){
     var u=currentOwner(); if(!u) return [];
-    return businesses.filter(function(b){ return b.ownerId===u.id; });
+    return businesses.filter(function(b){ return String(b.ownerId||'')===String(u.id); });
   }
 
   function ensureOwnerAuthModal(){
@@ -8307,21 +8398,21 @@ function getTimeAgo(ts){
         '<button type="button" id="ownerSignupTab" style="flex:1;border:0;border-radius:9px;padding:9px;font-family:inherit;font-weight:700;background:transparent;color:var(--text-2);cursor:pointer">ثبت‌نام</button>'+
       '</div>'+
       '<div id="ownerLoginPane">'+
-        '<div class="field"><label>شماره موبایل</label><input id="ownerLoginPhone" type="tel" inputmode="tel" placeholder="مثلاً 09161234567"></div>'+
-        '<div class="field"><label>رمز عبور</label><input id="ownerLoginPass" type="password" placeholder="حداقل ۴ کاراکتر"></div>'+
+        '<div class="field"><label>شماره موبایل</label><input id="ownerLoginPhone" type="tel" inputmode="tel" autocomplete="tel" placeholder="مثلاً 09161234567"></div>'+
+        '<div class="field"><label>رمز عبور</label><input id="ownerLoginPass" type="password" autocomplete="current-password" placeholder="حداقل ۸ کاراکتر"></div>'+
         '<button type="button" class="btn-submit" id="ownerLoginBtn" style="width:100%">ورود به پنل</button>'+
       '</div>'+
       '<div id="ownerSignupPane" style="display:none">'+
-        '<div class="field"><label>نام و نام خانوادگی</label><input id="ownerSignupName" type="text" placeholder="مثلاً علی محمدی"></div>'+ 
-        '<div class="field"><label>شماره موبایل</label><input id="ownerSignupPhone" type="tel" inputmode="tel" placeholder="مثلاً 09161234567"></div>'+
-        '<div class="field"><label>رمز عبور</label><input id="ownerSignupPass" type="password" placeholder="حداقل ۴ کاراکتر"></div>'+
+        '<div class="field"><label>نام و نام خانوادگی</label><input id="ownerSignupName" type="text" autocomplete="name" placeholder="مثلاً علی محمدی"></div>'+ 
+        '<div class="field"><label>شماره موبایل</label><input id="ownerSignupPhone" type="tel" inputmode="tel" autocomplete="tel" placeholder="مثلاً 09161234567"></div>'+
+        '<div class="field"><label>رمز عبور</label><input id="ownerSignupPass" type="password" autocomplete="new-password" placeholder="حداقل ۸ کاراکتر"></div>'+ 
         '<label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;padding:10px;border:1.5px solid var(--border);border-radius:12px;background:var(--muted);margin:0 0 12px;text-align:right">'+
           '<input type="checkbox" id="ownerSignupTermsCheck" style="width:18px;height:18px;margin-top:3px;accent-color:var(--primary-500);flex-shrink:0">'+
-          '<span style="font-size:12.5px;line-height:1.85;font-weight:600;color:var(--text)"><a href="#" id="ownerSignupTermsLink" style="color:var(--primary-700);text-decoration:underline;font-weight:800">قوانین شماره‌یاب</a> را خوانده و با آن موافقم. <span style="color:var(--danger)">*</span></span>'+
-        '</label>'+
-        '<button type="button" class="btn-submit" id="ownerSignupBtn" style="width:100%">ساخت حساب مالک</button>'+
-      '</div>'+
-      '<div id="ownerAuthMsg" style="margin-top:10px;font-size:12px;line-height:1.8;color:var(--text-2)">این نسخه برای تست UX است؛ حساب و اطلاعات کسب‌وکار فقط روی همین مرورگر ذخیره می‌شوند و هنوز احراز هویت/امنیت سروری فعال نیست.</div>'+
+          '<span style="font-size:12.5px;line-height:1.85;font-weight:600;color:var(--text)"><a href="#" id="ownerSignupTermsLink" style="color:var(--primary-700);text-decoration:underline;font-weight:800">قوانین شماره‌یاب</a> را خوانده و با آن موافقم. <span style="color:var(--danger)">*</span></span>'+ 
+        '</label>'+ 
+        '<button type="button" class="btn-submit" id="ownerSignupBtn" style="width:100%">ساخت حساب مالک</button>'+ 
+      '</div>'+ 
+      '<div id="ownerAuthMsg" style="margin-top:10px;font-size:12px;line-height:1.8;color:var(--text-2)">احراز هویت امن با Supabase انجام می‌شود؛ رمز عبور در این صفحه ذخیره نمی‌شود.</div>'+ 
     '</div>';
     document.body.appendChild(el);
     document.getElementById('ownerAuthClose').onclick=function(){ el.classList.remove('show'); document.body.style.overflow=''; };
@@ -8334,33 +8425,54 @@ function getTimeAgo(ts){
     }
     document.getElementById('ownerLoginTab').onclick=function(){tab('login');};
     document.getElementById('ownerSignupTab').onclick=function(){tab('signup');};
-    document.getElementById('ownerSignupBtn').onclick=function(){
+    document.getElementById('ownerSignupBtn').onclick=async function(){
       var name=document.getElementById('ownerSignupName').value.trim();
       var phone=cleanPhone(document.getElementById('ownerSignupPhone').value.trim());
       var pass=document.getElementById('ownerSignupPass').value;
       var msg=document.getElementById('ownerAuthMsg');
       if(name.length<2){msg.textContent='نام و نام خانوادگی را وارد کنید.';return;}
       if(phone.replace(/\D/g,'').length<10){msg.textContent='شماره موبایل معتبر وارد کنید.';return;}
-      if(pass.length<4){msg.textContent='رمز عبور باید حداقل ۴ کاراکتر باشد.';return;}
+      if(pass.length<8){msg.textContent='رمز عبور باید حداقل ۸ کاراکتر باشد.';return;}
       var termsOk=document.getElementById('ownerSignupTermsCheck');
-      if(!termsOk||!termsOk.checked){msg.textContent='برای ثبت‌نام، پذیرش قوانین شماره‌یاب الزامی است. روی «قوانین شماره‌یاب» بزنید و موافقم را انتخاب کنید.';return;}
-      var us=ownerUsers();
-      for(var i=0;i<us.length;i++) if(us[i].phone===phone){msg.textContent='این شماره قبلاً ثبت شده است. وارد شوید.';tab('login');document.getElementById('ownerLoginPhone').value=phone;return;}
-      var u={id:'owner_'+Date.now()+'_'+Math.floor(Math.random()*10000),name:name,phone:phone,password:pass,createdAt:Date.now()};
-      us.push(u); writeJSON(OWNER_USERS_KEY,us); setOwnerSession(u);
-      el.classList.remove('show'); document.body.style.overflow='';
-      showOwnerWorkspace(); showToast('حساب مالک با موفقیت ساخته شد ✓','success');
+      if(!termsOk||!termsOk.checked){msg.textContent='برای ثبت‌نام، پذیرش قوانین شماره‌یاب الزامی است.';return;}
+      this.disabled=true;
+      try{
+        var res=await sb.auth.signUp({phone:phone,password:pass,options:{data:{name:name,full_name:name}}});
+        if(res.error) throw res.error;
+        if(res.data && res.data.session){
+          var u={id:res.data.user.id,name:name,phone:res.data.user.phone||phone};
+          setOwnerSession(u);
+          el.classList.remove('show'); document.body.style.overflow='';
+          showOwnerWorkspace(); showToast('حساب مالک با موفقیت ساخته شد ✓','success');
+        }else{
+          msg.textContent='حساب ساخته شد. در صورت فعال بودن تأیید شماره در Supabase، کد تأیید را وارد کنید و سپس وارد شوید.';
+          tab('login'); document.getElementById('ownerLoginPhone').value=phone;
+        }
+      }catch(e){
+        console.error(e);
+        msg.textContent='ثبت‌نام انجام نشد. تنظیمات Phone Auth و شماره را در Supabase بررسی کنید.';
+      }finally{this.disabled=false;}
     };
-    document.getElementById('ownerLoginBtn').onclick=function(){
+    document.getElementById('ownerLoginBtn').onclick=async function(){
       var phone=cleanPhone(document.getElementById('ownerLoginPhone').value.trim());
       var pass=document.getElementById('ownerLoginPass').value;
-      var us=ownerUsers(), found=null;
-      for(var i=0;i<us.length;i++) if(us[i].phone===phone && us[i].password===pass){found=us[i];break;}
-      if(!found){document.getElementById('ownerAuthMsg').textContent='شماره موبایل یا رمز عبور اشتباه است.';return;}
-      setOwnerSession(found); el.classList.remove('show'); document.body.style.overflow='';
-      showOwnerWorkspace(); showToast('خوش آمدید '+found.name+' ✓','success');
+      var msg=document.getElementById('ownerAuthMsg');
+      if(!phone || pass.length<1){msg.textContent='شماره موبایل و رمز عبور را وارد کنید.';return;}
+      this.disabled=true;
+      try{
+        var res=await sb.auth.signInWithPassword({phone:phone,password:pass});
+        if(res.error) throw res.error;
+        var user=res.data.user, meta=user.user_metadata||{};
+        setOwnerSession({id:user.id,name:meta.name||meta.full_name||'',phone:user.phone||phone});
+        el.classList.remove('show'); document.body.style.overflow='';
+        showOwnerWorkspace(); showToast('خوش آمدید '+esc(meta.name||'')+' ✓','success');
+      }catch(e){
+        console.error(e); msg.textContent='شماره موبایل یا رمز عبور اشتباه است.';
+      }finally{this.disabled=false;}
     };
   }
+  function openOwnerAuth(){ ensureOwnerAuthModal(); var el=document.getElementById('ownerAuthModal'); el.classList.add('show'); document.body.style.overflow='hidden'; }
+
   function openOwnerAuth(){ ensureOwnerAuthModal(); var el=document.getElementById('ownerAuthModal'); el.classList.add('show'); document.body.style.overflow='hidden'; }
 
   function ownerPanelHeader(){
@@ -8371,8 +8483,11 @@ function getTimeAgo(ts){
     box.style.cssText='background:var(--primary-50);border:1px solid var(--primary-100);border-radius:14px;padding:12px;margin-bottom:14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap';
     box.innerHTML='<div style="flex:1;min-width:180px"><div style="font-weight:800;color:var(--primary-700)">👤 '+esc(u.name)+'</div><div style="font-size:11px;color:var(--text-3);margin-top:2px">'+toFa(u.phone)+'</div></div><button type="button" id="ownerLogoutV2" class="menu-btn" style="margin:0;width:auto;padding:8px 12px">خروج</button>';
     var tabs=document.getElementById('ownerSubTabs'); card.insertBefore(box,tabs);
-    document.getElementById('ownerLogoutV2').onclick=function(){ clearOwnerSession(); document.getElementById('ownerCard').classList.add('hidden'); showToast('از حساب مالک خارج شدید.','success'); };
+    document.getElementById('ownerLogoutV2').onclick=async function(){ try{ await sb.auth.signOut(); }catch(e){} clearOwnerSession(); document.getElementById('ownerCard').classList.add('hidden'); showToast('از حساب مالک خارج شدید.','success'); };
   }
+
+  // Restore/validate the authenticated owner from Supabase; localStorage is never trusted for authorization.
+  refreshOwnerAuth().then(function(u){ if(u){ try{ updateOwnerRequestsBadgeV2(); }catch(e){} } });
 
   function showOwnerWorkspace(){
     try{ updateOwnerRequestsBadgeV2(); }catch(e){}
