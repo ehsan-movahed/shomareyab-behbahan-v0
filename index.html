@@ -2665,19 +2665,21 @@ body, button, input, select, textarea{
   </div>
   
   <!-- ============ ADMIN LOGIN MODAL ============ -->
-  <div class="modal-overlay" id="adminLoginModal">
-    <div class="modal admin-login-modal">
-      <div class="modal-icon">
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
-      </div>
-      <h3>ورود مدیر</h3>
-      <p style="font-size:12.5px">رمز عبور را وارد کنید</p>
-      <input id="adminPasswordInput" type="password" placeholder="••••••••" autocomplete="off">
-      <button type="button" class="btn-login" id="adminLoginBtn">ورود</button>
-      <div class="login-error" id="adminLoginError">رمز اشتباه است</div>
-      <button type="button" class="btn-cancel" style="width:100%;margin-top:8px;border:0;border-radius:11px;padding:11px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;background:var(--muted);color:var(--text)" onclick="closeAdminLogin()">انصراف</button>
+  <!-- ============ ADMIN LOGIN MODAL ============ -->
+<div class="modal-overlay" id="adminLoginModal">
+  <div class="modal admin-login-modal">
+    <div class="modal-icon">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
     </div>
+    <h3>ورود مدیر</h3>
+    <p style="font-size:12.5px">ایمیل و رمز عبور خود را وارد کنید</p>
+    <input id="adminEmailInput" type="email" placeholder="admin@example.com" autocomplete="username" style="direction:ltr;text-align:left;letter-spacing:0;font-size:14px;margin-bottom:10px">
+    <input id="adminPasswordInput" type="password" placeholder="••••••••" autocomplete="current-password">
+    <button type="button" class="btn-login" id="adminLoginBtn">ورود</button>
+    <div class="login-error" id="adminLoginError">ایمیل یا رمز اشتباه است</div>
+    <button type="button" class="btn-cancel" style="width:100%;margin-top:8px;border:0;border-radius:11px;padding:11px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;background:var(--muted);color:var(--text)" onclick="closeAdminLogin()">انصراف</button>
   </div>
+</div>
   
   <!-- ============ EDIT REVIEW MODAL ============ -->
   <div class="modal-overlay" id="editReviewModal">
@@ -2726,7 +2728,7 @@ body, button, input, select, textarea{
 
     <div class="notice" style="font-size:11.5px;padding:9px 12px;margin-bottom:16px">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-      <div>این نسخه دمو است؛ اطلاعات فقط روی همین مرورگر ذخیره می‌شود و رمز محافظت واقعی ندارد.</div>
+      
     </div>
   
     <div class="admin-sub-tabs" id="adminSubTabs" style="margin-bottom:16px">
@@ -4784,7 +4786,7 @@ function migrateOldBusinesses(){
   /* ============ ADMIN PANEL ============ */
   /* Admin authentication is handled by Supabase Auth + public.profiles.role.
      Set this to the admin email created in Supabase Auth. The password is NEVER stored in this file. */
-  var ADMIN_EMAIL = "YOUR_ADMIN_EMAIL";
+  var ADMIN_EMAIL = "ehsar.m@gmail.com";
   var adminActiveTab = "pending";
   var ownerReplyReviewId = null;
   var adminAuthChecked = false;
@@ -4828,61 +4830,88 @@ function migrateOldBusinesses(){
   function closeAdminLogin(){
     document.getElementById("adminLoginModal").classList.remove("show");
   }
-  document.getElementById("adminLoginBtn").onclick = async function(){
-    var val = document.getElementById("adminPasswordInput").value;
-    var err = document.getElementById("adminLoginError");
-    if(ADMIN_EMAIL === "YOUR_ADMIN_EMAIL"){
-      err.textContent = "ابتدا ADMIN_EMAIL را در کد با ایمیل مدیر Supabase تنظیم کنید.";
-      err.classList.add("show");
-      return;
-    }
-    if(!val){ err.textContent="رمز عبور را وارد کنید."; err.classList.add("show"); return; }
-    this.disabled=true;
-    try{
-      var res=await sb.auth.signInWithPassword({email:ADMIN_EMAIL,password:val});
-      if(res.error) throw res.error;
-      var ok=await isAdmin();
-      if(!ok) throw new Error("not_admin");
-      closeAdminLogin();
-      openAdminPanel();
-      showToast("خوش آمدید مدیر ✓", "success");
-    }catch(e){
-      err.textContent = "اطلاعات ورود مدیر معتبر نیست یا این حساب نقش مدیر ندارد.";
-      err.classList.add("show");
-      document.getElementById("adminPasswordInput").value = "";
-      document.getElementById("adminPasswordInput").focus();
-    }finally{ this.disabled=false; }
-  };
-  document.getElementById("adminPasswordInput").addEventListener("keydown", function(e){
-    if(e.key === "Enter") document.getElementById("adminLoginBtn").click();
-  });
+/* ============ ADMIN LOGIN (اصلاح شده) ============ */
+document.getElementById("adminLoginBtn").onclick = async function(){
+  var email = document.getElementById("adminEmailInput").value.trim();
+  var val = document.getElementById("adminPasswordInput").value;
+  var err = document.getElementById("adminLoginError");
   
-  async function openAdminPanel(){
-    if(!(await isAdmin())){ openAdminLogin(); return; }
-    document.getElementById("adminCard").classList.remove("hidden");
-    document.getElementById("ownerCard").classList.add("hidden");
-    document.getElementById("registerCard").classList.add("hidden");
-
-    document.querySelectorAll(".admin-sub-tab").forEach(function(t){
-      t.classList.toggle("active", t.getAttribute("data-sub") === "businesses");
-    });
-
-    document.getElementById("adminReviewsList").style.display = "none";
-    document.getElementById("adminBusinessesList").style.display = "";
-
-    renderAdminBizManage();
-    document.getElementById("adminCard").scrollIntoView({behavior:"smooth",block:"start"});
+  if(!email){
+    err.textContent = "ایمیل را وارد کنید.";
+    err.classList.add("show");
+    return;
+  }
+  if(!val){
+    err.textContent = "رمز عبور را وارد کنید.";
+    err.classList.add("show");
+    return;
   }
   
-  document.getElementById("logoutAdminBtn").onclick = function(){
-    if(!confirm("از حساب مدیر خارج می‌شوید؟")) return;
-    try{ localStorage.removeItem("behbahan_admin"); }catch(e){}
-    document.getElementById("adminCard").classList.add("hidden");
-    showToast("از حساب مدیر خارج شدید.", "success");
-  };
-  document.getElementById("closeAdminBtn").onclick = function(){
-    document.getElementById("adminCard").classList.add("hidden");
-  };
+  this.disabled = true;
+  try{
+    var res = await sb.auth.signInWithPassword({ email: email, password: val });
+    if(res.error) throw res.error;
+    
+    var ok = await isAdmin();
+    if(!ok) throw new Error("not_admin");
+    
+    closeAdminLogin();
+    openAdminPanel();
+    showToast("خوش آمدید مدیر ✓", "success");
+  } catch(e){
+    console.error(e);
+    err.textContent = "ایمیل یا رمز عبور اشتباه است، یا این حساب نقش admin ندارد.";
+    err.classList.add("show");
+    document.getElementById("adminPasswordInput").value = "";
+    document.getElementById("adminPasswordInput").focus();
+  } finally {
+    this.disabled = false;
+  }
+};
+
+/* Enter key برای فیلد ایمیل و پسورد */
+document.getElementById("adminEmailInput").addEventListener("keydown", function(e){
+  if(e.key === "Enter") document.getElementById("adminPasswordInput").focus();
+});
+document.getElementById("adminPasswordInput").addEventListener("keydown", function(e){
+  if(e.key === "Enter") document.getElementById("adminLoginBtn").click();
+});
+
+/* ============ OPEN ADMIN PANEL ============ */
+async function openAdminPanel(){
+  if(!(await isAdmin())){ openAdminLogin(); return; }
+  
+  document.getElementById("adminCard").classList.remove("hidden");
+  document.getElementById("ownerCard").classList.add("hidden");
+  document.getElementById("registerCard").classList.add("hidden");
+
+  document.querySelectorAll(".admin-sub-tab").forEach(function(t){
+    t.classList.toggle("active", t.getAttribute("data-sub") === "businesses");
+  });
+
+  document.getElementById("adminReviewsList").style.display = "none";
+  document.getElementById("adminBusinessesList").style.display = "";
+
+  renderAdminBizManage();
+  document.getElementById("adminCard").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+/* ============ LOGOUT & CLOSE ============ */
+document.getElementById("logoutAdminBtn").onclick = async function(){
+  if(!confirm("از حساب مدیر خارج می‌شوید؟")) return;
+  try{
+    await sb.auth.signOut();
+  }catch(e){}
+  try{
+    localStorage.removeItem("behbahan_admin");
+  }catch(e){}
+  document.getElementById("adminCard").classList.add("hidden");
+  showToast("از حساب مدیر خارج شدید.", "success");
+};
+
+document.getElementById("closeAdminBtn").onclick = function(){
+  document.getElementById("adminCard").classList.add("hidden");
+};
   
   document.querySelectorAll(".admin-tab").forEach(function(tab){
     tab.onclick = function(){
