@@ -12,7 +12,7 @@
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" crossorigin="anonymous"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>شماره‌یاب بهبهان</title>
+<title>نومکس</title>
 <link rel="preconnect" href="https://cdn.jsdelivr.net">
 <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
     
@@ -2103,6 +2103,35 @@ body, button, input, select, textarea{
 }
 
 </style>
+<style id="nomax-auth-style">
+.acct-btn{left:70px!important}
+.acct-btn .acct-letter{font-weight:800;font-size:16px;line-height:1}
+.acct-btn.in{background:rgba(255,255,255,.32)}
+.acct-btn.in::after{content:"";position:absolute;bottom:6px;right:6px;width:9px;height:9px;border-radius:50%;background:#22c55e;border:2px solid #0f766e}
+.acct-menu{position:fixed;top:68px;left:12px;width:min(300px,calc(100vw - 24px));background:var(--surface);color:var(--text);border:1px solid var(--border);border-radius:16px;box-shadow:0 18px 50px rgba(15,23,42,.2);z-index:80;padding:8px;display:none;text-align:right}
+.acct-menu.open{display:block;animation:fadeIn .18s ease both}
+.acct-menu .am-head{padding:10px 12px 12px;border-bottom:1px solid var(--border);margin-bottom:6px}
+.acct-menu .am-name{font-weight:800;font-size:14px}
+.acct-menu .am-mail{font-size:11.5px;color:var(--text-3);direction:ltr;text-align:right;word-break:break-all}
+.acct-menu .am-role{display:inline-block;margin-top:6px;font-size:10.5px;font-weight:800;padding:2px 9px;border-radius:100px;background:rgba(220,38,38,.1);color:#b91c1c}
+.acct-menu button{width:100%;display:flex;align-items:center;gap:10px;border:0;background:transparent;color:var(--text);font:inherit;font-size:13px;font-weight:600;padding:10px 12px;border-radius:10px;cursor:pointer;text-align:right}
+.acct-menu button:hover{background:var(--muted)}
+.acct-menu button.danger{color:#b91c1c}
+.auth-google{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;background:#fff;color:#1f1f1f;border:1px solid #dadce0;border-radius:12px;padding:12px;font:inherit;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s}
+.auth-google:hover{background:#f8f9fa;box-shadow:0 2px 8px rgba(0,0,0,.1)}
+.auth-or{display:flex;align-items:center;gap:10px;color:var(--text-3);font-size:12px;margin:14px 0}
+.auth-or::before,.auth-or::after{content:"";flex:1;height:1px;background:var(--border)}
+.auth-tabs{display:flex;gap:6px;background:var(--muted);padding:4px;border-radius:12px;margin-bottom:14px}
+.auth-tabs button{flex:1;border:0;border-radius:9px;padding:9px;font:inherit;font-weight:700;background:transparent;color:var(--text-2);cursor:pointer}
+.auth-tabs button.active{background:var(--surface);color:var(--text);box-shadow:var(--shadow-sm)}
+.auth-why{font-size:12.5px;line-height:1.9;color:var(--primary-700);background:var(--primary-50);border:1px solid var(--primary-100);border-radius:12px;padding:10px 12px;margin-bottom:14px}
+.my-req-hist{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 12px;border:1px solid var(--border);border-radius:12px;margin-bottom:8px;font-size:13px;background:var(--surface)}
+.st-pill{font-size:10.5px;font-weight:800;padding:3px 9px;border-radius:100px;background:var(--muted);color:var(--text-2);white-space:nowrap}
+.st-pill.selected{background:#ecfdf5;color:#047857}
+.st-pill.open{background:var(--primary-50);color:var(--primary-700)}
+.offer-pick{width:100%;margin-top:8px;border:0;border-radius:10px;padding:10px;font:inherit;font-weight:800;font-size:13px;cursor:pointer;background:linear-gradient(135deg,var(--primary-500),var(--primary-600));color:#fff}
+.offer-chosen{border:2px solid #22c55e!important;background:rgba(34,197,94,.06)}
+</style>
 </head>
 <body>
 
@@ -2127,7 +2156,7 @@ body, button, input, select, textarea{
 <!-- ============ TERMS GATE ============ -->
 <div class="terms-gate hidden" id="termsGate" aria-modal="true" role="dialog" aria-labelledby="termsTitle">
   <div class="terms-card">
-    <h2 id="termsTitle">📜 قوانین استفاده از شماره‌یاب بهبهان</h2>
+    <h2 id="termsTitle">📜 قوانین استفاده از نومکس</h2>
     <div class="terms-lead">
       لطفاً قوانین زیر را مطالعه کنید.
       این سامانه یک <b>فهرست عمومی کسب‌وکارهای محلی</b> است و اطلاعات تماس برای ارتباط مشتریان با کسب‌وکارها نمایش داده می‌شود.
@@ -2135,7 +2164,7 @@ body, button, input, select, textarea{
     <div class="terms-scroll">
       <h3>۱. ماهیت سامانه</h3>
       <ul>
-        <li>شماره‌یاب بهبهان یک بستر اطلاع‌رسانی محلی برای معرفی کسب‌وکارها و خدمات شهر بهبهان است.</li>
+        <li>نومکس یک بستر اطلاع‌رسانی محلی برای معرفی کسب‌وکارها و خدمات شهر بهبهان است.</li>
         <li>اطلاعات ثبت‌شده (از جمله نام کسب‌وکار، حوزه فعالیت، آدرس و شماره تماس) در قالب فهرست عمومی در دسترس کاربران قرار می‌گیرد.</li>
       </ul>
       <h3>۲. رضایت نسبت به شماره تماس و جستجو</h3>
@@ -2200,13 +2229,14 @@ body, button, input, select, textarea{
       <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
     </svg>
   </button>
+  <button class="theme-toggle acct-btn" id="accountBtn" type="button" aria-label="حساب کاربری" title="ورود / ثبت‌نام"></button>
   <div class="logo-mark">
     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
       <circle cx="12" cy="10" r="3"/>
     </svg>
   </div>
-  <h1>شماره‌یاب بهبهان</h1>
+  <h1>نومکس</h1>
   <p class="tagline">کسب‌وکارها و خدمات شهر، یک‌جا</p>
   <div class="stats">
     <span><b id="statBusinesses">۰</b> کسب‌وکار</span>
@@ -2257,6 +2287,16 @@ body, button, input, select, textarea{
     </div>
 
     <div id="results"></div>
+  </div>
+
+  <!-- ============ MY REQUEST (درخواست من) ============ -->
+  <div id="myRequestCard" class="card hidden">
+    <h2 class="section-title">
+      <span class="icon">📨</span>
+      درخواست‌های من
+    </h2>
+    <div id="notifBoxCustomer"></div>
+    <div id="myRequestBox"></div>
   </div>
 
   <!-- ============ OWNER CTA ============ -->
@@ -2527,7 +2567,7 @@ body, button, input, select, textarea{
       <label class="field" id="f-register-terms" style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;padding:12px;border:1.5px solid var(--border);border-radius:12px;background:var(--muted);margin:12px 0">
         <input type="checkbox" id="registerTermsCheck" style="width:18px;height:18px;margin-top:3px;accent-color:var(--primary-500);flex-shrink:0">
         <span style="font-size:13px;line-height:1.9;font-weight:600;color:var(--text)">
-          <a href="#" id="registerTermsLink" style="color:var(--primary-700);text-decoration:underline;font-weight:800">قوانین شماره‌یاب</a>
+          <a href="#" id="registerTermsLink" style="color:var(--primary-700);text-decoration:underline;font-weight:800">قوانین نومکس</a>
           را خوانده و با آن موافقم.
           <span class="req">*</span>
         </span>
@@ -2566,6 +2606,7 @@ body, button, input, select, textarea{
         <div id="ownerNotifBannerText">اعلان جدیدی ندارید.</div>
         <button type="button" id="enableBrowserNotifBtn">🔔 فعال‌سازی اعلان مرورگر</button>
       </div>
+      <div id="notifBoxOwner"></div>
       <div id="myRequests"></div>
     </div>
   
@@ -2752,7 +2793,10 @@ body, button, input, select, textarea{
     <div class="admin-sub-tabs" id="adminSubTabs" style="margin-bottom:16px">
       <button type="button" class="admin-sub-tab active" data-sub="businesses">🏪 کسب‌وکارها</button>
       <button type="button" class="admin-sub-tab" data-sub="reviews">💬 نظرات</button>
+      <button type="button" class="admin-sub-tab" data-sub="requests">📨 درخواست‌ها</button>
     </div>
+
+    <div id="adminRequestsList" style="display:none"><div id="adminRequestsBox"></div></div>
 
     <div id="adminReviewsList" style="display:none">
       <div class="admin-tabs" id="adminTabs">
@@ -3002,57 +3046,48 @@ body, button, input, select, textarea{
     </div>
   </div>
 </div>
-<!-- ============ REQUEST MODAL (درخواست به کسب‌وکارها) ============ -->
+<!-- ============ REQUEST MODAL (درخواست کالا/خدمت — مدل اسنپ) ============ -->
 <div class="modal-overlay" id="requestModal">
   <div class="modal quick-modal" style="max-width:500px">
     <div class="modal-head">
-      <h3>📨 ارسال درخواست به کسب‌وکارهای بهبهان</h3>
+      <h3>📨 درخواست کالا یا خدمت</h3>
       <button type="button" class="close-x" onclick="closeRequestModal()">×</button>
     </div>
-
     <div class="notice" style="background:var(--primary-50);border-color:var(--primary-100);color:var(--primary-700);margin-bottom:14px">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
       <div>
         <strong>چطور کار می‌کنه؟</strong>
-        <div style="font-size:12px;margin-top:4px;line-height:1.7">
-          درخواست شما به کسب‌وکارهای مرتبط نمایش داده می‌شه. حداکثر <b>۳ کسب‌وکار</b> می‌تونن پاسخ بدن. اونایی که اول پاسخ بدن، شماره شما رو می‌بینن و از طریق <b>ایتا</b> با شما تماس می‌گیرن.
+        <div style="font-size:12px;margin-top:4px;line-height:1.8">
+          درخواستت به کسب‌وکارهای مرتبط نمایش داده می‌شه. اونایی که کالا رو دارن <b>قیمت، برند و توضیحات</b> رو برات ثبت می‌کنن و تو پیشنهادها رو توی بخش «درخواست من» می‌بینی. <b>شماره‌ی تو هیچ‌جا نمایش داده نمی‌شه.</b> هر نفر هم‌زمان فقط یک درخواست فعال داره.
         </div>
       </div>
     </div>
-
     <div class="qfield">
       <label>کالا یا خدمت مورد نیاز *</label>
-      <input id="reqService" type="text" placeholder="مثلاً: خرید لپ‌تاپ استوک، تعمیر کولر اسپلیت" maxlength="80">
+      <input id="reqService" type="text" maxlength="80" placeholder="مثلاً: لنت ترمز پراید، تعمیر کولر اسپلیت">
     </div>
-
+    <div class="qrow">
+      <div class="qfield">
+        <label>دسته *</label>
+        <select id="reqCategory"><option value="">انتخاب کنید</option></select>
+      </div>
+      <div class="qfield">
+        <label>زیر‌دسته</label>
+        <select id="reqSubcategory"><option value="">همه موارد دسته</option></select>
+      </div>
+    </div>
+    <div id="reqCatHint" class="hint" style="margin:-4px 0 10px"></div>
     <div class="qfield">
-      <label>محله / محدوده در بهبهان (اختیاری)</label>
-      <input id="reqArea" type="text" placeholder="مثلاً: خیابان زیبایی، ذوالفقاری، مرکز شهر" maxlength="60">
+      <label>محله / محدوده (اختیاری)</label>
+      <input id="reqArea" type="text" maxlength="60" placeholder="مثلاً: مرکز شهر">
     </div>
-
-    <div class="qfield">
-      <label>شماره همراه جهت دریافت پیشنهاد *</label>
-      <input id="reqPhone" type="tel" placeholder="0916xxxxxxx" inputmode="tel" maxlength="15">
-    </div>
-
     <div class="qfield">
       <label>توضیحات تکمیلی (اختیاری)</label>
-      <textarea id="reqDesc" placeholder="جزئیات بیشتر، مدل دقیق یا حدود قیمت..." style="min-height:70px;width:100%;padding:11px 13px;border:1.5px solid var(--border);border-radius:10px;font-size:13.5px;font-family:inherit;background:var(--surface);color:var(--text);outline:none;resize:vertical"></textarea>
+      <textarea id="reqDesc" maxlength="300" placeholder="مدل دقیق، حدود قیمت، ..." style="min-height:70px;width:100%;padding:11px 13px;border:1.5px solid var(--border);border-radius:10px;font-size:13.5px;font-family:inherit;background:var(--surface);color:var(--text);outline:none;resize:vertical"></textarea>
     </div>
-
-    <label class="qcheck" style="background:var(--primary-50);border-color:var(--primary-100);color:var(--primary-700);margin-bottom:0">
-      <input type="checkbox" id="reqConsent" checked style="accent-color:var(--primary-500)">
-      <span>موافقم حداکثر ۳ کسب‌وکار مرتبط با من تماس بگیرن</span>
-    </label>
-
-    <div class="notice" style="background:var(--accent-50);border-color:var(--accent-100);color:var(--accent-700);margin-top:12px;margin-bottom:0;font-size:11.5px">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-      <div>⚡ جهت حفظ حریم خصوصی، فقط شماره شما به ۳ کسب‌وکار اول نمایش داده می‌شه.</div>
-    </div>
-
     <div class="btns" style="margin-top:16px">
       <button type="button" class="btn-cancel" onclick="closeRequestModal()">انصراف</button>
-      <button type="button" class="btn-save" onclick="submitRequest()">📨 ثبت و ارسال</button>
+      <button type="button" class="btn-save" id="reqSubmitBtn" onclick="submitRequest()">📨 ثبت درخواست</button>
     </div>
   </div>
 </div>
@@ -3145,8 +3180,6 @@ body, button, input, select, textarea{
   ];
   
   var reviews = [];
-  /* ============ REQUESTS (درخواست‌های کاربران) ============ */
-var requests = [];
 var pendingBusinessLocation = null;
 
   var OWNER_NOTIF_KEY = "behbahan_owner_notifs_v1";
@@ -3174,7 +3207,7 @@ var pendingBusinessLocation = null;
     try{
       if(!("Notification" in window)) return;
       if(Notification.permission==="granted"){
-        new Notification(title||"شماره‌یاب بهبهان", { body: body||"", dir:"rtl" });
+        new Notification(title||"نومکس", { body: body||"", dir:"rtl" });
       }
     }catch(e){}
   }
@@ -3276,224 +3309,6 @@ var pendingBusinessLocation = null;
     for(var i=0;i<list.length;i++) if(String(list[i].ownerId)===String(ownerId) && !list[i].read){ list[i].read=true; ch=true; }
     if(ch) writeOwnerNotifs(list);
   }
-  function notifyOwnersForRequest(req, matchedBusinesses){
-    if(!req || !matchedBusinesses) return;
-    var targets = matchedBusinesses.slice(0,3);
-    req.targetBusinessIds = targets.map(function(b){ return b.id; });
-    var seen={};
-    for(var i=0;i<targets.length;i++){
-      var b=targets[i];
-      if(!b.ownerId || seen[b.ownerId]) continue;
-      seen[b.ownerId]=true;
-      pushOwnerNotification(b.ownerId, {
-        type:"request",
-        title:"📨 درخواست جدید برای «"+(b.name||"کسب‌وکار")+"»",
-        body:(req.service||"یک خدمت")+(req.area?" — "+req.area:""),
-        requestId:req.id,
-        businessId:b.id
-      });
-    }
-  }
-
-/* ============ REQUEST MODAL ============ */
-function openRequestModal(prefillService){
-  document.getElementById("requestModal").classList.add("show");
-  document.body.style.overflow = "hidden";
-  
-  // پاک کردن فرم
-  document.getElementById("reqService").value = prefillService || "";
-  document.getElementById("reqArea").value = "";
-  document.getElementById("reqPhone").value = "";
-  document.getElementById("reqDesc").value = "";
-  document.getElementById("reqConsent").checked = true;
-  
-  setTimeout(function(){
-    if(!prefillService) document.getElementById("reqService").focus();
-    else document.getElementById("reqArea").focus();
-  }, 200);
-}
-
-function closeRequestModal(){
-  document.getElementById("requestModal").classList.remove("show");
-  document.body.style.overflow = "";
-}
-
-function submitRequest(){
-  var service = document.getElementById("reqService").value.trim();
-  var area = document.getElementById("reqArea").value.trim();
-  var phone = cleanPhone(document.getElementById("reqPhone").value.trim());
-  var desc = document.getElementById("reqDesc").value.trim();
-  var consent = document.getElementById("reqConsent").checked;
-  
-  if(!service){ showToast("کالا یا خدمت مورد نیاز را وارد کنید.", "error"); return; }
-  if(!phone || phone.length < 8){ showToast("شماره همراه معتبر وارد کنید.", "error"); return; }
-  if(!consent){ showToast("باید موافقت کنید تا کسب‌وکارها بتونن تماس بگیرن.", "error"); return; }
-  
-  var newRequest = {
-    id: "req_" + Date.now() + "_" + Math.floor(Math.random()*1000),
-    service: service,
-    area: area,
-    phone: phone,
-    desc: desc,
-    status: "pending",
-    responders: [],
-    createdAt: Date.now()
-  };
-  
-  requests.push(newRequest);
-  var matched = [];
-  try{ matched = (typeof findMatchingBusinesses==="function") ? findMatchingBusinesses(newRequest) : []; }catch(e){ matched=[]; }
-  if(matched && matched.length){
-    notifyOwnersForRequest(newRequest, matched);
-    newRequest.matchedCount = Math.min(3, matched.length);
-  } else {
-    newRequest.matchedCount = 0;
-  }
-  saveToStorage();
-  closeRequestModal();
-  if(newRequest.matchedCount > 0){
-    showToast("✓ درخواست ثبت شد و برای " + toFa(newRequest.matchedCount) + " کسب‌وکار مرتبط ارسال شد.", "success");
-  } else {
-    showToast("✓ درخواست ثبت شد. فعلاً کسب‌وکار کاملاً مرتبطی پیدا نشد.", "info");
-  }
-  document.getElementById("resultsCard").classList.add("hidden");
-  if(typeof updateOwnerRequestsBadgeV2==="function") updateOwnerRequestsBadgeV2();
-}
-
-/* ============ REQUEST MATCHING (یافتن کسب‌وکارهای مرتبط) ============ */
-function findMatchingBusinesses(req){
-  // امتیاز هر کسب‌وکار بر اساس تطابق با خدمت درخواستی
-  var q = normalize(req.service);
-  var matches = [];
-  
-  for(var i=0;i<businesses.length;i++){
-    var b = businesses[i];
-    if(b.status !== "approved") continue;
-    var score = 0;
-    
-    // امتیاز بر اساس نام
-    if(normalize(b.name).indexOf(q) !== -1) score += 50;
-    
-    // امتیاز بر اساس برچسب‌ها
-    var tags = getBusinessTags(b);
-    for(var j=0;j<tags.length;j++){
-      var t = normalize(tags[j]);
-      if(t === q) score += 100;
-      else if(t.indexOf(q) !== -1) score += 60;
-      else if(q.indexOf(t) !== -1) score += 40;
-    }
-    
-    // امتیاز بر اساس زیر‌دسته
-    var sub = getSubcategoryById(
-      getBusinessCategoryId(b), 
-      getBusinessSubcategoryId(b)
-    );
-    if(sub){
-      if(normalize(sub.name).indexOf(q) !== -1) score += 30;
-      for(var k=0;k<sub.standardTags.length;k++){
-        if(normalize(sub.standardTags[k]).indexOf(q) !== -1) score += 20;
-      }
-    }
-    
-    // امتیاز بر اساس توضیحات و معرفی کوتاه
-    if(b.description && normalize(b.description).indexOf(q) !== -1) score += 15;
-    if(b.about && normalize(b.about).indexOf(q) !== -1) score += 25;
-    
-    if(score > 0){
-      matches.push({ business: b, score: score });
-    }
-  }
-  
-  // مرتب‌سازی بر اساس امتیاز
-  matches.sort(function(a,b){ return b.score - a.score; });
-  
-  return matches.map(function(m){ return m.business; });
-}
-
-/* ============ RESPOND TO REQUEST (پاسخ کسب‌وکار) ============ */
-function respondToRequest(requestId, businessId){
-  var req = null;
-  for(var i=0;i<requests.length;i++){
-    if(requests[i].id === requestId){ req = requests[i]; break; }
-  }
-  if(!req) return;
-  
-  // چک اگه قبلاً پاسخ داده
-  for(var j=0;j<req.responders.length;j++){
-    if(req.responders[j].businessId === businessId){
-      showToast("شما قبلاً به این درخواست پاسخ داده‌اید.", "error");
-      return;
-    }
-  }
-  
-  // چک محدودیت ۳
-  if(req.responders.length >= 3){
-    showToast("این درخواست بسته شده — ۳ کسب‌وکار پاسخ داده‌اند.", "error");
-    return;
-  }
-  
-  req.responders.push({
-    businessId: businessId,
-    respondedAt: Date.now()
-  });
-  
-  if(req.responders.length >= 3){
-    req.status = "answered";
-  }
-  
-  saveToStorage();
-  renderMyRequests();
-  showToast("✓ پاسخ شما ثبت شد. اطلاعات تماس کاربر نمایش داده شد.", "success");
-}
-
-function ignoreRequest(requestId, businessId){
-  if(!confirm("این درخواست رو رد می‌کنی؟")) return;
-  
-  var req = null;
-  for(var i=0;i<requests.length;i++){
-    if(requests[i].id === requestId){ req = requests[i]; break; }
-  }
-  if(!req) return;
-  
-  // ذخیره در لیست رد شده‌ها (فقط برای همین کسب‌وکار)
-  if(!req.ignoredBy) req.ignoredBy = [];
-  req.ignoredBy.push(businessId);
-  
-  saveToStorage();
-  renderMyRequests();
-  showToast("درخواست رد شد.", "success");
-}
-
-/* ============ IITA LINK (ارتباط از طریق ایتا) ============ */
-function openIitaChat(phone, requestId){
-  // ایتا لینک مستقیم نداره، ولی می‌تونیم به پروفایل یا چت هدایت کنیم
-  // فعلاً کپی شماره + باز کردن ایتا
-  
-  var req = null;
-  for(var i=0;i<requests.length;i++){
-    if(requests[i].id === requestId){ req = requests[i]; break; }
-  }
-  
-  var message = "سلام، در پاسخ به درخواست شما در شماره‌یاب بهبهان:\n";
-  if(req){
-    message += "📌 " + req.service + "\n";
-    if(req.area) message += "📍 " + req.area + "\n";
-  }
-  
-  // کپی شماره
-  if(navigator.clipboard && navigator.clipboard.writeText){
-    navigator.clipboard.writeText(phone).then(function(){
-      showToast("شماره کپی شد. در ایتا پیست کن و پیام بده.", "success");
-    });
-  } else {
-    fallbackCopy(phone, null);
-  }
-  
-  // باز کردن ایتا (deep link)
-  setTimeout(function(){
-    window.location.href = "iita://";
-  }, 800);
-}
 /* ============ CATEGORY KEYWORDS (دیکشنری تشخیص خودکار) ============ */
 var categoryKeywords = {
   "car": [
@@ -4855,12 +4670,7 @@ async function isAdmin(force){
   }
   
   function openAdminLogin(){
-    document.getElementById("adminLoginModal").classList.add("show");
-    var em = document.getElementById("adminEmailInput");
-    if(em) em.value = "";
-    document.getElementById("adminPasswordInput").value = "";
-    document.getElementById("adminLoginError").classList.remove("show");
-    setTimeout(function(){ if(em) em.focus(); else document.getElementById("adminPasswordInput").focus(); }, 100);
+    if(window.nomaxAuth) window.nomaxAuth.open({ pending:{type:"admin"}, admin:true });
   }
   function closeAdminLogin(){
     document.getElementById("adminLoginModal").classList.remove("show");
@@ -5657,7 +5467,7 @@ function scoreBusiness(b, q){
         '</div>' +
         '<div style="font-size:12.5px;color:var(--text-2);line-height:1.8;margin-bottom:14px">' +
           'درخواستت به کسب‌وکارهای مرتبط در بهبهان نمایش داده می‌شه. ' +
-          '<b>حداکثر ۳ کسب‌وکار</b> می‌تونن بهت پیشنهاد بدن.' +
+          'کسب‌وکارها <b>قیمت و برند</b> را برایت ثبت می‌کنند؛ شماره‌ی تو نمایش داده نمی‌شود.' +
         '</div>' +
         '<button class="cta" id="emptyRequestCTA" style="background:linear-gradient(135deg,var(--primary-500),var(--primary-600));font-size:13.5px;padding:11px 20px">' +
           '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>' +
@@ -5724,7 +5534,7 @@ function scoreBusiness(b, q){
   '</a>';
 } else {
   actionsHtml +=
-  '<a class="action-btn sms-btn" href="sms:' + cleanPhone(b.phone) + '?body=' + encodeURIComponent('سلام، از شماره‌یاب بهبهان تماس می‌گیرم') + '" title="پیامک">' +
+  '<a class="action-btn sms-btn" href="sms:' + cleanPhone(b.phone) + '?body=' + encodeURIComponent('سلام، از نومکس تماس می‌گیرم') + '" title="پیامک">' +
     '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>' +
   '</a>';
 }
@@ -7068,11 +6878,7 @@ function loadFromStorage(){
       var pr = JSON.parse(rawR);
       if(Array.isArray(pr)) reviews = pr;
     }
-    var rawQ = localStorage.getItem("behbahan_requests_v1");
-    if(rawQ){
-      var pq = JSON.parse(rawQ);
-      if(Array.isArray(pq)) requests = pq;
-    }
+    try{ localStorage.removeItem("behbahan_requests_v1"); }catch(_e){}
   }catch(e){ console.error("loadFromStorage local error", e); }
   // try cloud in background; keep local seed/cache if cloud empty/fails
   if(typeof loadFromSupabase === "function"){
@@ -7084,7 +6890,6 @@ function saveToStorage(){
   try{
     localStorage.setItem("behbahan_directory_v4", JSON.stringify(businesses));
     localStorage.setItem("behbahan_reviews_v1", JSON.stringify(reviews));
-    localStorage.setItem("behbahan_requests_v1", JSON.stringify(requests));
   }catch(e){}
   
 }
@@ -7135,7 +6940,6 @@ async function syncToSupabase(){
 
   await upsertRows("businesses", businesses, "approved");
   await upsertRows("reviews", reviews, "pending");
-  await upsertRows("requests", requests, "pending");
 }
 
 function rowToBusiness(row){
@@ -7193,10 +6997,7 @@ async function loadFromSupabase(){
     await loadBusinessesFromServer();
 
     var resR = (await isAdmin()) ? await sb.from("reviews").select("id,status,payload") : await sb.rpc("get_reviews", { p_token: window.getReviewToken(), p_uid: (function(){ try{ return localStorage.getItem("behbahan_uid") || ""; }catch(e){ return ""; } })() });
-    var resReq = (await isAdmin())
-      ? await sb.from("requests").select("id,status,payload")
-      : { data: [], error: null };
-    if(resR.error || resReq.error) throw (resR.error || resReq.error);
+    if(resR.error) throw resR.error;
 
     if(Array.isArray(resR.data)){
       reviews = resR.data.map(function(row){
@@ -7206,17 +7007,8 @@ async function loadFromSupabase(){
         return r;
       });
     }
-    if(resReq.data && resReq.data.length){
-      requests = resReq.data.map(function(row){
-        var q = row.payload || {};
-        if(!q.status) q.status = row.status || "pending";
-        return q;
-      });
-    }
     syncedSnapshot.reviews = {};
-    syncedSnapshot.requests = {};
     reviews.forEach(function(r){ syncedSnapshot.reviews[String(r.id)] = JSON.stringify(r); });
-    requests.forEach(function(q){ syncedSnapshot.requests[String(q.id)] = JSON.stringify(q); });
 
     try{ await window.refreshReviewExtras(); }catch(e){ console.warn("review extras", e); }
     supabaseLoaded = true;
@@ -7227,6 +7019,7 @@ async function loadFromSupabase(){
   buildCategories();
   initCategoryMenu();
   updateStats();
+  if(window.nomaxRefresh) window.nomaxRefresh();
 }
 
 /* duplicate loadFromSupabase removed */
@@ -7237,7 +7030,7 @@ async function __loadFromSupabase_duplicate_disabled(){ return; }
   document.getElementById("ownerCard").classList.remove("hidden");
   document.getElementById("registerCard").classList.add("hidden");
   renderMyBusinesses();
-  updateOwnerRequestsBadge();
+  if(window.loadOwnerRequests) window.loadOwnerRequests(true);
   document.getElementById("ownerCard").scrollIntoView({behavior:"smooth",block:"start"});
 };
 
@@ -7250,117 +7043,9 @@ document.querySelectorAll(".admin-sub-tab[data-owner-sub]").forEach(function(tab
     });
     document.getElementById("myBusinessesBox").style.display = target === "businesses" ? "block" : "none";
     document.getElementById("myRequestsBox").style.display = target === "requests" ? "block" : "none";
-    if(target === "requests") renderMyRequests();
+    if(target === "requests" && window.loadOwnerRequests) window.loadOwnerRequests();
   };
 });
-
-function updateOwnerRequestsBadge(){
-  // شمارش درخواست‌هایی که کسب‌وکارهای من می‌تونن بهشون پاسخ بدن
-  var count = 0;
-  for(var i=0;i<requests.length;i++){
-    var req = requests[i];
-    if(req.status !== "pending") continue;
-    if(req.responders.length >= 3) continue;
-    
-    var matches = findMatchingBusinesses(req);
-    for(var j=0;j<matches.length;j++){
-      var bId = matches[j].id;
-      // چک اگه کسب‌وکار منه و قبلاً پاسخ نداده
-      var alreadyResponded = false;
-      for(var k=0;k<req.responders.length;k++){
-        if(req.responders[k].businessId === bId){ alreadyResponded = true; break; }
-      }
-      if(req.ignoredBy && req.ignoredBy.indexOf(bId) !== -1) continue;
-      
-      if(!alreadyResponded){ count++; break; }
-    }
-  }
-  
-  var badge = document.getElementById("ownerRequestsBadge");
-  if(badge){
-    if(count > 0){
-      badge.textContent = toFa(count);
-      badge.style.display = "inline-block";
-    } else {
-      badge.style.display = "none";
-    }
-  }
-}
-
-function renderMyRequests(){
-  var box = document.getElementById("myRequests");
-  if(!box) return;
-  
-  // جمع‌آوری همه درخواست‌هایی که برای کسب‌وکارهای من هستن
-  var visibleRequests = [];
-  
-  for(var i=0;i<requests.length;i++){
-    var req = requests[i];
-    if(req.status !== "pending" && req.responders.length < 3) continue;
-    if(req.responders.length >= 3) continue;
-    
-    var matches = findMatchingBusinesses(req);
-    
-    // فیلتر کن بر اساس کسب‌وکارهای من
-    var myMatches = matches.filter(function(b){
-      // چک اگه در لیست ignored هست
-      if(req.ignoredBy && req.ignoredBy.indexOf(b.id) !== -1) return false;
-      // چک اگه قبلاً پاسخ داده
-      for(var k=0;k<req.responders.length;k++){
-        if(req.responders[k].businessId === b.id) return false;
-      }
-      return true;
-    });
-    
-    if(myMatches.length > 0){
-      visibleRequests.push({ req: req, matches: myMatches });
-    }
-  }
-  
-  if(visibleRequests.length === 0){
-    box.innerHTML = 
-      '<div class="empty">' +
-        '<div class="icon-big"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg></div>' +
-        '<div class="title">درخواستی نیست</div>' +
-        '<div class="desc">وقتی کاربری درخواستی ثبت کنه که به کسب‌وکار شما مرتبطه، اینجا نمایش داده می‌شه.</div>' +
-      '</div>';
-    return;
-  }
-  
-  visibleRequests.sort(function(a,b){ return b.req.createdAt - a.req.createdAt; });
-  
-  var html = "";
-  for(var m=0;m<visibleRequests.length;m++){
-    var item = visibleRequests[m];
-    var req = item.req;
-    var matches = item.matches;
-    
-    var timeAgo = getTimeAgo(req.createdAt);
-    
-    html += '<div class="biz-manage-row" style="flex-direction:column;align-items:stretch">' +
-      '<div style="display:flex;align-items:flex-start;gap:10px;width:100%">' +
-        '<div style="width:42px;height:42px;border-radius:11px;background:linear-gradient(135deg,var(--primary-500),var(--primary-600));display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;flex-shrink:0">📨</div>' +
-        '<div style="flex:1;min-width:0">' +
-          '<div style="font-size:14.5px;font-weight:700;color:var(--text);margin-bottom:4px">' + esc(req.service) + '</div>' +
-          (req.area ? '<div style="font-size:12px;color:var(--text-2);margin-bottom:3px">📍 ' + esc(req.area) + '</div>' : '') +
-          (req.desc ? '<div style="font-size:12.5px;color:var(--text-2);margin-bottom:3px">📝 ' + esc(req.desc) + '</div>' : '') +
-          '<div style="font-size:11px;color:var(--text-3)">⏱ ' + timeAgo + '</div>' +
-        '</div>' +
-      '</div>' +
-      
-      '<div style="background:var(--primary-50);border-radius:10px;padding:10px;margin-top:10px;font-size:12px;color:var(--text-2);display:flex;align-items:center;gap:6px">' +
-        '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0122 16.92z"/></svg>' +
-        'اگه پاسخ بدی، شماره کاربر نمایش داده می‌شه' +
-      '</div>' +
-      
-      '<div style="display:flex;gap:6px;margin-top:10px">' +
-        '<button onclick="respondToRequest(\'' + String(req.id).replace(/[^\w-]/g,'') + '\', ' + matches[0].id + ')" style="flex:1;border:0;border-radius:9px;padding:10px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit;background:linear-gradient(135deg,var(--primary-500),var(--primary-600));color:#fff">✓ می‌تونم کمک کنم</button>' +
-        '<button onclick="ignoreRequest(\'' + String(req.id).replace(/[^\w-]/g,'') + '\', ' + matches[0].id + ')" style="flex:1;border:0;border-radius:9px;padding:10px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit;background:var(--muted);color:var(--text-2)">✗ رد</button>' +
-      '</div>' +
-    '</div>';
-  }
-  box.innerHTML = html;
-}
 
 function getTimeAgo(ts){
   var diff = Date.now() - ts;
@@ -7502,7 +7187,7 @@ function getTimeAgo(ts){
     var b = getBusinessById(id);
     if(!b) return;
   
-    var text = "📍 " + b.name + "\n🏷️ " + b.type + "\n📞 " + b.phone + "\n🗺️ " + b.address + "\n\n🔎 پیدا شده در شماره‌یاب بهبهان";
+    var text = "📍 " + b.name + "\n🏷️ " + b.type + "\n📞 " + b.phone + "\n🗺️ " + b.address + "\n\n🔎 پیدا شده در نومکس";
   
     if(navigator.share){
       navigator.share({ title: b.name, text: text }).catch(function(err){});
@@ -7609,7 +7294,7 @@ function getTimeAgo(ts){
     var b = getBusinessById(businessId);
     if(!b) return;
     currentQRBusinessId = businessId;
-    var qrText = "🏪 " + b.name + "\n🏷️ " + b.type + "\n📞 " + b.phone + "\n📍 " + b.address + "\n━━━━━━━━━━━━━\n🔎 شماره‌یاب بهبهان";
+    var qrText = "🏪 " + b.name + "\n🏷️ " + b.type + "\n📞 " + b.phone + "\n📍 " + b.address + "\n━━━━━━━━━━━━━\n🔎 نومکس";
     var encoded = encodeURIComponent(qrText);
     var qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=400x400&margin=10&data=" + encoded;
     document.getElementById("qrImage").src = qrUrl;
@@ -7625,7 +7310,7 @@ function getTimeAgo(ts){
     if(!currentQRBusinessId) return;
     var b = getBusinessById(currentQRBusinessId);
     if(!b) return;
-    var qrText = "🏪 " + b.name + "\n🏷️ " + b.type + "\n📞 " + b.phone + "\n📍 " + b.address + "\n━━━━━━━━━━━━━\n🔎 شماره‌یاب بهبهان";
+    var qrText = "🏪 " + b.name + "\n🏷️ " + b.type + "\n📞 " + b.phone + "\n📍 " + b.address + "\n━━━━━━━━━━━━━\n🔎 نومکس";
     var encoded = encodeURIComponent(qrText);
     var bigUrl = "https://api.qrserver.com/v1/create-qr-code/?size=800x800&margin=20&data=" + encoded;
     window.open(bigUrl, "_blank", "noopener,noreferrer");
@@ -7659,7 +7344,7 @@ function getTimeAgo(ts){
     var err = errId ? document.getElementById(errId) : null;
     if(!c || !c.checked){
       if(err) err.style.display = "block";
-      showToast("برای ادامه، پذیرش قوانین شماره‌یاب الزامی است.", "error");
+      showToast("برای ادامه، پذیرش قوانین نومکس الزامی است.", "error");
       return false;
     }
     if(err) err.style.display = "none";
@@ -8530,9 +8215,9 @@ function wrapAdmin(fnName){
             '<div class="rc-head">'+
               '<div class="rc-icon">📨</div>'+
               '<div><div class="rc-title">می‌خواهید درخواست شما برای فروشگاه‌های مرتبط بهبهان ارسال کنم؟</div>'+
-              '<div class="rc-desc">کسب‌وکارهای مرتبط درخواست را می‌بینند. با اجازه شما حداکثر <b>۳ کسب‌وکار</b> می‌توانند پاسخ بدهند و برای هماهنگی با شما پیام/تماس بگیرند.</div></div>'+
+              '<div class="rc-desc">کسب‌وکارهای مرتبط درخواست را می‌بینند. و قیمت، برند و توضیحاتشان را برایت ثبت می‌کنند. <b>شماره‌ی تو نمایش داده نمی‌شود.</b></div></div>'+
             '</div>'+
-            (query ? '<div class="request-meta"><span>🔎 نیاز: '+safeQ+'</span><span>📍 بهبهان</span><span>👥 حداکثر ۳ پاسخ</span></div>' : '')+
+            (query ? '<div class="request-meta"><span>🔎 نیاز: '+safeQ+'</span><span>📍 بهبهان</span><span>🔒 شماره‌ات نمایش داده نمی‌شود</span></div>' : '')+
             '<div class="rc-actions">'+
               '<button class="rc-yes" id="emptyRequestCTA">✓ بله، ارسال کن</button>'+
               '<button class="rc-no" id="emptyNoRequestCTA">فعلاً نه</button>'+
@@ -8576,7 +8261,7 @@ function wrapAdmin(fnName){
           '</a>';
       } else {
         actionsHtml +=
-          '<a class="action-btn sms-btn" href="sms:' + cleanPhone(b.phone) + '?body=' + encodeURIComponent('سلام، از شماره‌یاب بهبهان تماس می‌گیرم') + '" title="پیامک">' +
+          '<a class="action-btn sms-btn" href="sms:' + cleanPhone(b.phone) + '?body=' + encodeURIComponent('سلام، از نومکس تماس می‌گیرم') + '" title="پیامک">' +
             '<svg viewBox="0 0 24 24" fill="currentColor" style="width:22px;height:22px;display:block;flex-shrink:0"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>' +
           '</a>';
       }
@@ -8630,205 +8315,6 @@ function wrapAdmin(fnName){
     card.classList.remove("hidden");
   };
 
-  /* Stronger matching: category + subcategory + tags + free text + custom tags + city. */
-  window.findMatchingBusinesses=function(req){
-    req=ensureRequestFields(req);
-    var q=normalize(req.service||"");
-    var words=q.split(/\s+/).filter(function(x){return x.length>=2;});
-    var matches=[];
-    for(var i=0;i<businesses.length;i++){
-      var b=businesses[i], hay=normalize([
-        b.name,b.type,b.description,b.otherDescription,
-        (b.tags||[]).join(" "), (b.standardTags||[]).join(" "), (b.pendingTags||[]).join(" ")
-      ].join(" "));
-      var score=0;
-      if(q && hay.indexOf(q)!==-1) score+=45;
-      for(var w=0;w<words.length;w++){
-        if(hay.indexOf(words[w])!==-1) score+=12;
-      }
-      var tags=getBusinessTags(b)||[];
-      for(var j=0;j<tags.length;j++){
-        var t=normalize(tags[j]);
-        if(t===q) score+=80;
-        else if(q && (t.indexOf(q)!==-1 || q.indexOf(t)!==-1)) score+=35;
-      }
-      var catId=getBusinessCategoryId(b), subId=getBusinessSubcategoryId(b);
-      var sub=getSubcategoryById(catId,subId);
-      if(sub){
-        var st=normalize(sub.name||"");
-        if(q && (st===q || st.indexOf(q)!==-1 || q.indexOf(st)!==-1)) score+=35;
-        (sub.standardTags||[]).forEach(function(x){
-          var z=normalize(x);
-          if(q && (z.indexOf(q)!==-1 || q.indexOf(z)!==-1)) score+=10;
-        });
-      }
-      if(req.area && normalize(b.address||"").indexOf(normalize(req.area))!==-1) score+=25;
-      if(score>=12) matches.push({business:b,score:score});
-    }
-    matches.sort(function(a,b){return b.score-a.score;});
-    return matches.map(function(x){return x.business;});
-  };
-
-  /* Owner context: local demo identity is selected from owned businesses. */
-  function ensureOwnerContext(){
-  return;
-}
-
-  window.renderMyBusinesses=function(){
-    var box=document.getElementById("myBusinesses");
-    if(!box) return;
-    var list=businesses;
-    if(currentOwnerBusinessId) list=businesses.filter(function(b){return String(b.id)===String(currentOwnerBusinessId);});
-    if(!list.length){
-      box.innerHTML='<div class="empty"><div class="title">هنوز کسب‌وکاری انتخاب نشده</div><div class="desc">بالا یک کسب‌وکار را برای مدیریت انتخاب کن.</div></div>'; return;
-    }
-    var html="";
-    for(var i=0;i<list.length;i++){
-      var b=list[i];
-      html+='<div class="owner-business"><div class="owner-head">'+avatarHTML(b)+
-        '<div class="owner-head-text"><h3>'+esc2(b.name)+'</h3><div class="meta">'+esc2(b.type||"")+'</div></div></div>'+
-        '<div class="owner-info"><div class="row"><span>📍</span><span>'+esc2(b.address||"")+'</span></div>'+
-        '<div class="row"><span>☎</span><span>'+esc2(b.phone||"")+'</span></div>'+
-        '<div class="row"><span>🏷</span><span>'+(b.tags||[]).slice(0,8).map(esc2).join("، ")+'</span></div></div>'+
-        '<div class="owner-actions"><button class="edit-btn" onclick="editBusiness('+b.id+')">✏ ویرایش</button>'+
-        '<button class="share-btn" onclick="shareBusiness('+b.id+',this)">↗ اشتراک</button></div></div>';
-    }
-    box.innerHTML=html;
-  };
-
-  window.renderMyRequests=function(){
-    var box=document.getElementById("myRequests");
-    if(!box) return;
-    if(!currentOwnerBusinessId){
-      box.innerHTML='<div class="empty"><div class="icon-big">👤</div><div class="title">اول کسب‌وکار خودت را انتخاب کن</div><div class="desc">در حالت لوکال، انتخاب بالا نقش ورود مالک را شبیه‌سازی می‌کند.</div></div>';
-      return;
-    }
-    var myBusiness=getBusiness2(currentOwnerBusinessId);
-    if(!myBusiness) return;
-    var visible=[];
-    for(var i=0;i<requests.length;i++){
-      var req=ensureRequestFields(requests[i]);
-      if(req.status==="cancelled") continue;
-      var matches=findMatchingBusinesses(req);
-      var isMatch=false;
-      for(var j=0;j<matches.length;j++) if(matches[j].id===myBusiness.id) {isMatch=true;break;}
-      if(!isMatch) continue;
-      var responded=req.responders.some(function(r){return String(r.businessId)===String(myBusiness.id);});
-      var ignored=req.ignoredBy.indexOf(myBusiness.id)!==-1;
-      if(!responded && !ignored && req.responders.length<3) visible.push(req);
-    }
-    if(!visible.length){
-      box.innerHTML='<div class="empty"><div class="icon-big">📨</div><div class="title">درخواست مرتبطی نیست</div><div class="desc">هر وقت مشتری درخواستی متناسب با خدمات شما ثبت کند، اینجا نمایش داده می‌شود.</div></div>';
-      return;
-    }
-    visible.sort(function(a,b){return b.createdAt-a.createdAt;});
-    var html="";
-    visible.forEach(function(req){
-      html+='<div class="biz-manage-row" style="flex-direction:column;align-items:stretch">'+
-        '<div style="display:flex;align-items:flex-start;gap:10px"><div style="width:42px;height:42px;border-radius:11px;background:linear-gradient(135deg,var(--primary-500),var(--primary-600));display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;flex-shrink:0">📨</div>'+
-        '<div style="flex:1"><div style="font-size:14.5px;font-weight:800">'+esc2(req.service)+'</div>'+
-        (req.area?'<div style="font-size:12px;color:var(--text-2)">📍 '+esc2(req.area)+'</div>':'')+
-        (req.desc?'<div style="font-size:12.5px;color:var(--text-2);margin-top:3px">📝 '+esc2(req.desc)+'</div>':'')+
-        '<div style="font-size:11px;color:var(--text-3);margin-top:4px">⏱ '+getTimeAgo(req.createdAt)+'</div></div></div>'+
-        '<div class="request-meta"><span>👥 '+toFa(3-req.responders.length)+' ظرفیت پاسخ باقی مانده</span><span>🔒 شماره فقط بعد از پاسخ</span></div>'+
-        '<div class="req-response-box" id="respBox_'+String(req.id).replace(/[^\w-]/g,'')+'" style="display:none">'+
-          '<textarea id="respText_'+String(req.id).replace(/[^\w-]/g,'')+'" placeholder="مثلاً: سلام، این خدمت را انجام می‌دهم. برای هماهنگی پیام بدهید..."></textarea>'+
-          '<div class="req-response-actions"><button class="send" onclick="respondToRequest(\''+String(req.id).replace(/[^\w-]/g,'')+'\','+myBusiness.id+')">📨 ارسال پاسخ</button><button class="cancel" onclick="document.getElementById(\'respBox_'+String(req.id).replace(/[^\w-]/g,'')+'\').style.display=\'none\'">انصراف</button></div>'+
-        '</div>'+
-        '<div style="display:flex;gap:6px;margin-top:10px"><button onclick="document.getElementById(\'respBox_'+String(req.id).replace(/[^\w-]/g,'')+'\').style.display=\'block\'" style="flex:1;border:0;border-radius:9px;padding:10px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;background:linear-gradient(135deg,var(--primary-500),var(--primary-600));color:#fff">✓ می‌توانم کمک کنم</button>'+
-        '<button onclick="ignoreRequest(\''+String(req.id).replace(/[^\w-]/g,'')+'\','+myBusiness.id+')" style="flex:1;border:0;border-radius:9px;padding:10px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit;background:var(--muted);color:var(--text-2)">✗ رد</button></div>'+
-      '</div>';
-    });
-    box.innerHTML=html;
-  };
-
-  window.respondToRequest=function(requestId,businessId){
-    var req=requests.find(function(x){return x.id===requestId;});
-    var b=getBusiness2(businessId);
-    if(!req||!b) return;
-    ensureRequestFields(req);
-    if(!req.consent){showToast("کاربر اجازه تماس نداده است.","error");return;}
-    if(req.responders.length>=3){showToast("این درخواست بسته شده؛ ۳ پاسخ ثبت شده است.","error");return;}
-    if(req.responders.some(function(r){return String(r.businessId)===String(businessId);})){showToast("شما قبلاً پاسخ داده‌اید.","error");return;}
-    var textEl=document.getElementById("respText_"+requestId);
-    var message=textEl?textEl.value.trim():"";
-    req.responders.push({businessId:businessId,respondedAt:Date.now(),message:message||"آماده ارائه خدمت هستم."});
-    if(req.responders.length>=3) req.status="answered";
-    saveToStorage();
-    renderMyRequests();
-    updateOwnerRequestsBadge();
-    showToast("✓ پاسخ شما ثبت شد؛ اطلاعات تماس مشتری برای شما باز شد.","success");
-  };
-
-  window.ignoreRequest=function(requestId,businessId){
-    var req=requests.find(function(x){return x.id===requestId;});
-    if(!req) return;
-    ensureRequestFields(req);
-    if(req.ignoredBy.indexOf(businessId)===-1) req.ignoredBy.push(businessId);
-    saveToStorage(); renderMyRequests(); updateOwnerRequestsBadge();
-    showToast("درخواست از فهرست شما حذف شد.","success");
-  };
-
-  window.updateOwnerRequestsBadge=function(){
-    var badge=document.getElementById("ownerRequestsBadge");
-    if(!badge) return;
-    if(!currentOwnerBusinessId){badge.style.display="none";return;}
-    var count=0;
-    requests.forEach(function(req){
-      ensureRequestFields(req);
-      if(req.status==="answered"||req.responders.length>=3) return;
-      if(req.ignoredBy.indexOf(currentOwnerBusinessId)!==-1) return;
-      if(req.responders.some(function(r){return String(r.businessId)===String(currentOwnerBusinessId);})) return;
-      if(findMatchingBusinesses(req).some(function(b){return String(b.id)===String(currentOwnerBusinessId);} )) count++;
-    });
-    badge.textContent=toFa(count); badge.style.display=count?"inline-block":"none";
-  };
-
-  /* Preserve current submitRequest UI but enrich data with consent and city. */
-  window.submitRequest=function(){
-    var service=document.getElementById("reqService").value.trim();
-    var area=document.getElementById("reqArea").value.trim();
-    var phone=cleanPhone(document.getElementById("reqPhone").value.trim());
-    var desc=document.getElementById("reqDesc").value.trim();
-    var consent=document.getElementById("reqConsent").checked;
-    if(!service){showToast("کالا یا خدمت مورد نیاز را وارد کنید.","error");return;}
-    if(!phone||phone.length<8){showToast("شماره همراه معتبر وارد کنید.","error");return;}
-    if(!consent){showToast("برای ارسال درخواست، اجازه تماس کسب‌وکارها را فعال کنید.","error");return;}
-    var req={id:"req_"+Date.now()+"_"+Math.floor(Math.random()*1000),service:service,area:area,city:"بهبهان",phone:phone,desc:desc,consent:true,status:"pending",responders:[],ignoredBy:[],createdAt:Date.now()};
-    requests.push(req); saveToStorage(); closeRequestModal();
-    showToast("✓ درخواست ثبت شد و برای کسب‌وکارهای مرتبط بهبهان ارسال می‌شود.","success");
-    var matches=findMatchingBusinesses(req);
-    setTimeout(function(){
-      if(matches.length) showToast("📨 "+toFa(Math.min(matches.length,3))+" کسب‌وکار مرتبط می‌توانند درخواست را ببینند.","info");
-      else showToast("درخواست ثبت شد؛ هر کسب‌وکار جدید مرتبط هم می‌تواند آن را ببیند.","info");
-      updateOwnerRequestsBadge();
-    },350);
-    var rc=document.getElementById("resultsCard"); if(rc) rc.classList.add("hidden");
-  };
-
-  /* Add an explicit "send request" affordance even when results exist. */
-  function addRequestFromSearch(){
-    var input=document.getElementById("searchInput");
-    openRequestModal(input?input.value.trim():"");
-  }
-
-  document.addEventListener("DOMContentLoaded",function(){
-    try{
-      requests.forEach(ensureRequestFields);
-      var saved=localStorage.getItem("behbahan_owner_session_v1");
-      if(saved && getBusiness2(saved)) currentOwnerBusinessId=Number(saved);
-    }catch(e){}
-    var ownerBtn=document.getElementById("ownerButton");
-    if(ownerBtn){
-      ownerBtn.addEventListener("click",function(){
-        setTimeout(function(){ensureOwnerContext();updateOwnerRequestsBadge();renderMyRequests();},30);
-      });
-    }
-    /* If owner card is already visible by another flow, initialize it too. */
-    setTimeout(function(){
-      if(document.getElementById("ownerCard") && !document.getElementById("ownerCard").classList.contains("hidden")) ensureOwnerContext();
-    },50);
-  });
 })();
 </script>
 
@@ -8923,7 +8409,7 @@ function wrapAdmin(fnName){
         '<div class="field"><label>رمز عبور</label><input id="ownerSignupPass" type="password" autocomplete="new-password" placeholder="حداقل ۸ کاراکتر"></div>'+
         '<label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;padding:10px;border:1.5px solid var(--border);border-radius:12px;background:var(--muted);margin:0 0 12px;text-align:right">'+
           '<input type="checkbox" id="ownerSignupTermsCheck" style="width:18px;height:18px;margin-top:3px;accent-color:var(--primary-500);flex-shrink:0">'+
-          '<span style="font-size:12.5px;line-height:1.85;font-weight:600;color:var(--text)"><a href="#" id="ownerSignupTermsLink" style="color:var(--primary-700);text-decoration:underline;font-weight:800">قوانین شماره‌یاب</a> را خوانده و با آن موافقم. <span style="color:var(--danger)">*</span></span>'+
+          '<span style="font-size:12.5px;line-height:1.85;font-weight:600;color:var(--text)"><a href="#" id="ownerSignupTermsLink" style="color:var(--primary-700);text-decoration:underline;font-weight:800">قوانین نومکس</a> را خوانده و با آن موافقم. <span style="color:var(--danger)">*</span></span>'+
         '</label>'+
         '<button type="button" class="btn-submit" id="ownerSignupBtn" style="width:100%">ساخت حساب مالک</button>'+
       '</div>'+
@@ -8951,7 +8437,7 @@ function wrapAdmin(fnName){
       if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){msg.textContent='ایمیل معتبر وارد کنید.';return;}
       if(pass.length<8){msg.textContent='رمز عبور باید حداقل ۸ کاراکتر باشد.';return;}
       var termsOk=document.getElementById('ownerSignupTermsCheck');
-      if(!termsOk||!termsOk.checked){msg.textContent='برای ثبت‌نام، پذیرش قوانین شماره‌یاب الزامی است.';return;}
+      if(!termsOk||!termsOk.checked){msg.textContent='برای ثبت‌نام، پذیرش قوانین نومکس الزامی است.';return;}
       this.disabled=true;
       try{
         var res=await sb.auth.signUp({
@@ -9037,7 +8523,7 @@ else msg.textContent='ثبت‌نام انجام نشد. اگر قبلاً ثب�
       }finally{btn.disabled=false; btn.textContent=prev||'ورود';}
     };
   }
-  function openOwnerAuth(){ ensureOwnerAuthModal(); var el=document.getElementById('ownerAuthModal'); el.classList.add('show'); document.body.style.overflow='hidden'; }
+  function openOwnerAuth(){ if(window.nomaxAuth) window.nomaxAuth.open({ pending:{type:"owner"}, reason:"برای ثبت و مدیریت کسب‌وکار وارد شوید یا ثبت‌نام کنید." }); }
 
   function ownerPanelHeader(){
     var card=document.getElementById('ownerCard'); if(!card) return;
@@ -9124,76 +8610,7 @@ else msg.textContent='ثبت‌نام انجام نشد. اگر قبلاً ثب�
   }
 
   function updateOwnerRequestsBadgeV2(){
-    var badge=document.getElementById('ownerRequestsBadge'),u=currentOwner(); if(!badge)return;
-    var count=0;
-    if(u){
-      var bs=ownerBusinessList();
-      for(var i=0;i<requests.length;i++){
-        var r=requests[i]; if(r.status!=='pending'||(r.responders||[]).length>=3)continue;
-        var targets=r.targetBusinessIds||[];
-        for(var j=0;j<bs.length;j++){
-          var bid=bs[j].id;
-          var targeted = targets.length ? targets.some(function(id){return String(id)===String(bid);}) : true;
-          if(!targeted) continue;
-          if((r.responders||[]).some(function(x){return String(x.businessId)===String(bid);})) continue;
-          if((r.ignoredBy||[]).some && (r.ignoredBy||[]).some(function(x){return String(x)===String(bid);})) continue;
-          count++; break;
-        }
-      }
-      if(typeof countUnreadOwnerNotifs==='function') count += countUnreadOwnerNotifs(u.id);
-    }
-    if(count>0){ badge.style.display='inline'; badge.textContent=toFa(count); }
-    else { badge.style.display='none'; }
-  }
-
-  function renderOwnerInboxV2(){
-    var box=document.getElementById('myRequests'),u=currentOwner(); if(!box)return;
-    if(!u){box.innerHTML='<div class="empty" style="padding:24px"><div class="desc">برای دیدن درخواست‌ها وارد حساب مالک شوید.</div></div>';return;}
-    var bs=ownerBusinessList(), rows=[];
-    for(var i=0;i<requests.length;i++){
-      var r=requests[i]; if(r.status!=='pending')continue;
-      for(var j=0;j<bs.length;j++){
-        var b=bs[j]; if((r.ignoredBy||[]).indexOf(b.id)>=0)continue;
-        if((r.responders||[]).some(function(x){return x.businessId===b.id;}))continue;
-        if(findMatchingBusinesses(r).some(function(x){return x.id===b.id;})){rows.push({r:r,b:b});break;}
-      }
-    }
-    rows.sort(function(a,b){return b.r.createdAt-a.r.createdAt;});
-    if(!rows.length){box.innerHTML='<div class="empty" style="padding:24px"><div style="font-size:28px">📭</div><div class="title">درخواست جدیدی برای شما نیست</div></div>';return;}
-    var html='';
-    for(var k=0;k<rows.length;k++){
-      var r=rows[k].r,b=rows[k].b;
-      html+='<div class="req-card" style="border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:10px;background:var(--surface)">'+
-        '<div style="display:flex;justify-content:space-between;gap:8px"><strong>🔎 '+esc(r.service||'نیاز مشتری')+'</strong><span style="font-size:11px;color:var(--text-3)">'+formatDate(r.createdAt)+'</span></div>'+
-        '<div class="request-meta" style="margin-top:8px">📍 '+esc(r.area||'بهبهان')+'</div>'+
-        (r.desc?'<div style="font-size:13px;line-height:1.9;margin-top:8px">'+esc(r.desc)+'</div>':'')+
-        '<textarea data-req-msg="'+esc(r.id)+'" maxlength="250" placeholder="یک پاسخ کوتاه برای مشتری بنویسید…" style="width:100%;margin-top:10px;min-height:72px;padding:10px;border:1px solid var(--border);border-radius:10px;font-family:inherit;background:var(--surface);color:var(--text)"></textarea>'+
-        '<div style="display:flex;gap:8px;margin-top:8px"><button class="btn-submit" data-req-respond="'+esc(r.id)+'" data-biz="'+b.id+'" style="flex:1">💬 پاسخ به مشتری</button><button class="btn-cancel" data-req-ignore="'+esc(r.id)+'" data-biz="'+b.id+'">نادیده بگیر</button></div></div>';
-    }
-    box.innerHTML=html;
-    box.querySelectorAll('[data-req-respond]').forEach(function(btn){btn.onclick=function(){
-      var rid=btn.getAttribute('data-req-respond'),bid=+btn.getAttribute('data-biz');
-      var ta=box.querySelector('textarea[data-req-msg="'+rid+'"]'); respondToRequestV2(rid,bid,ta?ta.value.trim():'');
-    };});
-    box.querySelectorAll('[data-req-ignore]').forEach(function(btn){btn.onclick=function(){ignoreRequestV2(btn.getAttribute('data-req-ignore'),+btn.getAttribute('data-biz'));};});
-  }
-  function respondToRequestV2(rid,bid,message){
-    var u=currentOwner(),r=null,b=getBusinessById(bid); if(!u||!b||String(b.ownerId)!==String(u.id))return;
-    for(var i=0;i<requests.length;i++)if(String(requests[i].id)===String(rid)){r=requests[i];break;}
-    if(!r)return; r.responders=r.responders||[];
-    if(!r.consent){showToast('این مشتری اجازه تماس با کسب‌وکارها را نداده است.','error');return;}
-    if(r.responders.length>=3){showToast('ظرفیت پاسخ این درخواست تکمیل شده است.','error');return;}
-    if(r.responders.some(function(x){return x.businessId===bid;})){showToast('قبلاً به این درخواست پاسخ داده‌اید.','info');return;}
-    r.responders.push({businessId:bid,respondedAt:Date.now(),message:(message||'درخواست شما را دریافت کردیم.').slice(0,250)});
-    if(r.responders.length>=3)r.status='answered';
-    saveToStorage(); renderOwnerInboxV2(); updateOwnerRequestsBadgeV2(); showToast('پاسخ شما برای مشتری ثبت شد ✓','success');
-  }
-  function ignoreRequestV2(rid,bid){
-    var u=currentOwner(),b=getBusinessById(bid); if(!u||!b||String(b.ownerId)!==String(u.id))return;
-    for(var i=0;i<requests.length;i++)if(String(requests[i].id)===String(rid)){
-      requests[i].ignoredBy=requests[i].ignoredBy||[]; if(requests[i].ignoredBy.indexOf(bid)<0)requests[i].ignoredBy.push(bid); break;
-    }
-    saveToStorage(); renderOwnerInboxV2(); updateOwnerRequestsBadgeV2();
+    try{ if(window.loadOwnerRequests) window.loadOwnerRequests(true); }catch(e){}
   }
 
   // Safer subcategory inference kept
@@ -9391,13 +8808,6 @@ else msg.textContent='ثبت‌نام انجام نشد. اگر قبلاً ثب�
         '</div></div>';
     }
     box.innerHTML=html;
-  };
-
-  /* Make the owner inbox depend on approved businesses only. */
-  var oldFind=findMatchingBusinesses;
-  window.findMatchingBusinesses=function(req){
-    var all=oldFind(req)||[];
-    return all.filter(function(b){return isPublicBusiness(b);});
   };
 
   /* Seed/migrate old records once more at runtime. */
@@ -9883,6 +9293,7 @@ updateStats();
     document.body.style.overflow = "hidden";
   }
 
+  window.nomaxOpenReset = openReset;
   function showNewPassword(){
     buildModals(); closeAuthModals();
     $("pwResetModal").classList.remove("show");
@@ -9929,5 +9340,709 @@ updateStats();
   }
 })();
 </script>
+<script>
+/* ===== نومکس: حساب کاربری — Google یا ایمیل (مثل ChatGPT)، یک ورود برای مشتری، مالک و مدیر ===== */
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var PEND = "nomax_pending";
+  var state = { user:null, admin:false, name:"" };
+  var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  function setPending(p){ try{ if(p) sessionStorage.setItem(PEND, JSON.stringify(p)); else sessionStorage.removeItem(PEND); }catch(e){} }
+  function getPending(){ try{ return JSON.parse(sessionStorage.getItem(PEND) || "null"); }catch(e){ return null; } }
+  function redirectUrl(){ return location.origin + location.pathname; }
+
+  /* ---------- وضعیت ورود ---------- */
+  async function refresh(){
+    var u = null;
+    try{
+      var s = await sb.auth.getSession();
+      u = (s && s.data && s.data.session) ? s.data.session.user : null;
+    }catch(e){}
+    state.user = u; state.admin = false; state.name = "";
+    if(u){
+      var meta = u.user_metadata || {};
+      state.name = meta.full_name || meta.name || (u.email || "").split("@")[0];
+      try{ state.admin = await isAdmin(true); }catch(e){}
+      try{ if(window.refreshOwnerFromSupabase) await window.refreshOwnerFromSupabase(); }catch(e){}
+    }
+    renderAccountBtn();
+    try{ window.dispatchEvent(new Event("nomax-auth")); }catch(e){}
+  }
+
+  function consumePending(){
+    var p = getPending(); if(!p) return;
+    setPending(null);
+    if(p.type === "admin"){
+      if(state.admin) openAdminPanel();
+      else if(state.user) showToast("این حساب دسترسی مدیر ندارد.", "error");
+    } else if(!state.user) return;
+    else if(p.type === "request"){ setTimeout(function(){ if(window.openRequestModal) window.openRequestModal(p.prefill || ""); }, 150); }
+    else if(p.type === "owner"){ if(window.showOwnerWorkspace && window.currentOwner && window.currentOwner()) window.showOwnerWorkspace(); }
+    else if(p.type === "myrequests"){ var c = $("myRequestCard"); if(c) c.scrollIntoView({behavior:"smooth", block:"start"}); }
+  }
+
+  /* ---------- دکمه و منوی حساب ---------- */
+  function renderAccountBtn(){
+    var b = $("accountBtn"); if(!b) return;
+    if(state.user){
+      b.classList.add("in");
+      b.title = state.name || "حساب من";
+      b.innerHTML = '<span class="acct-letter">' + esc((state.name || "؟").trim().charAt(0).toUpperCase()) + '</span>';
+    } else {
+      b.classList.remove("in");
+      b.title = "ورود / ثبت‌نام";
+      b.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>';
+    }
+  }
+  function closeMenu(){ var m = $("acctMenu"); if(m) m.classList.remove("open"); }
+  function openMenu(){
+    var m = $("acctMenu");
+    if(!m){ m = document.createElement("div"); m.id = "acctMenu"; m.className = "acct-menu"; document.body.appendChild(m); }
+    var u = state.user; if(!u) return;
+    m.innerHTML =
+      '<div class="am-head"><div class="am-name">' + esc(state.name || "کاربر") + '</div><div class="am-mail">' + esc(u.email || "") + '</div>' +
+      (state.admin ? '<span class="am-role">🛡 مدیر</span>' : '') + '</div>' +
+      '<button data-am="req">📨 درخواست‌های من</button>' +
+      '<button data-am="owner">🏪 پنل کسب‌وکار من</button>' +
+      (state.admin ? '<button data-am="admin">🛡 پنل مدیریت</button>' : '') +
+      '<button data-am="out" class="danger">🚪 خروج از حساب</button>';
+    m.classList.add("open");
+    m.querySelectorAll("[data-am]").forEach(function(btn){
+      btn.onclick = async function(){
+        var a = btn.getAttribute("data-am"); closeMenu();
+        if(a === "req"){ var c = $("myRequestCard"); if(c){ c.classList.remove("hidden"); c.scrollIntoView({behavior:"smooth", block:"start"}); } }
+        else if(a === "owner"){ if(window.showOwnerWorkspace) window.showOwnerWorkspace(); }
+        else if(a === "admin"){ openAdminPanel(); }
+        else if(a === "out"){ await signOut(); }
+      };
+    });
+  }
+  async function signOut(){
+    try{ await sb.auth.signOut(); }catch(e){}
+    try{ localStorage.removeItem("behbahan_owner_auth_v4"); localStorage.removeItem("behbahan_admin"); }catch(e){}
+    adminAuthState = false; adminAuthChecked = false;
+    ["ownerCard","adminCard","registerCard"].forEach(function(id){ var el = $(id); if(el) el.classList.add("hidden"); });
+    await refresh();
+    showToast("از حساب خارج شدید.", "success");
+  }
+  document.addEventListener("click", function(e){
+    var m = $("acctMenu"), b = $("accountBtn");
+    if(m && m.classList.contains("open") && !m.contains(e.target) && !(b && b.contains(e.target))) closeMenu();
+  });
+  document.addEventListener("keydown", function(e){ if(e.key === "Escape") closeMenu(); });
+
+  /* ---------- مودال ورود/ثبت‌نام ---------- */
+  var mode = "login";
+  function buildModal(){
+    if($("authModal")) return;
+    var el = document.createElement("div");
+    el.id = "authModal"; el.className = "modal-overlay";
+    el.innerHTML =
+    '<div class="modal review-modal" style="max-width:420px">' +
+      '<div class="modal-head"><h3 id="authTitle">ورود یا ثبت‌نام در نومکس</h3><button type="button" class="close-x" id="authClose">×</button></div>' +
+      '<div id="authWhy" class="auth-why" style="display:none"></div>' +
+      '<div id="authNotAdmin" style="display:none">' +
+        '<p style="font-size:13px;line-height:1.9;margin:0 0 12px">این حساب دسترسی مدیر ندارد. اگر حساب مدیر دارید، از این حساب خارج شوید و با حساب مدیر وارد شوید.</p>' +
+        '<button type="button" class="btn-submit" id="authSwitch" style="width:100%">خروج و ورود با حساب دیگر</button>' +
+      '</div>' +
+      '<div id="authMain">' +
+        '<button type="button" class="auth-google" id="authGoogle">' +
+          '<svg width="18" height="18" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.1H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 8 3l5.7-5.7C34 6.1 29.3 4 24 4 13 4 4 13 4 24s9 20 20 20 20-9 20-20c0-1.3-.1-2.6-.4-3.9z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 8 3l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.1H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.6-.4-3.9z"/></svg>' +
+          'ادامه با Google</button>' +
+        '<div class="auth-or">یا با ایمیل</div>' +
+        '<div class="auth-tabs"><button type="button" id="authTabLogin" class="active">ورود</button><button type="button" id="authTabSignup">ثبت‌نام</button></div>' +
+        '<div class="field" id="authNameF" style="display:none"><label>نام و نام خانوادگی</label><input id="authName" type="text" autocomplete="name" placeholder="مثلاً علی محمدی"></div>' +
+        '<div class="field"><label>ایمیل</label><input id="authEmail" type="email" autocomplete="username" placeholder="you@example.com" style="direction:ltr;text-align:left"></div>' +
+        '<div class="field"><label>رمز عبور</label><input id="authPass" type="password" autocomplete="current-password" placeholder="حداقل ۸ کاراکتر"></div>' +
+        '<label id="authTermsF" style="display:none;align-items:flex-start;gap:10px;cursor:pointer;padding:10px;border:1.5px solid var(--border);border-radius:12px;background:var(--muted);margin:0 0 12px;text-align:right">' +
+          '<input type="checkbox" id="authTerms" style="width:18px;height:18px;margin-top:3px;accent-color:var(--primary-500);flex-shrink:0">' +
+          '<span style="font-size:12.5px;line-height:1.85;font-weight:600"><a href="#" id="authTermsLink" style="color:var(--primary-700);text-decoration:underline;font-weight:800">قوانین نومکس</a> را خوانده و می‌پذیرم.</span></label>' +
+        '<button type="button" class="btn-submit" id="authSubmit" style="width:100%">ورود</button>' +
+        '<button type="button" id="authForgot" style="display:block;width:100%;margin-top:10px;background:none;border:0;color:var(--primary-700);font:inherit;font-size:12.5px;font-weight:700;cursor:pointer;text-decoration:underline">رمز عبور را فراموش کرده‌اید؟</button>' +
+      '</div>' +
+      '<div id="authMsg" style="margin-top:10px;font-size:12.5px;line-height:1.9;color:var(--danger)"></div>' +
+    '</div>';
+    document.body.appendChild(el);
+
+    $("authClose").onclick = closeModal;
+    el.addEventListener("click", function(e){ if(e.target === el) closeModal(); });
+    $("authTabLogin").onclick = function(){ setMode("login"); };
+    $("authTabSignup").onclick = function(){ setMode("signup"); };
+    $("authGoogle").onclick = googleLogin;
+    $("authSubmit").onclick = emailSubmit;
+    $("authPass").addEventListener("keydown", function(e){ if(e.key === "Enter") emailSubmit(); });
+    $("authTermsLink").onclick = function(e){ e.preventDefault(); if(window.openTermsModal) window.openTermsModal({buttonText:"موافقم"}); };
+    $("authSwitch").onclick = async function(){ closeModal(); await signOut(); window.nomaxAuth.open({ pending:{type:"admin"}, admin:true }); };
+    $("authForgot").onclick = function(){
+      var mail = $("authEmail").value.trim(); closeModal();
+      if(window.nomaxOpenReset) window.nomaxOpenReset(mail);
+    };
+  }
+  function setMode(m){
+    mode = m;
+    $("authTabLogin").classList.toggle("active", m === "login");
+    $("authTabSignup").classList.toggle("active", m === "signup");
+    $("authNameF").style.display = m === "signup" ? "" : "none";
+    $("authTermsF").style.display = m === "signup" ? "flex" : "none";
+    $("authForgot").style.display = m === "login" ? "block" : "none";
+    $("authSubmit").textContent = m === "login" ? "ورود" : "ساخت حساب";
+    $("authPass").setAttribute("autocomplete", m === "login" ? "current-password" : "new-password");
+    $("authMsg").textContent = "";
+  }
+  function closeModal(){
+    var el = $("authModal"); if(el) el.classList.remove("show");
+    document.body.style.overflow = "";
+  }
+  function openAuthModal(opts){
+    opts = opts || {};
+    if(opts.pending) setPending(opts.pending);
+    if(state.user && !opts.admin){ consumePending(); return; }
+    buildModal();
+    var admin = !!opts.admin;
+    $("authMain").style.display = (state.user && admin) ? "none" : "";
+    $("authNotAdmin").style.display = (state.user && admin) ? "" : "none";
+    $("authTitle").textContent = admin ? "ورود مدیر" : "ورود یا ثبت‌نام در نومکس";
+    var why = $("authWhy");
+    if(opts.reason){ why.textContent = opts.reason; why.style.display = ""; } else why.style.display = "none";
+    $("authMsg").textContent = "";
+    $("authPass").value = "";
+    setMode(admin ? "login" : (opts.mode || "login"));
+    if(admin) $("authTabSignup").style.display = "none"; else $("authTabSignup").style.display = "";
+    $("authModal").classList.add("show");
+    document.body.style.overflow = "hidden";
+    setTimeout(function(){ var e = $("authEmail"); if(e && !(state.user && admin)) e.focus(); }, 120);
+  }
+
+  async function googleLogin(){
+    var msg = $("authMsg");
+    if(location.protocol === "file:"){ msg.textContent = "ورود با Google روی file:// کار نمی‌کند؛ سایت را از آدرس http(s) باز کنید."; return; }
+    try{
+      var r = await sb.auth.signInWithOAuth({ provider:"google", options:{ redirectTo: redirectUrl() } });
+      if(r.error) throw r.error;
+    }catch(e){
+      console.error(e);
+      msg.textContent = "ورود با Google فعال نیست یا تنظیمات آن کامل نشده است.";
+    }
+  }
+
+  async function emailSubmit(){
+    var msg = $("authMsg"), btn = $("authSubmit");
+    var email = $("authEmail").value.trim().toLowerCase(), pass = $("authPass").value;
+    if(!EMAIL_RE.test(email)){ msg.textContent = "ایمیل معتبر وارد کنید."; return; }
+    if(pass.length < 8){ msg.textContent = "رمز عبور باید حداقل ۸ کاراکتر باشد."; return; }
+    var prev = btn.textContent; btn.disabled = true; msg.textContent = "";
+    try{
+      if(mode === "signup"){
+        var name = $("authName").value.trim();
+        if(name.length < 2){ msg.textContent = "نام و نام خانوادگی را وارد کنید."; return; }
+        if(!$("authTerms").checked){ msg.textContent = "برای ثبت‌نام، پذیرش قوانین الزامی است."; return; }
+        var res = await sb.auth.signUp({ email: email, password: pass, options:{ data:{ full_name: name }, emailRedirectTo: redirectUrl() } });
+        if(res.error) throw res.error;
+        if(!(res.data && res.data.session)){
+          msg.style.color = "var(--primary-700)";
+          msg.textContent = "حساب ساخته شد. لینک تأیید به ایمیلتان ارسال شد؛ بعد از تأیید، وارد شوید. (پوشه‌ی اسپم را هم نگاه کنید.)";
+          setMode("login"); $("authMsg").style.color = "var(--primary-700)";
+          $("authMsg").textContent = "لینک تأیید به ایمیلتان ارسال شد. بعد از تأیید، اینجا وارد شوید.";
+          return;
+        }
+      } else {
+        var r2 = await sb.auth.signInWithPassword({ email: email, password: pass });
+        if(r2.error) throw r2.error;
+      }
+      msg.style.color = "var(--danger)";
+      closeModal();
+      await refresh();
+      showToast("خوش آمدید " + (state.name || "") + " ✓", "success");
+      consumePending();
+    }catch(e){
+      console.error(e);
+      msg.style.color = "var(--danger)";
+      var m = (e && e.message) || "";
+      if(/confirm/i.test(m)) msg.textContent = "ابتدا ایمیل خود را تأیید کنید.";
+      else if(/invalid login/i.test(m)) msg.textContent = "ایمیل یا رمز عبور اشتباه است.";
+      else if(/weak|at least|characters/i.test(m)) msg.textContent = "رمز عبور ضعیف است.";
+      else if(/rate|too many|seconds/i.test(m)) msg.textContent = "تعداد تلاش‌ها زیاد است؛ کمی بعد دوباره امتحان کنید.";
+      else msg.textContent = "انجام نشد. اتصال اینترنت را بررسی کنید.";
+    }finally{ btn.disabled = false; btn.textContent = prev; }
+  }
+
+  /* ---------- API عمومی ---------- */
+  window.nomaxAuth = {
+    user: function(){ return state.user; },
+    admin: function(){ return state.admin; },
+    open: openAuthModal,
+    refresh: refresh,
+    signOut: signOut
+  };
+
+  /* ---------- راه‌اندازی ---------- */
+  var accBtn = $("accountBtn");
+  if(accBtn) accBtn.onclick = function(e){
+    e.stopPropagation();
+    if(state.user){ var m = $("acctMenu"); if(m && m.classList.contains("open")) closeMenu(); else openMenu(); }
+    else openAuthModal({});
+  };
+  renderAccountBtn();
+
+  sb.auth.onAuthStateChange(function(ev, sess){
+    if(ev !== "SIGNED_IN" && ev !== "SIGNED_OUT" && ev !== "INITIAL_SESSION" && ev !== "USER_UPDATED") return;
+    var uid = sess && sess.user ? sess.user.id : null;
+    if(ev === "SIGNED_IN" && state.user && uid === state.user.id) return;
+    setTimeout(function(){
+      refresh().then(function(){ if(ev === "SIGNED_IN" || ev === "INITIAL_SESSION") consumePending(); });
+    }, 0);
+  });
+})();
+</script>
+
+<script>
+/* ===== نومکس: درخواست مشتری — فقط برای اعضا (Google / ایمیل) ===== */
+(function(){
+  var list = [], pollTid = null, lastOffers = 0;
+  function $(id){ return document.getElementById(id); }
+  function user(){ return window.nomaxAuth ? window.nomaxAuth.user() : null; }
+  function active(){ for(var i=0;i<list.length;i++) if(list[i].status === "open") return list[i]; return null; }
+  var ST = { open:"باز", selected:"انتخاب شد", cancelled:"لغو شد", expired:"منقضی شد", closed:"بسته شد" };
+
+  /* ---------- مودال ثبت درخواست ---------- */
+  function fillReqCats(){
+    var sel = $("reqCategory"); if(!sel || sel.options.length > 1) return;
+    var h = '<option value="">انتخاب کنید</option>';
+    categories.forEach(function(c){ if(c.id !== "other") h += '<option value="'+c.id+'">'+c.emoji+' '+esc(c.name)+'</option>'; });
+    sel.innerHTML = h;
+    sel.onchange = function(){ fillReqSubs(this.value); };
+  }
+  function fillReqSubs(catId, selected){
+    var sub = $("reqSubcategory"), cat = getCategoryById(catId);
+    var h = '<option value="">همه موارد دسته</option>';
+    if(cat) cat.subcategories.forEach(function(s){ if(!s.isOther) h += '<option value="'+s.id+'">'+(s.emoji||"")+' '+esc(s.name)+'</option>'; });
+    sub.innerHTML = h; if(selected) sub.value = selected;
+  }
+  function guessReqCategory(text){
+    var g = guessCategory(text); if(!g) return;
+    $("reqCategory").value = g.categoryId;
+    var sg = guessSubcategory(text, g.categoryId);
+    fillReqSubs(g.categoryId, sg ? sg.subcategoryId : "");
+    var cat = getCategoryById(g.categoryId);
+    $("reqCatHint").textContent = "🤖 دسته‌ی پیشنهادی: " + cat.emoji + " " + cat.name + " — اگه درست نیست تغییرش بده.";
+  }
+  var gt;
+  document.addEventListener("input", function(e){
+    if(e.target && e.target.id === "reqService"){
+      clearTimeout(gt); var v = e.target.value.trim();
+      gt = setTimeout(function(){ if(v.length >= 3) guessReqCategory(v); }, 400);
+    }
+  });
+
+  window.openRequestModal = function(prefill){
+    if(!user()){
+      window.nomaxAuth.open({
+        pending: { type:"request", prefill: prefill || "" },
+        reason: "برای ثبت درخواست باید عضو نومکس باشی. با Google یا ایمیل وارد شو؛ بعد از ورود، درخواستت خودکار باز می‌شه و می‌تونی پیشنهاد کسب‌وکارها رو توی پنلت ببینی."
+      });
+      return;
+    }
+    if(active()){
+      showToast("شما یک درخواست فعال دارید. اول آن را لغو کنید یا یکی از پیشنهادها را انتخاب کنید.", "info");
+      scrollToMy(); return;
+    }
+    fillReqCats();
+    $("reqService").value = prefill || ""; $("reqArea").value = ""; $("reqDesc").value = "";
+    $("reqCategory").value = ""; fillReqSubs(""); $("reqCatHint").textContent = "";
+    $("requestModal").classList.add("show"); document.body.style.overflow = "hidden";
+    if(prefill && prefill.length >= 3) guessReqCategory(prefill);
+  };
+  window.closeRequestModal = function(){
+    $("requestModal").classList.remove("show"); document.body.style.overflow = "";
+  };
+
+  window.submitRequest = async function(){
+    var service = $("reqService").value.trim();
+    var cat = $("reqCategory").value, sub = $("reqSubcategory").value;
+    if(service.length < 2){ showToast("کالا یا خدمت را وارد کنید.", "error"); return; }
+    if(!cat){ showToast("دسته را انتخاب کنید.", "error"); return; }
+    var btn = $("reqSubmitBtn"); btn.disabled = true;
+    try{
+      var r = await sb.rpc("submit_service_request", {
+        p_service: service, p_category: cat, p_sub: sub,
+        p_area: $("reqArea").value.trim(), p_desc: $("reqDesc").value.trim()
+      });
+      if(r.error){
+        var m = r.error.message || "";
+        if(m.indexOf("not_authenticated") > -1){ closeRequestModal(); window.nomaxAuth.open({ pending:{type:"request", prefill:service} }); }
+        else if(m.indexOf("already_open") > -1){ showToast("شما یک درخواست فعال دارید.", "error"); closeRequestModal(); await loadMy(); }
+        else if(m.indexOf("daily_limit") > -1) showToast("امروز به سقف ۵ درخواست رسیده‌ای؛ فردا دوباره امتحان کن.", "error");
+        else if(m.indexOf("rate_limited") > -1) showToast("ترافیک زیاد است؛ چند دقیقه بعد دوباره تلاش کنید.", "error");
+        else showToast("ثبت درخواست انجام نشد؛ دوباره تلاش کنید.", "error");
+        return;
+      }
+      if(window.nomaxNotify && r.data) window.nomaxNotify({ action:"new_request", request_id:r.data });
+      closeRequestModal();
+      showToast("✓ درخواست ثبت شد. پیشنهادها در پنل «درخواست‌های من» نمایش داده می‌شود.", "success");
+      var rc = $("resultsCard"); if(rc) rc.classList.add("hidden");
+      await loadMy(); scrollToMy();
+    }catch(e){ console.error(e); showToast("ارتباط با سرور برقرار نشد.", "error"); }
+    finally{ btn.disabled = false; }
+  };
+
+  /* ---------- پنل مشتری ---------- */
+  function scrollToMy(){ var c = $("myRequestCard"); if(c) c.scrollIntoView({behavior:"smooth", block:"start"}); }
+  function timeLeft(exp){
+    var ms = new Date(exp).getTime() - Date.now(); if(ms <= 0) return "منقضی شد";
+    return toFa(Math.floor(ms/3600000)) + " ساعت و " + toFa(Math.floor((ms%3600000)/60000)) + " دقیقه مانده";
+  }
+  function offerHTML(o, canPick, reqId){
+    var b = getBusinessById(Number(o.business_id));
+    var rating = b ? getBusinessRating(b.id) : {count:0, avg:0};
+    var callA = (b && b.phone) ? '<a class="call-btn" style="flex:1;padding:9px" href="tel:'+esc(cleanPhone(b.phone))+'">☎ تماس</a>' : "";
+    var mapA = (b && b.address) ? '<a class="action-btn map-btn" style="min-height:38px;flex:1;font-size:13px;font-weight:700;text-decoration:none" href="https://www.google.com/maps/search/?api=1&query='+encodeURIComponent((b.address||"")+"، بهبهان")+'" target="_blank" rel="noopener">🧭 مسیر</a>' : "";
+    return '<div class="review-item'+(o.selected?' offer-chosen':'')+'" style="margin-bottom:10px">'+
+      '<div class="review-head"><div class="review-user">🏪 '+(b?esc(b.name):"کسب‌وکار")+(b&&b.verified?' <span class="verified-badge">✓ تأیید شده</span>':'')+(o.selected?' <span class="st-pill selected">✓ انتخاب شما</span>':'')+'</div>'+
+      (rating.count?('<span style="font-size:12px;color:var(--accent-700);font-weight:700">⭐ '+toFa(rating.avg.toFixed(1))+'</span>'):'')+'</div>'+
+      '<div style="display:flex;gap:8px;flex-wrap:wrap;margin:6px 0">'+
+        (o.price?'<span class="tag-mini" style="background:var(--primary-50);color:var(--primary-700);font-weight:800">💰 '+esc(o.price)+'</span>':'')+
+        (o.brand?'<span class="tag-mini">🏷 '+esc(o.brand)+'</span>':'')+'</div>'+
+      (o.note?'<div class="review-text">'+esc(o.note)+'</div>':'')+
+      '<div style="display:flex;gap:8px;margin-top:8px">'+callA+mapA+'</div>'+
+      (canPick?'<button class="offer-pick" data-pick="'+esc(o.id)+'">✓ انتخاب این پیشنهاد</button>':'')+'</div>';
+  }
+  function renderMy(){
+    var card = $("myRequestCard"), box = $("myRequestBox");
+    if(!card || !box) return;
+    if(!user()){ card.classList.add("hidden"); box.innerHTML = ""; return; }
+    card.classList.remove("hidden");
+    var act = active(), h = "";
+    if(act){
+      var offers = act.offers || [];
+      h += '<div class="owner-business"><div style="font-weight:800;font-size:15px">🔎 '+esc(act.service)+'</div>'+
+        '<div class="request-meta">'+(act.area?'<span>📍 '+esc(act.area)+'</span>':'')+'<span>⏱ '+timeLeft(act.expires_at)+'</span><span>📬 '+toFa(offers.length)+' پیشنهاد</span></div>'+
+        (act.description?'<div style="font-size:12.5px;color:var(--text-2);margin-top:8px">'+esc(act.description)+'</div>':'')+
+        '<div class="owner-actions"><button class="delete-btn" data-cancel="'+esc(act.id)+'">✕ لغو درخواست</button></div></div>';
+      h += offers.length
+        ? '<div style="font-weight:700;font-size:13.5px;margin:14px 0 8px">پیشنهاد کسب‌وکارها — یکی را انتخاب کن</div>'+offers.map(function(o){return offerHTML(o,true,act.id);}).join("")
+        : '<div class="empty" style="padding:18px"><div style="font-size:26px">⏳</div><div class="desc">منتظر پاسخ کسب‌وکارها هستیم…<br>به محض رسیدن پیشنهاد، اینجا نمایش داده می‌شود.</div></div>';
+    } else {
+      h += '<div class="empty" style="padding:14px"><div class="desc">درخواست فعالی نداری. چیزی که می‌خوای رو ثبت کن تا کسب‌وکارها قیمت بدن.</div>'+
+           '<button class="cta" id="newReqBtn">📨 ثبت درخواست جدید</button></div>';
+    }
+    var hist = list.filter(function(r){ return r.status !== "open"; }).slice(0,5);
+    if(hist.length){
+      h += '<div style="font-weight:700;font-size:13.5px;margin:16px 0 8px">سابقه‌ی درخواست‌ها</div>';
+      hist.forEach(function(r){
+        var chosen = (r.offers||[]).filter(function(o){return o.selected;})[0];
+        h += '<div class="my-req-hist"><div style="min-width:0"><b>'+esc(r.service)+'</b><div style="font-size:11px;color:var(--text-3)">'+formatDate(new Date(r.created_at).getTime())+'</div></div><span class="st-pill '+esc(r.status)+'">'+esc(ST[r.status]||r.status)+'</span></div>';
+        if(chosen) h += offerHTML(chosen,false,r.id);
+      });
+    }
+    box.innerHTML = h;
+    box.querySelectorAll("[data-cancel]").forEach(function(b){ b.onclick = function(){ cancelReq(b.getAttribute("data-cancel")); }; });
+    box.querySelectorAll("[data-pick]").forEach(function(b){ b.onclick = function(){ pickOffer(b.getAttribute("data-pick")); }; });
+    var nb = $("newReqBtn"); if(nb) nb.onclick = function(){ openRequestModal(""); };
+  }
+  window.nomaxRefresh = function(){ renderMy(); };
+
+  async function loadMy(silent){
+    if(!user()){ list = []; renderMy(); return; }
+    try{
+      var r = await sb.rpc("get_my_requests");
+      if(r.error) throw r.error;
+      list = r.data || [];
+      var act = active(), n = act ? (act.offers||[]).length : 0;
+      if(silent === true && n > lastOffers){
+        showToast("📬 پیشنهاد جدید برای درخواست شما رسید!", "success");
+        try{ tryBrowserNotify("نومکس", "پیشنهاد جدید برای درخواست شما رسید"); }catch(e){}
+      }
+      lastOffers = n; renderMy();
+      clearInterval(pollTid);
+      if(act) pollTid = setInterval(function(){ if(!document.hidden) loadMy(true); }, 20000);
+    }catch(e){ console.error(e); }
+  }
+  async function cancelReq(id){
+    if(!confirm("درخواست لغو شود؟")) return;
+    var r = await sb.rpc("cancel_my_request", { p_id: id });
+    if(r.error){ showToast("لغو انجام نشد.", "error"); return; }
+    lastOffers = 0; showToast("درخواست لغو شد.", "success"); await loadMy();
+  }
+  async function pickOffer(id){
+    if(!confirm("این پیشنهاد انتخاب شود؟ بعد از انتخاب، درخواست بسته می‌شود و کسب‌وکار مطلع می‌شود.")) return;
+    var r = await sb.rpc("select_offer", { p_offer: id });
+    if(r.error){ showToast("انتخاب انجام نشد؛ شاید درخواست منقضی شده است.", "error"); await loadMy(); return; }
+    if(window.nomaxNotify) window.nomaxNotify({ action:"selected", offer_id:id });
+    showToast("✓ پیشنهاد انتخاب شد. می‌توانی با کسب‌وکار تماس بگیری یا مسیر را ببینی.", "success");
+    await loadMy();
+  }
+  window.addEventListener("nomax-auth", function(){ lastOffers = 0; loadMy(); loadOwnerRequests(true); });
+
+  /* ---------- پنل مالک ---------- */
+  var ownerReqs = [];
+  window.loadOwnerRequests = async function(silent){
+    var box = $("myRequests");
+    var owner = window.currentOwner ? window.currentOwner() : null;
+    if(!owner){
+      if(box && !silent) box.innerHTML = '<div class="empty" style="padding:24px"><div class="desc">برای دیدن درخواست‌ها وارد حساب شوید.</div></div>';
+      return;
+    }
+    var r = await sb.rpc("get_requests_for_owner");
+    if(r.error){
+      if(box && !silent) box.innerHTML = '<div class="empty" style="padding:24px"><div class="desc">دریافت درخواست‌ها انجام نشد؛ دوباره تلاش کنید.</div></div>';
+      return;
+    }
+    ownerReqs = r.data || [];
+    var pending = ownerReqs.filter(function(x){ return x.status === "open" && !x.my_offer; }).length;
+    var badge = $("ownerRequestsBadge");
+    if(badge){ badge.style.display = pending ? "inline" : "none"; badge.textContent = toFa(pending); }
+    if(!silent || (box && box.offsetParent !== null)) renderOwner();
+  };
+  function renderOwner(){
+    var box = $("myRequests"); if(!box) return;
+    if(!ownerReqs.length){
+      box.innerHTML = '<div class="empty" style="padding:24px"><div style="font-size:28px">📭</div><div class="title">درخواست مرتبطی نیست</div><div class="desc">وقتی مشتری چیزی مرتبط با دسته‌ی کسب‌وکار شما بخواهد، اینجا می‌بینید. (فقط کسب‌وکارهای تأییدشده درخواست دریافت می‌کنند.)</div></div>';
+      return;
+    }
+    var inp = 'style="width:100%;padding:9px;border:1px solid var(--border);border-radius:9px;margin-bottom:6px;background:var(--surface);color:var(--text);font-family:inherit"';
+    box.innerHTML = ownerReqs.map(function(q, i){
+      var o = q.my_offer, sel = q.status === "selected";
+      var head = '<div style="display:flex;justify-content:space-between;gap:8px"><strong>🔎 '+esc(q.service)+'</strong><span style="font-size:11px;color:var(--text-3)">'+getTimeAgo(new Date(q.created_at).getTime())+'</span></div>'+
+        '<div class="request-meta"><span>🏪 '+esc(q.business_name||"")+'</span>'+(q.area?'<span>📍 '+esc(q.area)+'</span>':'')+'</div>'+
+        (q.description?'<div style="font-size:12.5px;color:var(--text-2);margin-top:6px">'+esc(q.description)+'</div>':'');
+      if(sel){
+        return '<div class="owner-business '+(q.selected_mine?'offer-chosen':'')+'">'+head+
+          '<div style="margin-top:10px;font-weight:800;font-size:13px;color:'+(q.selected_mine?'#047857':'var(--text-3)')+'">'+(q.selected_mine?'🎉 مشتری پیشنهاد شما را انتخاب کرد — منتظر تماس یا مراجعه‌اش باشید.':'مشتری پیشنهاد دیگری را انتخاب کرد.')+'</div></div>';
+      }
+      return '<div class="owner-business">'+head+
+        '<div class="req-response-box" style="display:block">'+
+          '<input data-f="price" data-i="'+i+'" maxlength="40" placeholder="قیمت (مثلاً ۲۵۰ هزار تومان)" value="'+esc(o?o.price:"")+'" '+inp+'>'+
+          '<input data-f="brand" data-i="'+i+'" maxlength="40" placeholder="برند" value="'+esc(o?o.brand:"")+'" '+inp+'>'+
+          '<textarea data-f="note" data-i="'+i+'" maxlength="250" placeholder="توضیحات (گارانتی، موجودی، زمان تحویل…)">'+esc(o?o.note:"")+'</textarea>'+
+          '<div class="req-response-actions"><button class="send" data-send="'+i+'">'+(o?"✎ بروزرسانی پیشنهاد":"✓ این کالا را دارم؛ ارسال پیشنهاد")+'</button></div>'+
+        '</div></div>';
+    }).join("");
+    box.querySelectorAll("[data-send]").forEach(function(btn){
+      btn.onclick = async function(){
+        var i = +btn.getAttribute("data-send"), q = ownerReqs[i];
+        function val(f){ return box.querySelector('[data-f="'+f+'"][data-i="'+i+'"]').value.trim(); }
+        if(!val("price")){ showToast("قیمت را وارد کنید.", "error"); return; }
+        btn.disabled = true;
+        var r = await sb.rpc("submit_offer", { p_request:q.id, p_business:q.business_id, p_price:val("price"), p_brand:val("brand"), p_note:val("note") });
+        btn.disabled = false;
+        if(r.error){ showToast((r.error.message||"").indexOf("not_allowed")>-1?"این درخواست دیگر در دسترس نیست.":"ثبت نشد؛ دوباره تلاش کنید.", "error"); loadOwnerRequests(); return; }
+        if(window.nomaxNotify) window.nomaxNotify({ action:"new_offer", request_id:q.id, business_id:q.business_id });
+        showToast("پیشنهاد شما برای مشتری ثبت شد ✓", "success"); loadOwnerRequests();
+      };
+    });
+  }
+  document.querySelectorAll(".admin-sub-tab[data-owner-sub]").forEach(function(tab){
+    tab.addEventListener("click", function(){ if(this.getAttribute("data-owner-sub") === "requests") loadOwnerRequests(); });
+  });
+  setInterval(function(){
+    var oc = $("ownerCard");
+    if(oc && !oc.classList.contains("hidden") && !document.hidden) loadOwnerRequests(true);
+  }, 30000);
+
+  /* دکمه‌ی ثبت درخواست زیر جستجو */
+  var sw = $("stickySearchWrap");
+  if(sw && !$("quickReqBtn")){
+    var b = document.createElement("button");
+    b.id = "quickReqBtn"; b.type = "button";
+    b.style.cssText = "width:100%;margin-top:8px;border:1.5px dashed var(--primary-400);border-radius:12px;padding:10px;background:var(--primary-50);color:var(--primary-700);font-family:inherit;font-weight:700;font-size:13px;cursor:pointer";
+    b.textContent = "📨 پیدا نکردی؟ درخواست ثبت کن تا کسب‌وکارها قیمت بدهند";
+    b.onclick = function(){ openRequestModal($("searchInput").value.trim()); };
+    sw.parentNode.appendChild(b);
+  }
+})();
+</script>
+
+
+<script>
+/* ===== نظارت ادمین بر درخواست‌ها ===== */
+(function(){
+  function $(id){ return document.getElementById(id); }
+  var tabs = document.querySelectorAll("#adminSubTabs .admin-sub-tab");
+  async function load(){
+    var box = $("adminRequestsBox"); if(!box) return;
+    box.innerHTML = '<div class="empty" style="padding:20px"><div class="desc">در حال بارگذاری…</div></div>';
+    var r = await sb.rpc("admin_list_requests");
+    if(r.error){ box.innerHTML = '<div class="empty" style="padding:20px"><div class="desc">دریافت نشد (دسترسی مدیر لازم است).</div></div>'; return; }
+    var list = r.data || [];
+    if(!list.length){ box.innerHTML = '<div class="empty" style="padding:20px"><div class="desc">درخواستی وجود ندارد.</div></div>'; return; }
+    var names = {open:"باز", closed:"بسته", cancelled:"لغو", expired:"منقضی", selected:"انتخاب شد"};
+    box.innerHTML = list.map(function(q){
+      return '<div class="admin-review"><div class="ar-target">'+esc(q.category_id||"")+(q.subcategory_id?" → "+esc(q.subcategory_id):"")+' · '+esc(names[q.status]||q.status)+' · '+toFa(q.offers)+' پیشنهاد</div>'+
+        '<div class="ar-text"><b>'+esc(q.service)+'</b>'+(q.area?' — '+esc(q.area):'')+(q.description?'<br>'+esc(q.description):'')+'</div>'+
+        '<div class="ar-date">'+formatDate(new Date(q.created_at).getTime())+'</div>'+
+        '<div class="ar-actions">'+(q.status==="open"?'<button class="btn-reject" data-rq-close="'+esc(q.id)+'">⛔ بستن</button>':'')+
+        '<button class="btn-delete-admin" data-rq-del="'+esc(q.id)+'">🗑 حذف</button></div></div>';
+    }).join("");
+  }
+  tabs.forEach(function(tab){
+    tab.addEventListener("click", function(){
+      var isReq = this.getAttribute("data-sub") === "requests";
+      var rl = $("adminRequestsList"); if(rl) rl.style.display = isReq ? "" : "none";
+      if(isReq) load();
+    });
+  });
+  document.addEventListener("click", async function(e){
+    var c = e.target.closest && e.target.closest("[data-rq-close],[data-rq-del]");
+    if(!c) return;
+    var del = c.hasAttribute("data-rq-del");
+    var id = c.getAttribute(del ? "data-rq-del" : "data-rq-close");
+    if(!confirm(del ? "این درخواست حذف شود؟" : "این درخواست بسته شود؟")) return;
+    var r = await sb.rpc(del ? "admin_delete_request" : "admin_close_request", { p_id: id });
+    if(r.error){ showToast("انجام نشد.", "error"); return; }
+    showToast("انجام شد ✓", "success"); load();
+  });
+})();
+</script>
+<script id="nomax-config">
+/* ===== تنظیمات اعلان — این دو مقدار را پر کن ===== */
+window.NOMAX_CFG = {
+  baleBot: "YOUR_BALE_BOT_USERNAME",        // نام کاربری بات بله، بدون @
+  vapidPublic: "YOUR_VAPID_PUBLIC_KEY"      // کلید عمومی VAPID
+};
+</script>
+<script>
+/* ===== نومکس: اعلان فوری (بله + اعلان مرورگر) ===== */
+(function(){
+  var cfg = window.NOMAX_CFG || {};
+  var baleOn = !!cfg.baleBot && cfg.baleBot.indexOf("YOUR_") !== 0;
+  var vapidOn = !!cfg.vapidPublic && cfg.vapidPublic.indexOf("YOUR_") !== 0;
+  var secure = location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1";
+  var pushOk = vapidOn && secure && ("serviceWorker" in navigator) && ("PushManager" in window) && ("Notification" in window);
+  var status = { bale:false, push:0, enabled:true }, localSub = false, linkUrl = "", pollTid = null;
+  function $(id){ return document.getElementById(id); }
+
+  /* ---------- فراخوانی تابع سرور (آتش‌وفراموش) ---------- */
+  window.nomaxNotify = function(body){
+    try{ sb.functions.invoke("nomax-notify", { body: body }).then(function(r){ if(r && r.error) console.warn("notify", r.error); }); }catch(e){}
+  };
+
+  /* ---------- استایل ---------- */
+  var st = document.createElement("style");
+  st.textContent =
+    ".notif-widget{border:1px solid var(--primary-100);background:var(--primary-50);border-radius:14px;padding:12px 14px;margin-bottom:14px;font-size:12.5px;line-height:1.9}"+
+    ".notif-widget .nw-title{font-weight:800;font-size:13.5px;color:var(--primary-700)}"+
+    ".notif-widget .nw-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px;flex-wrap:wrap}"+
+    ".notif-widget .nw-ok{color:#047857;font-weight:800}.notif-widget .nw-off{color:var(--text-3);font-weight:700}"+
+    ".notif-widget button,.notif-widget a.nw-btn{border:0;border-radius:9px;padding:8px 12px;font:inherit;font-size:12px;font-weight:800;cursor:pointer;text-decoration:none;background:var(--primary-500);color:#fff}"+
+    ".notif-widget button.nw-sec{background:var(--surface);color:var(--text-2);border:1px solid var(--border)}"+
+    ".notif-widget .nw-hint{margin-top:8px;font-size:11px;color:var(--text-3)}";
+  document.head.appendChild(st);
+
+  /* ---------- وضعیت ---------- */
+  async function loadStatus(){
+    if(!(window.nomaxAuth && window.nomaxAuth.user())) return false;
+    try{
+      var r = await sb.rpc("get_notification_status");
+      if(!r.error && r.data) status = r.data;
+    }catch(e){}
+    localSub = false;
+    if(pushOk){
+      try{
+        var reg = await navigator.serviceWorker.getRegistration("./sw.js");
+        if(reg){ var s = await reg.pushManager.getSubscription(); localSub = !!s; }
+      }catch(e){}
+    }
+    return true;
+  }
+
+  function widgetHTML(role){
+    var who = role === "owner"
+      ? "با فعال‌سازی، به‌محض ثبت درخواست مرتبط با کسب‌وکارت، همان لحظه خبردار می‌شی و می‌تونی زودتر قیمت بدی."
+      : "با فعال‌سازی، به‌محض رسیدن پیشنهاد کسب‌وکارها به درخواستت خبردار می‌شی.";
+    var h = '<div class="notif-widget"><div class="nw-title">🔔 اعلان فوری</div><div>'+who+'</div>';
+    if(baleOn){
+      h += '<div class="nw-row"><span>بله: '+(status.bale?'<span class="nw-ok">متصل ✓</span>':'<span class="nw-off">متصل نیست</span>')+'</span>'+
+        (status.bale
+          ? '<button type="button" class="nw-sec" data-nw="unlink">قطع اتصال</button>'
+          : '<button type="button" data-nw="bale">اتصال به بله</button>')+'</div>';
+      if(linkUrl && !status.bale) h += '<div class="nw-hint">اگه بله باز نشد: <a class="nw-btn" style="padding:4px 10px" href="'+esc(linkUrl)+'" target="_blank" rel="noopener">باز کردن بله</a> و بعد روی «Start» بزن.</div>';
+    }
+    if(pushOk){
+      h += '<div class="nw-row"><span>اعلان مرورگر: '+(localSub?'<span class="nw-ok">فعال ✓</span>':'<span class="nw-off">غیرفعال</span>')+'</span>'+
+        (localSub
+          ? '<button type="button" class="nw-sec" data-nw="pushoff">غیرفعال‌سازی</button>'
+          : '<button type="button" data-nw="pushon">فعال‌سازی</button>')+'</div>';
+    } else if(vapidOn && !secure){
+      h += '<div class="nw-hint">اعلان مرورگر فقط روی آدرس https کار می‌کند.</div>';
+    }
+    if(!baleOn && !pushOk) h += '<div class="nw-hint">اعلان هنوز تنظیم نشده است.</div>';
+    h += '<div class="nw-hint">🔒 شماره یا ایمیل شما در پیام‌ها و برای دیگران نمایش داده نمی‌شود.</div></div>';
+    return h;
+  }
+
+  async function render(){
+    var boxes = [["notifBoxOwner","owner"],["notifBoxCustomer","customer"]];
+    var ok = await loadStatus();
+    boxes.forEach(function(b){
+      var el = $(b[0]); if(!el) return;
+      el.innerHTML = ok ? widgetHTML(b[1]) : "";
+      el.querySelectorAll("[data-nw]").forEach(function(btn){
+        btn.onclick = function(){ act(btn.getAttribute("data-nw"), btn); };
+      });
+    });
+  }
+  window.nomaxNotifRender = render;
+
+  /* ---------- اقدامات ---------- */
+  function b64u(s){
+    var p = "=".repeat((4 - s.length % 4) % 4), b = (s + p).replace(/-/g,"+").replace(/_/g,"/");
+    var raw = atob(b), out = new Uint8Array(raw.length);
+    for(var i=0;i<raw.length;i++) out[i] = raw.charCodeAt(i);
+    return out;
+  }
+  async function act(a, btn){
+    btn.disabled = true;
+    try{
+      if(a === "bale"){
+        var r = await sb.rpc("create_bale_link");
+        if(r.error){ showToast("ساخت لینک انجام نشد.", "error"); return; }
+        linkUrl = "https://ble.ir/" + cfg.baleBot + "?start=" + r.data;
+        window.open(linkUrl, "_blank", "noopener");
+        await render();
+        clearInterval(pollTid); var n = 0;
+        pollTid = setInterval(async function(){
+          n++; await loadStatus();
+          if(status.bale){ clearInterval(pollTid); linkUrl = ""; showToast("✓ بله متصل شد.", "success"); render(); }
+          else if(n > 40) clearInterval(pollTid);
+        }, 3000);
+        showToast("در بله روی «Start» بزن تا اتصال کامل شود.", "info");
+        return;
+      }
+      if(a === "unlink"){
+        var u = await sb.rpc("unlink_bale");
+        if(u.error) showToast("انجام نشد.", "error"); else showToast("اتصال بله قطع شد.", "success");
+      }
+      if(a === "pushon"){
+        var perm = await Notification.requestPermission();
+        if(perm !== "granted"){ showToast("اجازه‌ی اعلان داده نشد. از تنظیمات مرورگر (قفل کنار آدرس) فعالش کن.", "error"); return; }
+        var reg = await navigator.serviceWorker.register("./sw.js");
+        await navigator.serviceWorker.ready;
+        var sub = await reg.pushManager.getSubscription();
+        if(!sub) sub = await reg.pushManager.subscribe({ userVisibleOnly:true, applicationServerKey: b64u(cfg.vapidPublic) });
+        var j = sub.toJSON();
+        var s = await sb.rpc("save_push_subscription", { p_endpoint: j.endpoint, p_p256dh: j.keys.p256dh, p_auth: j.keys.auth });
+        if(s.error){ showToast("ذخیره‌ی اشتراک انجام نشد.", "error"); return; }
+        showToast("✓ اعلان مرورگر فعال شد.", "success");
+      }
+      if(a === "pushoff"){
+        var rg = await navigator.serviceWorker.getRegistration("./sw.js");
+        var sb2 = rg ? await rg.pushManager.getSubscription() : null;
+        if(sb2){ var ep = sb2.endpoint; await sb2.unsubscribe(); await sb.rpc("remove_push_subscription", { p_endpoint: ep }); }
+        showToast("اعلان مرورگر غیرفعال شد.", "success");
+      }
+    }catch(e){ console.error(e); showToast("انجام نشد؛ دوباره تلاش کنید.", "error"); }
+    finally{ btn.disabled = false; await render(); }
+  }
+
+  window.addEventListener("nomax-auth", render);
+  document.addEventListener("click", function(e){
+    var t = e.target.closest && e.target.closest("[data-owner-sub='requests']");
+    if(t) setTimeout(render, 50);
+  });
+  render();
+})();
+</script>
+
 </body>
   </html>
