@@ -2117,6 +2117,29 @@ body, button, input, select, textarea{
 .acct-menu button{width:100%;display:flex;align-items:center;gap:10px;border:0;background:transparent;color:var(--text);font:inherit;font-size:13px;font-weight:600;padding:10px 12px;border-radius:10px;cursor:pointer;text-align:right}
 .acct-menu button:hover{background:var(--muted)}
 .acct-menu button.danger{color:#b91c1c}
+.acct-menu button .am-label{flex:1;min-width:0;text-align:right}
+.acct-menu button .am-meta{display:inline-flex;align-items:center;gap:6px;flex-shrink:0;margin-right:auto}
+.am-badge{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 6px;border-radius:100px;background:#dc2626;color:#fff;font-size:10.5px;font-weight:800;line-height:1;box-shadow:0 2px 8px rgba(220,38,38,.35)}
+.am-bell{display:inline-flex;font-size:14px;line-height:1;animation:amBellRing 1.1s ease-in-out infinite;transform-origin:50% 0}
+@keyframes amBellRing{
+  0%,100%{transform:rotate(0)}
+  12%{transform:rotate(14deg)}
+  24%{transform:rotate(-12deg)}
+  36%{transform:rotate(10deg)}
+  48%{transform:rotate(-8deg)}
+  60%{transform:rotate(4deg)}
+  72%{transform:rotate(0)}
+}
+.acct-btn.has-msg::before{
+  content:"";position:absolute;top:6px;left:6px;width:9px;height:9px;border-radius:50%;
+  background:#dc2626;border:2px solid #0f766e;box-shadow:0 0 0 0 rgba(220,38,38,.55);
+  animation:amPulse 1.6s ease-out infinite;z-index:2
+}
+@keyframes amPulse{
+  0%{box-shadow:0 0 0 0 rgba(220,38,38,.55)}
+  70%{box-shadow:0 0 0 8px rgba(220,38,38,0)}
+  100%{box-shadow:0 0 0 0 rgba(220,38,38,0)}
+}
 .auth-google{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;background:#fff;color:#1f1f1f;border:1px solid #dadce0;border-radius:12px;padding:12px;font:inherit;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s}
 .auth-google:hover{background:#f8f9fa;box-shadow:0 2px 8px rgba(0,0,0,.1)}
 .auth-or{display:flex;align-items:center;gap:10px;color:var(--text-3);font-size:12px;margin:14px 0}
@@ -2300,7 +2323,7 @@ body, button, input, select, textarea{
   </div>
 
   <!-- ============ OWNER CTA ============ -->
-  <div class="card">
+  <div class="card" id="ownerCtaCard">
     <h2 class="section-title">
       <span class="icon">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4M9 9v.01M9 12v.01M9 15v.01M9 18v.01"/></svg>
@@ -2579,38 +2602,45 @@ body, button, input, select, textarea{
   </div>
 
   <!-- ============ OWNER PANEL ============ -->
-  <div id="ownerCard" class="card hidden">
-    <h2 class="section-title">
-      <span class="icon">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-      </span>
-      مدیریت کسب‌وکارها
-    </h2>
-  
-    <!-- تب‌های پنل صاحب کسب‌وکار -->
-    <div class="admin-sub-tabs" id="ownerSubTabs" style="margin-bottom:16px">
-      <button type="button" class="admin-sub-tab active" data-owner-sub="businesses">🏪 کسب‌وکارهای من</button>
-      <button type="button" class="admin-sub-tab" data-owner-sub="requests">📨 درخواست‌ها <span id="ownerRequestsBadge" style="background:var(--danger);color:#fff;font-size:10px;padding:1px 6px;border-radius:100px;font-weight:700;margin-right:4px;display:none">۰</span></button>
+  <div id="ownerCard" class="card hidden owner-workspace">
+    <div class="owner-workspace-head">
+      <div>
+        <div class="owner-kicker">پنل کسب‌وکار</div>
+        <h2 class="section-title owner-title">
+          <span class="icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </span>
+          کسب‌وکار من
+        </h2>
+      </div>
+      <div class="owner-workspace-note">فقط کسب‌وکار ثبت‌شده شما</div>
     </div>
-  
-    <div id="myBusinessesBox">
+
+    <div class="admin-sub-tabs owner-tabs" id="ownerSubTabs" style="margin-bottom:16px" role="tablist" aria-label="بخش‌های پنل">
+      <button type="button" class="admin-sub-tab active" data-owner-sub="businesses" role="tab" aria-selected="true">🏪 کسب‌وکار من</button>
+      <button type="button" class="admin-sub-tab" data-owner-sub="requests" role="tab" aria-selected="false">💬 پیغام مشتری <span id="ownerRequestsBadge" class="owner-tab-badge" style="display:none">۰</span></button>
+    </div>
+
+    <div id="myBusinessesBox" class="owner-panel-section" data-owner-panel="businesses">
+      <div class="owner-section-head"><div><h3>کسب‌وکار ثبت‌شده</h3><p>اطلاعات و وضعیت انتشار همان کسب‌وکاری که ثبت کرده‌اید.</p></div></div>
       <div id="myBusinesses"></div>
-      <button type="button" class="menu-btn green" id="newBusinessButton">
+      <button type="button" class="menu-btn green owner-primary-action" id="newBusinessButton">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
         کسب‌وکار جدید
       </button>
     </div>
-  
-    <div id="myRequestsBox" style="display:none">
+
+    <div id="myRequestsBox" class="owner-panel-section" data-owner-panel="requests" style="display:none">
+      <div class="owner-section-head"><div><h3>پیغام و درخواست مشتریان</h3><p>درخواست‌هایی که به کسب‌وکار شما مربوط است.</p></div></div>
       <div class="owner-notif-banner" id="ownerNotifBanner">
         <div id="ownerNotifBannerText">اعلان جدیدی ندارید.</div>
-        <button type="button" id="enableBrowserNotifBtn">🔔 فعال‌سازی اعلان مرورگر</button>
+        <button type="button" id="enableBrowserNotifBtn">🔔 فعال‌سازی اعلان</button>
       </div>
       <div id="notifBoxOwner"></div>
       <div id="myRequests"></div>
     </div>
-  
-    <button type="button" class="menu-btn" id="closeOwnerButton">بستن</button>
+
+    <button type="button" class="menu-btn owner-close-action" id="closeOwnerButton">بستن پنل</button>
   </div>
 
   <div class="footer">
@@ -7035,17 +7065,35 @@ async function __loadFromSupabase_duplicate_disabled(){ return; }
 };
 
 /* ============ OWNER REQUESTS TAB ============ */
+function setOwnerPanelTab(target){
+  document.querySelectorAll(".admin-sub-tab[data-owner-sub]").forEach(function(t){
+    var active = t.getAttribute("data-owner-sub") === target;
+    t.classList.toggle("active", active);
+    t.setAttribute("aria-selected", active ? "true" : "false");
+  });
+  document.querySelectorAll("[data-owner-panel]").forEach(function(panel){
+    panel.style.display = panel.getAttribute("data-owner-panel") === target ? "block" : "none";
+  });
+  document.querySelectorAll("[data-owner-summary]").forEach(function(card){
+    card.classList.toggle("active", card.getAttribute("data-owner-summary") === target);
+  });
+  if(target === "requests" && window.loadOwnerRequests) window.loadOwnerRequests();
+  if(target === "myrequest"){
+    try{ if(typeof loadMy === "function") loadMy(true); }catch(e){}
+  }
+}
 document.querySelectorAll(".admin-sub-tab[data-owner-sub]").forEach(function(tab){
-  tab.onclick = function(){
-    var target = this.getAttribute("data-owner-sub");
-    document.querySelectorAll(".admin-sub-tab[data-owner-sub]").forEach(function(t){
-      t.classList.toggle("active", t === tab);
-    });
-    document.getElementById("myBusinessesBox").style.display = target === "businesses" ? "block" : "none";
-    document.getElementById("myRequestsBox").style.display = target === "requests" ? "block" : "none";
-    if(target === "requests" && window.loadOwnerRequests) window.loadOwnerRequests();
-  };
+  tab.onclick = function(){ setOwnerPanelTab(this.getAttribute("data-owner-sub")); };
 });
+document.querySelectorAll("[data-owner-summary]").forEach(function(card){
+  card.onclick = function(){ setOwnerPanelTab(this.getAttribute("data-owner-summary")); };
+});
+var ownerOpenMyRequest=document.getElementById("ownerOpenMyRequest");
+if(ownerOpenMyRequest) ownerOpenMyRequest.onclick=function(){
+  setOwnerPanelTab("myrequest");
+  var c=document.getElementById("myRequestCard");
+  if(c){ c.classList.remove("hidden"); c.scrollIntoView({behavior:"smooth",block:"start"}); }
+};
 
 function getTimeAgo(ts){
   var diff = Date.now() - ts;
@@ -7324,6 +7372,11 @@ function getTimeAgo(ts){
   };
   document.getElementById("closeOwnerButton").onclick = function(){
     document.getElementById("ownerCard").classList.add("hidden");
+    try{
+      var hasBiz = (typeof ownerBusinessList==='function') && ownerBusinessList().length>0;
+      var cta = document.getElementById("ownerCtaCard");
+      if(cta){ if(hasBiz) cta.classList.add("hidden"); else cta.classList.remove("hidden"); }
+    }catch(e){}
   };
   
   /* ============ INIT ============ */
@@ -8541,14 +8594,50 @@ else msg.textContent='ثبت‌نام انجام نشد. اگر قبلاً ثب�
     };
   }
 
-  function showOwnerWorkspace(){
+  function updateOwnerWorkspaceSummary(){
+    try{
+      var bs=ownerBusinessList();
+      var bc=document.getElementById("ownerBizCount"); if(bc) bc.textContent=toFa(bs.length);
+      var pc=document.getElementById("ownerPendingCount");
+      var pending=(window.ownerReqs||[]).filter(function(x){return x.status==="open" && !x.my_offer;}).length;
+      if(pc) pc.textContent=toFa(pending);
+      var mc=document.getElementById("ownerMyReqCount");
+      var activeMine=(typeof active==="function" && user && user()) ? active() : null;
+      if(mc) mc.textContent=activeMine ? toFa((activeMine.offers||[]).length) : "۰";
+      var ms=document.getElementById("ownerMyReqSummary");
+      if(ms) ms.textContent=activeMine ? ("درخواست «"+(activeMine.service||"")+"» فعال است · "+toFa((activeMine.offers||[]).length)+" پیشنهاد") : "درخواست فعالی ندارید؛ از بخش درخواست من شروع کنید.";
+    }catch(e){}
+  }
+
+  function showOwnerWorkspace(opts){
+    opts = opts || {};
     try{ updateOwnerRequestsBadgeV2(); }catch(e){}
     try{ if(typeof maybePromptOwnerNotify==="function") maybePromptOwnerNotify(); }catch(e){}
     var card=document.getElementById('ownerCard'); if(!card)return;
-    document.getElementById('registerCard').classList.add('hidden'); card.classList.remove('hidden');
-    ownerPanelHeader(); renderOwnerBusinessesV2(); updateOwnerRequestsBadgeV2();
-    card.scrollIntoView({behavior:'smooth',block:'start'});
+    var reg=document.getElementById('registerCard'); if(reg) reg.classList.add('hidden');
+    var cta=document.getElementById('ownerCtaCard'); if(cta) cta.classList.add('hidden');
+    card.classList.remove('hidden');
+    ownerPanelHeader(); renderOwnerBusinessesV2(); updateOwnerRequestsBadgeV2(); updateOwnerWorkspaceSummary();
+    var tab = opts.tab || 'businesses';
+    try{ if(typeof setOwnerPanelTab==='function') setOwnerPanelTab(tab); }catch(e){}
+    if(!opts.silent) card.scrollIntoView({behavior:'smooth',block:'start'});
   }
+  window.showOwnerWorkspace = showOwnerWorkspace;
+
+  function syncOwnerHomeView(){
+    try{
+      var hasBiz = (typeof ownerBusinessList==='function') && ownerBusinessList().length>0;
+      var cta=document.getElementById('ownerCtaCard');
+      var card=document.getElementById('ownerCard');
+      if(hasBiz){
+        if(cta) cta.classList.add('hidden');
+        if(card && card.classList.contains('hidden')) showOwnerWorkspace({ silent:true, tab:'businesses' });
+      } else {
+        if(cta) cta.classList.remove('hidden');
+      }
+    }catch(e){}
+  }
+  window.syncOwnerHomeView = syncOwnerHomeView;
 
   function ownerStatusText(b){
     var why = b.rejectionReason ? (' — دلیل: ' + b.rejectionReason) : '';
@@ -8565,8 +8654,14 @@ else msg.textContent='ثبت‌نام انجام نشد. اگر قبلاً ثب�
   function renderOwnerBusinessesV2(){
     var box=document.getElementById('myBusinesses'); if(!box)return;
     var list=ownerBusinessList();
-    if(!list.length){box.innerHTML='<div class="empty" style="padding:20px"><div style="font-size:28px">🏪</div><div class="title">هنوز کسب‌وکاری ثبت نکرده‌اید</div><div class="desc">از دکمه «کسب‌وکار جدید» شروع کنید.</div></div>';return;}
+    var newBtn=document.getElementById('newBusinessButton');
+    if(newBtn){ newBtn.style.display = list.length>=1 ? 'none' : ''; }
+    if(!list.length){
+      box.innerHTML='<div class="empty" style="padding:20px"><div style="font-size:28px">🏪</div><div class="title">هنوز کسب‌وکاری ثبت نکرده‌اید</div><div class="desc">از دکمه زیر کسب‌وکار خود را ثبت کنید.</div></div>';
+      return;
+    }
     var html='';
+    // فقط کسب‌وکار(های) متعلق به همین مالک — معمولاً یکی
     for(var i=0;i<list.length;i++){
       var b=list[i];
       html+='<div class="owner-business"><div class="owner-head"><div class="avatar">'+avatarHTML(b)+'</div><div class="owner-head-text"><h3>'+esc(b.name)+'</h3><div class="meta">'+esc(b.type||'دسته‌بندی نشده')+' · '+esc(ownerStatusText(b))+(b.emergency?' · ⚡ اورژانسی':(b.open24h?' · ⚡ ۲۴ساعته (منتظر تأیید مدیر)':''))+'</div></div></div><div class="owner-info"><div class="row"><span>📞</span><span>'+toFa(esc(b.phone||''))+'</span></div><div class="row"><span>📍</span><span>'+esc(b.address||'بهبهان')+'</span></div></div><div class="owner-actions"><button class="edit-btn" data-own-edit="'+b.id+'">✏️ ویرایش</button><button class="delete-btn" data-own-delete="'+b.id+'">🗑 حذف</button></div></div>';
@@ -8652,16 +8747,39 @@ else msg.textContent='ثبت‌نام انجام نشد. اگر قبلاً ثب�
   
 
   // Restore session from Supabase JWT (not from local password store)
-  refreshOwnerFromSupabase().then(function(u){ if(u){ try{ updateOwnerRequestsBadgeV2(); }catch(e){} } });
+  refreshOwnerFromSupabase().then(function(u){
+    if(u){
+      try{ updateOwnerRequestsBadgeV2(); }catch(e){}
+      try{ if(window.syncOwnerHomeView) window.syncOwnerHomeView(); }catch(e){}
+    }
+  });
 
   // Expose for other modules
   window.currentOwner = currentOwner;
   window.refreshOwnerFromSupabase = refreshOwnerFromSupabase;
-  window.showOwnerWorkspace = showOwnerWorkspace;
+  window.ownerBusinessList = ownerBusinessList;
   window.openOwnerAuth = openOwnerAuth;
 })();
 </script>
 
+<style id="owner-workspace-ux">
+.owner-workspace{overflow:hidden}
+.owner-workspace-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:14px}
+.owner-kicker{font-size:11px;color:var(--primary-700);font-weight:800;margin-bottom:3px}
+.owner-title{margin:0!important}
+.owner-workspace-note{font-size:11.5px;color:var(--text-3);max-width:230px;text-align:end;line-height:1.7;padding-top:5px}
+.owner-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 14px}
+.owner-summary-card{border:1px solid var(--border);background:var(--surface);border-radius:13px;padding:10px 9px;display:flex;align-items:center;gap:8px;text-align:start;color:var(--text);font-family:inherit;cursor:pointer;transition:.18s;min-width:0}
+.owner-summary-card:hover,.owner-summary-card.active{border-color:var(--primary-300);box-shadow:var(--shadow-sm);background:var(--primary-50)}
+.owner-summary-icon{font-size:20px;flex:0 0 auto}.owner-summary-card span:last-child{display:flex;flex-direction:column;min-width:0}.owner-summary-card b{font-size:17px;line-height:1.1}.owner-summary-card small{font-size:10.5px;color:var(--text-3);margin-top:3px;white-space:nowrap}
+.owner-tabs{margin-bottom:14px!important;overflow-x:auto;scrollbar-width:none}.owner-tabs::-webkit-scrollbar{display:none}
+.owner-tabs .admin-sub-tab{white-space:nowrap;min-width:max-content}.owner-tab-badge{background:var(--danger);color:#fff;font-size:10px;padding:1px 6px;border-radius:100px;font-weight:800;margin-right:3px}
+.owner-section-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}.owner-section-head h3{margin:0;font-size:14px}.owner-section-head p{margin:4px 0 0;color:var(--text-3);font-size:11.5px;line-height:1.7}
+.owner-primary-action{margin-top:10px}.owner-personal-request-card{display:flex;align-items:center;gap:11px;border:1px solid var(--border);border-radius:14px;padding:13px;background:var(--muted)}
+.owner-personal-request-icon{font-size:25px}.owner-personal-request-copy{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}.owner-personal-request-copy b{font-size:13.5px}.owner-personal-request-copy span{font-size:11.5px;color:var(--text-3);line-height:1.7}.owner-personal-request-card .menu-btn{width:auto;margin:0;white-space:nowrap;padding:9px 12px}
+.owner-close-action{margin-top:14px}
+@media(max-width:520px){.owner-workspace-head{display:block}.owner-workspace-note{text-align:start;max-width:none;margin-top:3px}.owner-summary{gap:6px}.owner-summary-card{padding:9px 7px}.owner-summary-icon{font-size:18px}.owner-summary-card b{font-size:15px}.owner-summary-card small{font-size:9.5px}.owner-personal-request-card{align-items:flex-start;flex-wrap:wrap}.owner-personal-request-card .menu-btn{width:100%}}
+</style>
 <style id="owner-approval-ux">
     .categories-wrapper {
     max-height: 0;
@@ -9193,8 +9311,9 @@ updateStats();
       try{
         await loadBusinessesFromServer();
         buildCategories(); updateStats();
+        try{ if(window.syncOwnerHomeView) window.syncOwnerHomeView(); }catch(e){}
         var oc=document.getElementById("ownerCard");
-        if(oc && !oc.classList.contains("hidden") && typeof window.showOwnerWorkspace==="function") window.showOwnerWorkspace();
+        if(oc && !oc.classList.contains("hidden") && typeof window.showOwnerWorkspace==="function") window.showOwnerWorkspace({ silent:true });
         try{ renderAdminBizManage(); }catch(e){}
         var rc=document.getElementById("resultsCard");
         if(rc && !rc.classList.contains("hidden")) searchBusinesses();
@@ -9368,6 +9487,16 @@ updateStats();
     }
     renderAccountBtn();
     try{ window.dispatchEvent(new Event("nomax-auth")); }catch(e){}
+    try{
+      if(u && window.syncOwnerHomeView){
+        setTimeout(function(){ window.syncOwnerHomeView(); }, 120);
+      } else {
+        var cta=document.getElementById('ownerCtaCard');
+        var card=document.getElementById('ownerCard');
+        if(cta) cta.classList.remove('hidden');
+        if(card) card.classList.add('hidden');
+      }
+    }catch(e){}
   }
 
   function consumePending(){
@@ -9391,33 +9520,77 @@ updateStats();
       b.innerHTML = '<span class="acct-letter">' + esc((state.name || "؟").trim().charAt(0).toUpperCase()) + '</span>';
     } else {
       b.classList.remove("in");
+      b.classList.remove("has-msg");
       b.title = "ورود / ثبت‌نام";
       b.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>';
     }
+    try{ paintAcctDot(); }catch(e){}
+  }
+  /* شمارنده‌های پیام — فقط فرانت‌اند، از داده‌های موجود */
+  window.nomaxMsgCounts = window.nomaxMsgCounts || { customerOffers: 0, ownerPending: 0 };
+  function isBizOwner(){
+    try{
+      if(window.ownerBusinessList && window.ownerBusinessList().length > 0) return true;
+      if(window.currentOwner && window.currentOwner()) return true;
+    }catch(e){}
+    return false;
+  }
+  function amBadgeHTML(n){
+    n = Number(n)||0; if(n<=0) return "";
+    var fa = (typeof toFa==="function") ? toFa(n) : String(n);
+    return '<span class="am-meta"><span class="am-bell" aria-hidden="true">🔔</span><span class="am-badge">'+fa+'</span></span>';
+  }
+  function paintAcctDot(){
+    var b = $("accountBtn"); if(!b) return;
+    var c = window.nomaxMsgCounts || {};
+    var total = (Number(c.customerOffers)||0) + (Number(c.ownerPending)||0);
+    if(total>0) b.classList.add("has-msg"); else b.classList.remove("has-msg");
   }
   function closeMenu(){ var m = $("acctMenu"); if(m) m.classList.remove("open"); }
   function openMenu(){
     var m = $("acctMenu");
     if(!m){ m = document.createElement("div"); m.id = "acctMenu"; m.className = "acct-menu"; document.body.appendChild(m); }
     var u = state.user; if(!u) return;
-    m.innerHTML =
+    var counts = window.nomaxMsgCounts || { customerOffers:0, ownerPending:0 };
+    var owner = isBizOwner();
+    var html =
       '<div class="am-head"><div class="am-name">' + esc(state.name || "کاربر") + '</div><div class="am-mail">' + esc(u.email || "") + '</div>' +
       (state.admin ? '<span class="am-role">🛡 مدیر</span>' : '') + '</div>' +
-      '<button data-am="req">📨 درخواست‌های من</button>' +
-      '<button data-am="owner">🏪 پنل کسب‌وکار من</button>' +
-      (state.admin ? '<button data-am="admin">🛡 پنل مدیریت</button>' : '') +
-      '<button data-am="out" class="danger">🚪 خروج از حساب</button>';
+      '<button data-am="req"><span class="am-label">📨 درخواست‌های من</span>'+amBadgeHTML(counts.customerOffers)+'</button>';
+    if(owner){
+      html +=
+        '<button data-am="msgs"><span class="am-label">💬 پیغام مشتری</span>'+amBadgeHTML(counts.ownerPending)+'</button>' +
+        '<button data-am="customers"><span class="am-label">👥 مشتری‌های من</span></button>' +
+        '<button data-am="owner"><span class="am-label">🏪 پنل کسب‌وکار من</span></button>';
+    } else {
+      html += '<button data-am="owner"><span class="am-label">🏪 پنل کسب‌وکار من</span></button>';
+    }
+    if(state.admin) html += '<button data-am="admin"><span class="am-label">🛡 پنل مدیریت</span></button>';
+    html += '<button data-am="out" class="danger"><span class="am-label">🚪 خروج از حساب</span></button>';
+    m.innerHTML = html;
     m.classList.add("open");
     m.querySelectorAll("[data-am]").forEach(function(btn){
       btn.onclick = async function(){
         var a = btn.getAttribute("data-am"); closeMenu();
-        if(a === "req"){ var c = $("myRequestCard"); if(c){ c.classList.remove("hidden"); c.scrollIntoView({behavior:"smooth", block:"start"}); } }
-        else if(a === "owner"){ if(window.showOwnerWorkspace) window.showOwnerWorkspace(); }
+        if(a === "req"){
+          var c = $("myRequestCard");
+          if(c){ c.classList.remove("hidden"); c.scrollIntoView({behavior:"smooth", block:"start"}); }
+          try{ if(window.nomaxRefresh) window.nomaxRefresh(); }catch(e){}
+        }
+        else if(a === "msgs" || a === "customers"){
+          if(window.showOwnerWorkspace) window.showOwnerWorkspace({ tab: "requests" });
+        }
+        else if(a === "owner"){ if(window.showOwnerWorkspace) window.showOwnerWorkspace({ tab: "businesses" }); }
         else if(a === "admin"){ openAdminPanel(); }
         else if(a === "out"){ await signOut(); }
       };
     });
   }
+  window.nomaxRefreshAcctBadges = function(){
+    paintAcctDot();
+    var m = $("acctMenu");
+    if(m && m.classList.contains("open") && state.user) openMenu();
+  };
   async function signOut(){
     try{ await sb.auth.signOut(); }catch(e){}
     try{ localStorage.removeItem("behbahan_owner_auth_v4"); localStorage.removeItem("behbahan_admin"); }catch(e){}
@@ -9743,7 +9916,15 @@ updateStats();
   window.nomaxRefresh = function(){ renderMy(); };
 
   async function loadMy(silent){
-    if(!user()){ list = []; renderMy(); return; }
+    if(!user()){
+      list = []; renderMy();
+      try{
+        window.nomaxMsgCounts = window.nomaxMsgCounts || {};
+        window.nomaxMsgCounts.customerOffers = 0;
+        if(window.nomaxRefreshAcctBadges) window.nomaxRefreshAcctBadges();
+      }catch(e){}
+      return;
+    }
     try{
       var r = await sb.rpc("get_my_requests");
       if(r.error) throw r.error;
@@ -9754,6 +9935,11 @@ updateStats();
         try{ tryBrowserNotify("نومکس", "پیشنهاد جدید برای درخواست شما رسید"); }catch(e){}
       }
       lastOffers = n; renderMy();
+      try{
+        window.nomaxMsgCounts = window.nomaxMsgCounts || {};
+        window.nomaxMsgCounts.customerOffers = n;
+        if(window.nomaxRefreshAcctBadges) window.nomaxRefreshAcctBadges();
+      }catch(e){}
       clearInterval(pollTid);
       if(act) pollTid = setInterval(function(){ if(!document.hidden) loadMy(true); }, 20000);
     }catch(e){ console.error(e); }
@@ -9789,9 +9975,15 @@ updateStats();
       return;
     }
     ownerReqs = r.data || [];
+    try{ if(typeof updateOwnerWorkspaceSummary === "function") updateOwnerWorkspaceSummary(); }catch(e){}
     var pending = ownerReqs.filter(function(x){ return x.status === "open" && !x.my_offer; }).length;
     var badge = $("ownerRequestsBadge");
     if(badge){ badge.style.display = pending ? "inline" : "none"; badge.textContent = toFa(pending); }
+    try{
+      window.nomaxMsgCounts = window.nomaxMsgCounts || {};
+      window.nomaxMsgCounts.ownerPending = pending;
+      if(window.nomaxRefreshAcctBadges) window.nomaxRefreshAcctBadges();
+    }catch(e){}
     if(!silent || (box && box.offsetParent !== null)) renderOwner();
   };
   function renderOwner(){
