@@ -732,8 +732,8 @@ body, button, input, select, textarea{
   font-size:12px; color:var(--text-3); text-align:center;
   margin-top:10px; line-height:1.7;
 }
-body.owner-mode .header-menu-anchor{display:none !important}
-body.owner-mode .theme-toggle:not(.acct-btn){display:none !important}
+/* category menu stays in all views */
+/* theme toggle always visible */
 
 .call-btn{
   display:flex; align-items:center; justify-content:center; gap:8px;
@@ -2218,26 +2218,64 @@ body.owner-mode .theme-toggle:not(.acct-btn){display:none !important}
 }
 .nx-panel-head h2{margin:0;font-size:17px;font-weight:800}
 .nx-panel-head p{margin:6px 0 0;font-size:12.5px;color:var(--text-3);line-height:1.7}
-body.user-panel-mode .container > .card:not(#myRequestCard):not(#registerCard),
+/* پنل کاربر: جستجو بالا می‌ماند؛ نتایج بعد از جستجو؛ درخواست‌ها جمع‌وجور زیر نتایج */
 body.user-panel-mode #ownerCtaCard,
-body.user-panel-mode #quickReqBtn,
 body.user-panel-mode .footer{display:none !important}
-body.user-panel-mode #myRequestCard{display:block !important}
 body.user-panel-mode #myRequestCard .section-title{display:none}
+body.user-panel-mode .container{display:flex; flex-direction:column}
+/* هنگام جستجو، کارت درخواست جمع می‌شود تا اسکرول لازم نباشد */
+/* searching: handled in owner-mode block */
+.my-req-float{
+  position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
+  z-index:90; display:none; align-items:center; gap:8px;
+  background:var(--text); color:var(--bg); border:0; border-radius:100px;
+  padding:12px 18px; font:inherit; font-size:13px; font-weight:800;
+  box-shadow:0 12px 32px rgba(0,0,0,.28); cursor:pointer;
+  max-width:90vw;
+}
+.my-req-float.show{display:inline-flex}
+.my-req-float .mf-badge{
+  background:#dc2626; color:#fff; min-width:20px; height:20px; padding:0 6px;
+  border-radius:100px; font-size:11px; display:inline-flex; align-items:center; justify-content:center;
+}
 
-/* ===== حالت اختصاصی مالک: فقط پنل کسب‌وکار ===== */
-body.owner-mode .container > .card:not(.owner-workspace):not(#registerCard),
+/* ===== لایه‌بندی پایدار: جستجو همیشه هست؛ پنل‌ها زیر آن ===== */
+/* هرگز کارت جستجو را مخفی نکن */
+body.owner-mode #searchCard,
+body.user-panel-mode #searchCard,
+body.is-searching #searchCard{
+  display:block !important;
+}
+/* نتایج جستجو وقتی کاربر سرچ کرده باید دیده شود */
+body.owner-mode #resultsCard:not(.hidden),
+body.user-panel-mode #resultsCard:not(.hidden){
+  display:block !important;
+}
 body.owner-mode #ownerCtaCard,
-body.owner-mode #quickReqBtn,
-body.owner-mode .footer{
+body.owner-mode .footer,
+body.user-panel-mode #ownerCtaCard,
+body.user-panel-mode .footer{
   display:none !important;
 }
-/* درخواست‌های من فقط وقتی عمداً باز شده */
+/* پنل‌های محتوا — فقط یکی فعال می‌شود با کلاس‌های hidden در JS */
+body.owner-mode #ownerCard{
+  display:block;
+  margin-top:8px;
+  animation:ownerPanelIn .35s var(--ease-smooth) both;
+}
+body.owner-mode #ownerCard.owner-view-hidden,
+body.owner-mode #ownerCard.hidden{
+  display:none !important;
+}
 body.owner-mode #myRequestCard{
   display:none !important;
 }
-body.owner-mode #myRequestCard.owner-view-active{
+body.owner-mode #myRequestCard.owner-view-active,
+body.user-panel-mode #myRequestCard.owner-view-active,
+body.user-panel-mode #myRequestCard:not(.hidden){
   display:block !important;
+  margin-top:8px;
+  animation:ownerPanelIn .35s var(--ease-smooth) both;
 }
 body.owner-mode #registerCard:not(.hidden){
   display:block !important;
@@ -2245,18 +2283,6 @@ body.owner-mode #registerCard:not(.hidden){
 }
 body.owner-mode #registerCard:not(.hidden) ~ #ownerCard,
 body.owner-mode:has(#registerCard:not(.hidden)) #ownerCard{
-  display:none !important;
-}
-body.owner-mode #ownerCard{
-  display:block !important;
-  margin-top:8px;
-  animation:ownerPanelIn .35s var(--ease-smooth) both;
-}
-body.owner-mode #myRequestCard.owner-view-active{
-  display:block !important;
-  animation:ownerPanelIn .35s var(--ease-smooth) both;
-}
-body.owner-mode #ownerCard.owner-view-hidden{
   display:none !important;
 }
 body.owner-mode .header .stats,
@@ -2271,13 +2297,11 @@ body.owner-mode .header .tagline{
   to{opacity:1; transform:translateY(0)}
 }
 body.owner-mode .owner-close-action{display:none !important}
+/* هدر تکراری داخل پنل مالک را خلوت نگه دار؛ جستجوی اصلی سایت جایگزین آن است */
 body.owner-mode .owner-workspace-head,
 body.owner-mode .owner-tabs,
 body.owner-mode .owner-section-head,
-body.owner-mode #ownerContextV2,
-body.owner-mode .owner-notif-banner,
-body.owner-mode #notifBoxOwner,
-body.owner-mode .notif-widget{
+body.owner-mode #ownerContextV2{
   display:none !important;
 }
 body.owner-mode #ownerCard.owner-workspace{
@@ -2290,16 +2314,16 @@ body.owner-mode #ownerCard .owner-business{
   background:var(--surface);
   box-shadow:var(--shadow);
 }
-body.owner-mode #myRequestCard.owner-view-active{
-  border:0;
-  box-shadow:none;
-  background:transparent;
-  padding:8px 0 24px;
-}
-body.owner-mode #myRequestCard.owner-view-active .section-title{
+body.owner-mode #myRequestCard.owner-view-active .section-title,
+body.user-panel-mode #myRequestCard .section-title{
   display:none;
 }
 body.owner-mode .owner-biz-title{display:block !important}
+/* هنگام جستجو، پنل‌های فرعی جمع شوند تا نتیجه نزدیک جستجو باشد */
+body.is-searching #myRequestCard:not(.force-show),
+body.is-searching #ownerCard:not(.force-show){
+  display:none !important;
+}
 
 
 .auth-google{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;background:#fff;color:#1f1f1f;border:1px solid #dadce0;border-radius:12px;padding:12px;font:inherit;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s}
@@ -2438,7 +2462,7 @@ body.owner-mode .owner-biz-title{display:block !important}
 <div class="container">
 
   <!-- ============ SEARCH ============ -->
-  <div class="card">
+  <div class="card" id="searchCard">
     <h2 class="search-title">
       <span class="icon">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
@@ -5772,6 +5796,25 @@ actionsHtml +=
   function searchBusinesses(){
   var q = normalize(document.getElementById("searchInput").value);
   var card = document.getElementById("resultsCard");
+  /* با شروع جستجو، پنل درخواست را کنار بگذار تا نتایج بلافاصله زیر جستجو بیاید */
+  try{
+    var hasQuery = !!(q && q.length) || !!(typeof activeCategoryId !== "undefined" && activeCategoryId);
+    if(hasQuery){
+      document.body.classList.add("is-searching");
+      document.body.classList.add("searching");
+      var mr = document.getElementById("myRequestCard");
+      if(mr){ mr.classList.remove("force-show"); }
+      /* اگر در حالت owner بودیم و جستجو می‌کند، به حالت عمومی برگرد برای دیدن نتایج */
+      if(document.body.classList.contains("owner-mode")){
+        document.body.classList.remove("owner-mode");
+      }
+    } else {
+      document.body.classList.remove("is-searching");
+      document.body.classList.remove("searching");
+    }
+    if(window.nomaxUpdateReqFloat) window.nomaxUpdateReqFloat();
+  }catch(e){}
+
   var found = getFiltered();
   if(!q && !activeCategory && !activeCategoryId && !activeSubcategoryId){
     card.classList.add("hidden");
@@ -5783,6 +5826,19 @@ actionsHtml +=
   });
 }
   renderResults(found, q);
+  try{
+    var rc = document.getElementById("resultsCard");
+    if(rc && !rc.classList.contains("hidden") && (found && found.length || q)){
+      requestAnimationFrame(function(){
+        var sticky = document.getElementById("stickySearchWrap");
+        var topPad = sticky ? Math.min(sticky.getBoundingClientRect().height + 10, 120) : 16;
+        var y = rc.getBoundingClientRect().top + window.pageYOffset - topPad;
+        if(Math.abs(y - window.pageYOffset) > 24){
+          window.scrollTo({ top: Math.max(0, y), behavior: "smooth" });
+        }
+      });
+    }
+  }catch(e){}
 }
   
   /* ============ CATEGORY MENU ============ */
@@ -8763,8 +8819,9 @@ else msg.textContent='ثبت‌نام انجام نشد. اگر قبلاً ثب�
 
   function enterOwnerMode(){
     document.body.classList.add('owner-mode');
+    document.body.classList.remove('user-panel-mode');
     var cta=document.getElementById('ownerCtaCard'); if(cta) cta.classList.add('hidden');
-    var rc=document.getElementById('resultsCard'); if(rc) rc.classList.add('hidden');
+    /* جستجو و نتایج را مخفی نکن — فقط CTA و ادمین */
     var ac=document.getElementById('adminCard'); if(ac) ac.classList.add('hidden');
   }
   function exitOwnerMode(){
@@ -8780,16 +8837,17 @@ else msg.textContent='ثبت‌نام انجام نشد. اگر قبلاً ثب�
   function showOwnerWorkspace(opts){
     opts = opts || {};
     var tab = opts.tab || 'businesses';
-    var hasBiz = (typeof ownerBusinessList==='function') && ownerBusinessList().length>0;
-    if(hasBiz) enterOwnerMode();
-    else enterOwnerMode(); // حتی بدون کسب‌وکار، پنل خلوت بماند اگر عمداً باز شده
+    enterOwnerMode();
     var card=document.getElementById('ownerCard'); if(!card)return;
     var reg=document.getElementById('registerCard'); if(reg) reg.classList.add('hidden');
     var cta=document.getElementById('ownerCtaCard'); if(cta) cta.classList.add('hidden');
     var mr=document.getElementById('myRequestCard');
-    if(mr){ mr.classList.add('hidden'); mr.classList.remove('owner-view-active'); }
+    if(mr){ mr.classList.add('hidden'); mr.classList.remove('owner-view-active'); mr.classList.remove('force-show'); }
     card.classList.remove('hidden');
     card.classList.remove('owner-view-hidden');
+    card.classList.add('owner-workspace');
+    /* جستجو همیشه بماند */
+    var sc=document.getElementById('searchCard'); if(sc) sc.classList.remove('hidden');
 
     var sameView = (__ownerView === tab && __ownerModeReady && document.body.classList.contains('owner-mode'));
     if(sameView && !opts.force){
@@ -9794,15 +9852,10 @@ updateStats();
     var html =
       '<div class="am-head"><div class="am-name">' + esc(state.name || "کاربر") + '</div><div class="am-mail">' + esc(u.email || "") + '</div>' +
       (state.admin ? '<span class="am-role">🛡 مدیر</span>' : '') + '</div>' +
-      '<button data-am="req"><span class="am-label">📨 درخواست‌های من</span>'+amBadgeHTML(counts.customerOffers)+'</button>';
-    if(owner){
-      html +=
-        '<button data-am="msgs"><span class="am-label">💬 پیغام مشتری</span>'+amBadgeHTML(counts.ownerPending)+'</button>' +
-        '<button data-am="customers"><span class="am-label">👥 مشتری‌های من</span></button>' +
-        '<button data-am="owner"><span class="am-label">🏪 پنل کسب‌وکار من</span></button>';
-    } else {
-      html += '<button data-am="owner"><span class="am-label">🏪 پنل کسب‌وکار من</span></button>';
-    }
+      '<button data-am="home"><span class="am-label">🏠 صفحه اصلی (جستجو)</span></button>' +
+      '<button data-am="req"><span class="am-label">📨 درخواست‌های من</span>'+amBadgeHTML(counts.customerOffers)+'</button>' +
+      '<button data-am="msgs"><span class="am-label">💬 پیغام مشتری</span>'+amBadgeHTML(counts.ownerPending)+'</button>' +
+      '<button data-am="owner"><span class="am-label">🏪 پنل کسب‌وکار</span></button>';
     if(state.admin) html += '<button data-am="admin"><span class="am-label">🛡 پنل مدیریت</span></button>';
     html += '<button data-am="out" class="danger"><span class="am-label">🚪 خروج از حساب</span></button>';
     m.innerHTML = html;
@@ -9810,21 +9863,29 @@ updateStats();
     m.querySelectorAll("[data-am]").forEach(function(btn){
       btn.onclick = async function(){
         var a = btn.getAttribute("data-am"); closeMenu();
-        if(a === "req"){
-          if(window.nomaxSetAppView) window.nomaxSetAppView("my-requests");
-          else if(window.showOwnerMyRequestsView && isBizOwner()) window.showOwnerMyRequestsView();
+        if(a === "home"){
+          if(window.nomaxSetAppView) window.nomaxSetAppView("home", { force:true });
           else {
-            var c = $("myRequestCard");
-            if(c){ c.classList.remove("hidden"); c.scrollIntoView({behavior:"smooth", block:"start"}); }
+            document.body.classList.remove("owner-mode","user-panel-mode");
+            var sc=$("searchCard"); if(sc) sc.classList.remove("hidden");
+            try{ window.scrollTo({top:0,behavior:"smooth"}); }catch(e){}
           }
         }
-        else if(a === "msgs" || a === "customers"){
+        else if(a === "req"){
+          if(window.nomaxSetAppView) window.nomaxSetAppView("my-requests", { force:true });
+          else {
+            var c = $("myRequestCard");
+            if(c){ c.classList.remove("hidden"); c.classList.add("owner-view-active"); c.scrollIntoView({behavior:"smooth", block:"start"}); }
+            try{ if(window.loadMy) window.loadMy(false); }catch(e){}
+          }
+        }
+        else if(a === "msgs"){
           if(window.nomaxSetAppView) window.nomaxSetAppView("owner-msgs", { force:true });
-          else if(window.showOwnerWorkspace) window.showOwnerWorkspace({ tab: "requests" });
+          else if(window.showOwnerWorkspace) window.showOwnerWorkspace({ tab: "requests", force:true });
         }
         else if(a === "owner"){
           if(window.nomaxSetAppView) window.nomaxSetAppView("owner-biz", { force:true });
-          else if(window.showOwnerWorkspace) window.showOwnerWorkspace({ tab: "businesses" });
+          else if(window.showOwnerWorkspace) window.showOwnerWorkspace({ tab: "businesses", force:true });
         }
         else if(a === "admin"){ openAdminPanel(); }
         else if(a === "out"){ await signOut(); }
@@ -10000,7 +10061,20 @@ updateStats();
   var accBtn = $("accountBtn");
   if(accBtn) accBtn.onclick = function(e){
     e.stopPropagation();
-    if(state.user){ var m = $("acctMenu"); if(m && m.classList.contains("open")) closeMenu(); else openMenu(); }
+    if(state.user){
+      var counts = window.nomaxMsgCounts || {};
+      var offers = Number(counts.customerOffers)||0;
+      var pending = Number(counts.ownerPending)||0;
+      /* اگر فقط پیشنهاد مشتری داری و منو بسته است → مستقیم برو به درخواست‌ها */
+      if(offers > 0 && pending === 0){
+        var m = $("acctMenu");
+        if(m && m.classList.contains("open")){ closeMenu(); return; }
+        if(window.nomaxSetAppView) window.nomaxSetAppView("my-requests", { force:true });
+        else openMenu();
+        return;
+      }
+      var m2 = $("acctMenu"); if(m2 && m2.classList.contains("open")) closeMenu(); else openMenu();
+    }
     else openAuthModal({});
   };
   renderAccountBtn();
@@ -10237,14 +10311,14 @@ updateStats();
       box.innerHTML = "";
       return;
     }
-    /* در حالت مالک، کارت درخواست را خودکار باز نکن — فقط اگر کاربر از منو زده */
+    /* نمایش کارت وقتی در پنل شخصی هستیم یا کاربر عادی است */
     var inOwner = document.body.classList.contains("owner-mode");
+    var inUserPanel = document.body.classList.contains("user-panel-mode");
     var wantMyReq = card.classList.contains("owner-view-active");
-    if(inOwner && !wantMyReq){
-      card.classList.add("hidden");
-      /* محتوا را برای وقتی کاربر باز کرد آماده نگه دار */
-    } else if(!inOwner){
+    if(inUserPanel || wantMyReq || !inOwner){
       card.classList.remove("hidden");
+    } else if(inOwner && !wantMyReq){
+      card.classList.add("hidden");
     } else {
       card.classList.remove("hidden");
     }
@@ -10275,8 +10349,53 @@ updateStats();
     box.querySelectorAll("[data-cancel]").forEach(function(b){ b.onclick = function(){ cancelReq(b.getAttribute("data-cancel")); }; });
     box.querySelectorAll("[data-pick]").forEach(function(b){ b.onclick = function(){ pickOffer(b.getAttribute("data-pick")); }; });
     var nb = $("newReqBtn"); if(nb) nb.onclick = function(){ openRequestModal(""); };
+    try{ if(window.renderMyBizSummary) window.renderMyBizSummary(); }catch(e){}
   }
   window.nomaxRefresh = function(){ renderMy(); };
+  window.loadMy = loadMy;
+  window.renderMy = renderMy;
+
+  /* خلاصه کسب‌وکار خود کاربر در پنل شخصی (بدون ورود به owner-mode) */
+  window.renderMyBizSummary = function(){
+    var box = document.getElementById("myBizSummaryBox");
+    if(!box){
+      var card = document.getElementById("myRequestCard");
+      if(!card) return;
+      box = document.createElement("div");
+      box.id = "myBizSummaryBox";
+      box.style.cssText = "margin-top:16px";
+      card.appendChild(box);
+    }
+    var list = [];
+    try{ if(window.ownerBusinessList) list = window.ownerBusinessList() || []; }catch(e){}
+    if(!list.length){
+      box.innerHTML = "";
+      box.style.display = "none";
+      return;
+    }
+    box.style.display = "block";
+    var h = '<div class="nx-panel-head" style="margin-top:8px"><h2>🏪 کسب‌وکار من</h2><p>مدیریت کامل از منوی حساب → پنل کسب‌وکار من</p></div>';
+    list.forEach(function(b){
+      var st = (b.status === "approved") ? '<span class="owner-status approved">✓ منتشرشده</span>'
+        : (b.status === "rejected") ? '<span class="owner-status rejected">✕ رد شده</span>'
+        : '<span class="owner-status pending">⏳ در انتظار تأیید</span>';
+      h += '<div class="nx-row" style="margin-bottom:8px">'
+        + '<div class="nx-row-main"><div class="nx-row-title">' + esc(b.name||"—") + '</div>'
+        + '<div class="nx-row-meta"><span>' + esc(b.type||"") + '</span>'
+        + (b.phone ? '<span dir="ltr">' + toFa(esc(b.phone)) + '</span>' : '') + '</div></div>'
+        + '<div class="nx-row-side">' + st
+        + '<button type="button" class="menu-btn" style="margin-top:8px;padding:8px 12px;font-size:12px" data-goto-owner="1">مدیریت</button>'
+        + '</div></div>';
+    });
+    box.innerHTML = h;
+    box.querySelectorAll("[data-goto-owner]").forEach(function(btn){
+      btn.onclick = function(){
+        if(window.nomaxSetAppView) window.nomaxSetAppView("owner-biz", { force:true });
+        else if(window.showOwnerWorkspace) window.showOwnerWorkspace({ tab:"businesses", force:true });
+      };
+    });
+  };
+
 
   async function loadMy(silent){
     if(!user()){
@@ -10617,49 +10736,84 @@ window.NOMAX_CFG = {
     if(VIEW.current === view && !opts.force) return;
     VIEW.current = view;
 
-    document.body.classList.remove("owner-mode", "user-panel-mode");
+    document.body.classList.remove("owner-mode", "user-panel-mode", "is-searching", "searching");
 
-    if(view === "public"){
+    /* جستجو همیشه */
+    var sc = document.getElementById("searchCard");
+    if(sc) sc.classList.remove("hidden");
+
+    var mr = document.getElementById("myRequestCard");
+    var oc = document.getElementById("ownerCard");
+    var cta = document.getElementById("ownerCtaCard");
+    var rc = document.getElementById("resultsCard");
+
+    function showRequests(){
+      document.body.classList.add("user-panel-mode");
+      if(mr){
+        mr.classList.remove("hidden");
+        mr.classList.add("owner-view-active");
+        mr.classList.add("force-show");
+      }
+      if(oc){ oc.classList.add("hidden"); oc.classList.remove("owner-view-hidden"); }
+      if(cta) cta.classList.add("hidden");
+      try{ if(window.loadMy) window.loadMy(false); }catch(e){}
+      try{ if(window.renderMyBizSummary) window.renderMyBizSummary(); }catch(e){}
+    }
+    function showOwner(tab){
+      document.body.classList.add("owner-mode");
+      if(mr){ mr.classList.add("hidden"); mr.classList.remove("owner-view-active"); mr.classList.remove("force-show"); }
+      if(cta) cta.classList.add("hidden");
+      try{
+        if(window.showOwnerWorkspace) window.showOwnerWorkspace({ tab: tab, silent: true, force: true });
+        else if(oc){ oc.classList.remove("hidden"); oc.classList.add("owner-workspace"); }
+      }catch(e){ console.error(e); }
+      if(tab === "requests"){
+        try{ if(window.loadOwnerRequests) window.loadOwnerRequests(false); }catch(e){}
+      }
+    }
+
+    if(view === "public" || view === "home"){
+      VIEW.current = "public";
       try{ if(window.exitOwnerMode) window.exitOwnerMode(); }catch(e){}
-      hideEl("ownerCard");
-      hideEl("myRequestCard");
-      var cta = document.getElementById("ownerCtaCard");
+      document.body.classList.remove("owner-mode", "user-panel-mode");
+      if(oc) oc.classList.add("hidden");
+      if(mr){ mr.classList.add("hidden"); mr.classList.remove("owner-view-active"); mr.classList.remove("force-show"); }
       if(cta){ if(hasOwnerBiz()) cta.classList.add("hidden"); else cta.classList.remove("hidden"); }
+      if(window.nomaxUpdateReqFloat) try{ window.nomaxUpdateReqFloat(); }catch(e){}
+      if(!opts.silent){
+        try{ window.scrollTo({ top: 0, behavior: "smooth" }); }catch(e){ window.scrollTo(0,0); }
+      }
       return;
     }
 
     if(view === "my-requests"){
-      /* پنل کاربر عادی — نه مالک */
-      if(hasOwnerBiz()){
-        /* مالک هم می‌تواند استعلام شخصی ببیند */
-        document.body.classList.add("owner-mode");
-        var oc = document.getElementById("ownerCard");
-        if(oc){ oc.classList.remove("hidden"); oc.classList.add("owner-view-hidden"); }
-        var mr = document.getElementById("myRequestCard");
-        if(mr){ mr.classList.remove("hidden"); mr.classList.add("owner-view-active"); }
-      } else {
-        document.body.classList.add("user-panel-mode");
-        hideEl("ownerCard");
-        var mr2 = document.getElementById("myRequestCard");
-        if(mr2){ mr2.classList.remove("hidden"); mr2.classList.add("owner-view-active"); }
+      showRequests();
+      if(!opts.silent){
+        setTimeout(function(){
+          if(mr){ try{ mr.scrollIntoView({ behavior:"smooth", block:"start" }); }catch(e){} }
+        }, 60);
       }
-      try{ if(typeof loadMy === "function") loadMy(true); }catch(e){}
-      if(!opts.silent){ try{ window.scrollTo({top:0,behavior:"smooth"}); }catch(e){ window.scrollTo(0,0);} }
+      if(window.nomaxUpdateReqFloat) try{ window.nomaxUpdateReqFloat(); }catch(e){}
       return;
     }
 
-    if(view === "owner-biz" || view === "owner-msgs"){
-      document.body.classList.add("owner-mode");
-      var mr3 = document.getElementById("myRequestCard");
-      if(mr3){ mr3.classList.add("hidden"); mr3.classList.remove("owner-view-active"); }
-      var card = document.getElementById("ownerCard");
-      if(card){ card.classList.remove("hidden"); card.classList.remove("owner-view-hidden"); }
-      var cta2 = document.getElementById("ownerCtaCard"); if(cta2) cta2.classList.add("hidden");
-      var tab = (view === "owner-msgs") ? "requests" : "businesses";
-      try{
-        if(window.showOwnerWorkspace) window.showOwnerWorkspace({ tab: tab, silent: !!opts.silent, force: !!opts.force });
-      }catch(e){}
-      if(!opts.silent){ try{ window.scrollTo({top:0,behavior:"smooth"}); }catch(e){ window.scrollTo(0,0);} }
+    if(view === "owner-msgs"){
+      showOwner("requests");
+      if(!opts.silent){
+        setTimeout(function(){
+          if(oc){ try{ oc.scrollIntoView({ behavior:"smooth", block:"start" }); }catch(e){} }
+        }, 60);
+      }
+      return;
+    }
+
+    if(view === "owner-biz"){
+      showOwner("businesses");
+      if(!opts.silent){
+        setTimeout(function(){
+          if(oc){ try{ oc.scrollIntoView({ behavior:"smooth", block:"start" }); }catch(e){} }
+        }, 60);
+      }
       return;
     }
   };
@@ -10686,6 +10840,54 @@ window.NOMAX_CFG = {
   });
   var rc0 = document.getElementById("resultsCard");
   if(rc0) _obs.observe(rc0, { attributes:true, attributeFilter:["class"] });
+})();
+</script>
+
+
+<button type="button" class="my-req-float" id="myReqFloat" aria-label="درخواست‌های من">
+  <span>📨 درخواست‌های من</span>
+  <span class="mf-badge" id="myReqFloatBadge" style="display:none">۰</span>
+</button>
+
+
+<script>
+/* شناور: بازگشت سریع به درخواست‌ها بدون اسکرول طولانی */
+(function(){
+  function $(id){ return document.getElementById(id); }
+  function update(){
+    var btn = $("myReqFloat"), badge = $("myReqFloatBadge");
+    if(!btn) return;
+    var u = window.nomaxAuth && window.nomaxAuth.user && window.nomaxAuth.user();
+    var n = (window.nomaxMsgCounts && Number(window.nomaxMsgCounts.customerOffers)) || 0;
+    var searching = document.body.classList.contains("is-searching") || document.body.classList.contains("searching");
+    var onReq = document.body.classList.contains("user-panel-mode") && !searching;
+    if(u && (n > 0 || searching) && !onReq){
+      btn.classList.add("show");
+      if(badge){
+        if(n > 0){
+          badge.style.display = "inline-flex";
+          badge.textContent = (typeof toFa === "function" ? toFa(n) : String(n));
+        } else badge.style.display = "none";
+      }
+    } else {
+      btn.classList.remove("show");
+    }
+  }
+  window.nomaxUpdateReqFloat = update;
+  document.addEventListener("click", function(e){
+    var t = e.target.closest && e.target.closest("#myReqFloat");
+    if(!t) return;
+    document.body.classList.remove("is-searching");
+    document.body.classList.remove("searching");
+    var mr = $("myRequestCard");
+    if(mr) mr.classList.add("force-show");
+    if(window.nomaxSetAppView) window.nomaxSetAppView("my-requests", { force:true });
+    else if(window.loadMy) window.loadMy(false);
+    setTimeout(update, 100);
+  });
+  window.addEventListener("nomax-auth", update);
+  setInterval(update, 8000);
+  update();
 })();
 </script>
 
