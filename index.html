@@ -2179,6 +2179,35 @@ body.owner-mode .header .tagline{
   to{opacity:1; transform:translateY(0)}
 }
 body.owner-mode .owner-close-action{display:none !important}
+body.owner-mode .owner-workspace-head,
+body.owner-mode .owner-tabs,
+body.owner-mode .owner-section-head,
+body.owner-mode #ownerContextV2,
+body.owner-mode .owner-notif-banner,
+body.owner-mode #notifBoxOwner,
+body.owner-mode .notif-widget{
+  display:none !important;
+}
+body.owner-mode #ownerCard.owner-workspace{
+  border:0;
+  box-shadow:none;
+  background:transparent;
+  padding:8px 0 24px;
+}
+body.owner-mode #ownerCard .owner-business{
+  background:var(--surface);
+  box-shadow:var(--shadow);
+}
+body.owner-mode #myRequestCard.owner-view-active{
+  border:0;
+  box-shadow:none;
+  background:transparent;
+  padding:8px 0 24px;
+}
+body.owner-mode #myRequestCard.owner-view-active .section-title{
+  display:none;
+}
+
 
 .auth-google{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;background:#fff;color:#1f1f1f;border:1px solid #dadce0;border-radius:12px;padding:12px;font:inherit;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s}
 .auth-google:hover{background:#f8f9fa;box-shadow:0 2px 8px rgba(0,0,0,.1)}
@@ -2641,46 +2670,26 @@ body.owner-mode .owner-close-action{display:none !important}
     </div>
   </div>
 
-  <!-- ============ OWNER PANEL ============ -->
+  <!-- ============ OWNER PANEL (حداقلی: فقط محتوا) ============ -->
   <div id="ownerCard" class="card hidden owner-workspace">
-    <div class="owner-workspace-head">
-      <div>
-        <div class="owner-kicker">پنل کسب‌وکار</div>
-        <h2 class="section-title owner-title">
-          <span class="icon">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-          </span>
-          کسب‌وکار من
-        </h2>
-      </div>
-      <div class="owner-workspace-note">فقط کسب‌وکار ثبت‌شده شما</div>
+    <!-- تب‌ها مخفی‌اند؛ ناوبری از منوی حساب انجام می‌شود -->
+    <div class="admin-sub-tabs owner-tabs" id="ownerSubTabs" style="display:none" role="tablist" aria-hidden="true">
+      <button type="button" class="admin-sub-tab active" data-owner-sub="businesses" role="tab" aria-selected="true">کسب‌وکار</button>
+      <button type="button" class="admin-sub-tab" data-owner-sub="requests" role="tab" aria-selected="false">پیغام<span id="ownerRequestsBadge" class="owner-tab-badge" style="display:none">۰</span></button>
     </div>
-
-    <div class="admin-sub-tabs owner-tabs" id="ownerSubTabs" style="margin-bottom:16px" role="tablist" aria-label="بخش‌های پنل">
-      <button type="button" class="admin-sub-tab active" data-owner-sub="businesses" role="tab" aria-selected="true">🏪 کسب‌وکار من</button>
-      <button type="button" class="admin-sub-tab" data-owner-sub="requests" role="tab" aria-selected="false">💬 پیغام مشتری <span id="ownerRequestsBadge" class="owner-tab-badge" style="display:none">۰</span></button>
-    </div>
-
     <div id="myBusinessesBox" class="owner-panel-section" data-owner-panel="businesses">
-      <div class="owner-section-head"><div><h3>کسب‌وکار ثبت‌شده</h3><p>اطلاعات و وضعیت انتشار همان کسب‌وکاری که ثبت کرده‌اید.</p></div></div>
       <div id="myBusinesses"></div>
-      <button type="button" class="menu-btn green owner-primary-action" id="newBusinessButton">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+      <button type="button" class="menu-btn green owner-primary-action" id="newBusinessButton" style="display:none">
         کسب‌وکار جدید
       </button>
     </div>
-
     <div id="myRequestsBox" class="owner-panel-section" data-owner-panel="requests" style="display:none">
-      <div class="owner-section-head"><div><h3>پیغام و درخواست مشتریان</h3><p>درخواست‌هایی که به کسب‌وکار شما مربوط است.</p></div></div>
-      <div class="owner-notif-banner" id="ownerNotifBanner">
-        <div id="ownerNotifBannerText">اعلان جدیدی ندارید.</div>
-        <button type="button" id="enableBrowserNotifBtn">🔔 فعال‌سازی اعلان</button>
-      </div>
-      <div id="notifBoxOwner"></div>
       <div id="myRequests"></div>
+      <!-- بنر اعلان و ویجت اعلان عمداً حذف شدند تا پنل خلوت بماند -->
+      <div id="ownerNotifBanner" class="hidden" style="display:none"></div>
+      <div id="notifBoxOwner" class="hidden" style="display:none"></div>
     </div>
-
-    <button type="button" class="menu-btn owner-close-action" id="closeOwnerButton">بستن پنل</button>
+    <button type="button" class="menu-btn owner-close-action" id="closeOwnerButton" style="display:none">بستن پنل</button>
   </div>
 
   <div class="footer">
@@ -8626,21 +8635,9 @@ else msg.textContent='ثبت‌نام انجام نشد. اگر قبلاً ثب�
   function openOwnerAuth(){ if(window.nomaxAuth) window.nomaxAuth.open({ pending:{type:"owner"}, reason:"برای ثبت و مدیریت کسب‌وکار وارد شوید یا ثبت‌نام کنید." }); }
 
   function ownerPanelHeader(){
-    var card=document.getElementById('ownerCard'); if(!card) return;
+    /* عمداً خالی: هدر تکراری و دکمه خروج داخل پنل نمایش داده نمی‌شود.
+       حساب و خروج فقط از منوی بالا-چپ در دسترس است. */
     var old=document.getElementById('ownerContextV2'); if(old) old.remove();
-    var u=currentOwner(); if(!u) return;
-    var box=document.createElement('div'); box.id='ownerContextV2';
-    box.style.cssText='background:var(--primary-50);border:1px solid var(--primary-100);border-radius:14px;padding:12px;margin-bottom:14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap';
-    box.innerHTML='<div style="flex:1;min-width:180px"><div style="font-weight:800;color:var(--primary-700)">👤 '+esc(u.name||u.email)+'</div><div style="font-size:11px;color:var(--text-3);margin-top:2px">'+(u.email?esc(u.email):'')+(u.phone?' · '+toFa(u.phone):'')+'</div></div><button type="button" id="ownerLogoutV2" class="menu-btn" style="margin:0;width:auto;padding:8px 12px">خروج</button>';
-    var tabs=document.getElementById('ownerSubTabs'); card.insertBefore(box,tabs);
-    document.getElementById('ownerLogoutV2').onclick=async function(){
-      try{ await sb.auth.signOut(); }catch(e){}
-      clearOwnerSession();
-      try{ if(window.exitOwnerMode) window.exitOwnerMode(); }catch(e){}
-      document.getElementById('ownerCard').classList.add('hidden');
-      var cta=document.getElementById('ownerCtaCard'); if(cta) cta.classList.remove('hidden');
-      showToast('از حساب مالک خارج شدید.','success');
-    };
   }
 
   function updateOwnerWorkspaceSummary(){
@@ -8658,14 +8655,20 @@ else msg.textContent='ثبت‌نام انجام نشد. اگر قبلاً ثب�
     }catch(e){}
   }
 
+  var __ownerView = null; // businesses | requests | myrequest
+  var __ownerModeReady = false;
+
   function enterOwnerMode(){
-    document.body.classList.add('owner-mode');
+    if(!document.body.classList.contains('owner-mode')){
+      document.body.classList.add('owner-mode');
+    }
     var cta=document.getElementById('ownerCtaCard'); if(cta) cta.classList.add('hidden');
-    var reg=document.getElementById('registerCard'); if(reg) reg.classList.add('hidden');
     var rc=document.getElementById('resultsCard'); if(rc) rc.classList.add('hidden');
   }
   function exitOwnerMode(){
     document.body.classList.remove('owner-mode');
+    __ownerView = null;
+    __ownerModeReady = false;
     var card=document.getElementById('ownerCard');
     if(card){ card.classList.add('hidden'); card.classList.remove('owner-view-hidden'); }
     var mr=document.getElementById('myRequestCard');
@@ -8673,29 +8676,39 @@ else msg.textContent='ثبت‌نام انجام نشد. اگر قبلاً ثب�
   }
   function showOwnerWorkspace(opts){
     opts = opts || {};
-    try{ updateOwnerRequestsBadgeV2(); }catch(e){}
-    try{ if(typeof maybePromptOwnerNotify==="function") maybePromptOwnerNotify(); }catch(e){}
+    var tab = opts.tab || 'businesses';
     var hasBiz = (typeof ownerBusinessList==='function') && ownerBusinessList().length>0;
     if(hasBiz) enterOwnerMode();
     var card=document.getElementById('ownerCard'); if(!card)return;
     var reg=document.getElementById('registerCard'); if(reg) reg.classList.add('hidden');
     var cta=document.getElementById('ownerCtaCard'); if(cta) cta.classList.add('hidden');
-    // پنل کسب‌وکار را نشان بده؛ درخواست شخصی را پنهان کن
     var mr=document.getElementById('myRequestCard');
     if(mr){ mr.classList.add('hidden'); mr.classList.remove('owner-view-active'); }
     card.classList.remove('hidden');
     card.classList.remove('owner-view-hidden');
-    ownerPanelHeader(); renderOwnerBusinessesV2(); updateOwnerRequestsBadgeV2(); updateOwnerWorkspaceSummary();
-    var tab = opts.tab || 'businesses';
-    try{ if(typeof setOwnerPanelTab==='function') setOwnerPanelTab(tab); }catch(e){}
+
+    /* اگر همان نما فعال است، فقط در صورت اجبار دوباره رندر نکن — جلوگیری از پرش صفحه */
+    var sameView = (__ownerView === tab && __ownerModeReady && document.body.classList.contains('owner-mode'));
+    if(!sameView || opts.force){
+      ownerPanelHeader();
+      if(tab === 'businesses' || !__ownerModeReady || opts.force){
+        renderOwnerBusinessesV2();
+      }
+      try{ if(typeof setOwnerPanelTab==='function') setOwnerPanelTab(tab); }catch(e){}
+      if(tab === 'requests'){
+        try{ if(window.loadOwnerRequests) window.loadOwnerRequests(true); }catch(e){}
+      }
+      __ownerView = tab;
+      __ownerModeReady = true;
+    }
     if(!opts.silent){
       try{ window.scrollTo({top:0, behavior:'smooth'}); }catch(e){ window.scrollTo(0,0); }
     }
   }
   window.showOwnerWorkspace = showOwnerWorkspace;
 
-  /* نمایش نرم «درخواست‌های من» به‌جای پنل کسب‌وکار */
   function showOwnerMyRequestsView(){
+    if(__ownerView === 'myrequest' && document.body.classList.contains('owner-mode')) return;
     enterOwnerMode();
     var card=document.getElementById('ownerCard');
     if(card){ card.classList.add('owner-view-hidden'); card.classList.remove('hidden'); }
@@ -8704,7 +8717,7 @@ else msg.textContent='ثبت‌نام انجام نشد. اگر قبلاً ثب�
       mr.classList.remove('hidden');
       mr.classList.add('owner-view-active');
     }
-    try{ if(window.nomaxRefresh) window.nomaxRefresh(); }catch(e){}
+    __ownerView = 'myrequest';
     try{ if(typeof loadMy==='function') loadMy(true); }catch(e){}
     try{ window.scrollTo({top:0, behavior:'smooth'}); }catch(e){ window.scrollTo(0,0); }
   }
@@ -8715,10 +8728,12 @@ else msg.textContent='ثبت‌نام انجام نشد. اگر قبلاً ثب�
       var hasBiz = (typeof ownerBusinessList==='function') && ownerBusinessList().length>0;
       var cta=document.getElementById('ownerCtaCard');
       if(hasBiz){
-        enterOwnerMode();
-        showOwnerWorkspace({ silent:true, tab:'businesses' });
+        /* فقط اگر هنوز در حالت مالک نیستیم وارد شو — جلوگیری از رفرش مداوم */
+        if(!document.body.classList.contains('owner-mode') || !__ownerModeReady){
+          showOwnerWorkspace({ silent:true, tab:'businesses', force:true });
+        }
       } else {
-        exitOwnerMode();
+        if(document.body.classList.contains('owner-mode')) exitOwnerMode();
         if(cta) cta.classList.remove('hidden');
       }
     }catch(e){}
@@ -9400,8 +9415,6 @@ updateStats();
         await loadBusinessesFromServer();
         buildCategories(); updateStats();
         try{ if(window.syncOwnerHomeView) window.syncOwnerHomeView(); }catch(e){}
-        var oc=document.getElementById("ownerCard");
-        if(oc && !oc.classList.contains("hidden") && typeof window.showOwnerWorkspace==="function") window.showOwnerWorkspace({ silent:true });
         try{ renderAdminBizManage(); }catch(e){}
         var rc=document.getElementById("resultsCard");
         if(rc && !rc.classList.contains("hidden")) searchBusinesses();
