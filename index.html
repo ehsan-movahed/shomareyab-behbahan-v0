@@ -4817,30 +4817,24 @@ function migrateOldBusinesses(){
     ]);
   }
 
-const isAdmin = (function(){
-  var _adminAuthChecked = false;
-  var _adminAuthState = false;
-  var _adminAuthCacheAt = 0;
-  var _ADMIN_AUTH_TTL = 15000;
-  return async function isAdmin(force){
+async function isAdmin(force){
+  try{
+    if(!force && adminAuthChecked && (Date.now() - adminAuthCacheAt) < ADMIN_AUTH_TTL){
+      return adminAuthState;
+    }
+    var sessionRes = await withTimeout(sb.auth.getSession(), 8000);
+    var user = sessionRes && sessionRes.data && sessionRes.data.session ? sessionRes.data.session.user : null;
+    if(!user){ adminAuthState=false; adminAuthChecked=true; adminAuthCacheAt=Date.now(); return false; }
+    var prof;
     try{
-      if(!force && _adminAuthChecked && (Date.now() - _adminAuthCacheAt) < _ADMIN_AUTH_TTL){
-        return _adminAuthState;
-      }
-      var sessionRes = await withTimeout(sb.auth.getSession(), 8000);
-      var user = sessionRes && sessionRes.data && sessionRes.data.session ? sessionRes.data.session.user : null;
-      if(!user){ _adminAuthState=false; _adminAuthChecked=true; _adminAuthCacheAt=Date.now(); return false; }
-      var prof;
-      try{
-        prof = await withTimeout(sb.from("profiles").select("role").eq("id", user.id).maybeSingle(), 6000);
-      }catch(e){ prof = { data: null }; }
-      _adminAuthState = !!(prof && prof.data && prof.data.role === "admin");
-      _adminAuthChecked=true;
-      _adminAuthCacheAt=Date.now();
-      return _adminAuthState;
-    }catch(e){ _adminAuthState=false; _adminAuthChecked=true; _adminAuthCacheAt=Date.now(); return false; }
-  };
-})();
+      prof = await withTimeout(sb.from("profiles").select("role").eq("id", user.id).maybeSingle(), 6000);
+    }catch(e){ prof = { data: null }; }
+    adminAuthState = !!(prof && prof.data && prof.data.role === "admin");
+    adminAuthChecked=true;
+    adminAuthCacheAt=Date.now();
+    return adminAuthState;
+  }catch(e){ adminAuthState=false; adminAuthChecked=true; adminAuthCacheAt=Date.now(); return false; }
+}
   
   
   var logoClicks = 0;
@@ -8989,7 +8983,10 @@ function wrapAdmin(fnName){
         }
       }catch(e){
         console.error(e);
-        msg.textContent=(e && e.message) ? ('ثبت‌نام انجام نشد: '+e.message) : 'ثبت‌نام انجام نشد. تنظیمات Auth را در Supabase بررسی کنید.';
+        var m=(e && e.message)||'';
+if(/weak|at least|characters/i.test(m)) msg.textContent='رمز عبور ضعیف است؛ حداقل ۸ کاراکتر لازم است.';
+else if(/rate|too many|seconds/i.test(m)) msg.textContent='تعداد تلاش‌ها زیاد است؛ کمی بعد دوباره امتحان کنید.';
+else msg.textContent='ثبت‌نام انجام نشد. اگر قبلاً ثبت‌نام کرده‌اید، وارد شوید یا از «رمز عبور را فراموش کرده‌اید؟» استفاده کنید.';
       }finally{this.disabled=false;}
     };
 
@@ -9796,6 +9793,141 @@ updateStats();
   });
 })();
 </script>
+<script>
+/* ===== فراموشی و تغییر رمز عبور (مدیر + مالک) ===== */
+(function(){
+  var COOLDOWN = 60000, lastSent = 0;
+  function $(id){ return document.getElementById(id); }
+  var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  var MSG_STYLE = 'margin-top:10px;font-size:12.5px;line-height:1.9;color:var(--text-2)';
 
+  function buildModals(){
+    if($("pwResetModal")) return;
+    var d = document.createElement("div");
+    d.innerHTML =
+      '<div class="modal-overlay" id="pwResetModal"><div class="modal review-modal" style="max-width:430px">'+
+        '<div class="modal-head"><h3>🔑 فراموشی رمز عبور</h3><button type="button" class="close-x" id="pwResetClose">×</button></div>'+
+        '<p style="font-size:12.5px;line-height:1.9;margin:0 0 10px">ایمیل حساب خود را وارد کنید تا لینک تغییر رمز برایتان ارسال شود.</p>'+
+        '<div class="field"><input id="pwResetEmail" type="email" autocomplete="username" placeholder="you@example.com" style="direction:ltr;text-align:left"></div>'+
+        '<button type="button" class="btn-submit" id="pwResetSend" style="width:100%">ارسال لینک بازیابی</button>'+
+        '<div id="pwResetMsg" style="'+MSG_STYLE+'"></div>'+
+      '</div></div>'+
+      '<div class="modal-overlay" id="pwNewModal"><div class="modal review-modal" style="max-width:430px">'+
+        '<div class="modal-head"><h3>🔒 تعیین رمز عبور جدید</h3><button type="button" class="close-x" id="pwNewClose">×</button></div>'+
+        '<div class="field"><label>رمز جدید</label><input id="pwNew1" type="password" autocomplete="new-password" placeholder="حداقل ۸ کاراکتر"></div>'+
+        '<div class="field"><label>تکرار رمز جدید</label><input id="pwNew2" type="password" autocomplete="new-password"></div>'+
+        '<button type="button" class="btn-submit" id="pwNewSave" style="width:100%">ذخیره رمز جدید</button>'+
+        '<div id="pwNewMsg" style="'+MSG_STYLE+'"></div>'+
+      '</div></div>';
+    while(d.firstChild) document.body.appendChild(d.firstChild);
+
+    $("pwResetClose").onclick = function(){ $("pwResetModal").classList.remove("show"); document.body.style.overflow = ""; };
+
+    $("pwResetSend").onclick = async function(){
+      var msg = $("pwResetMsg"), btn = this;
+      var email = $("pwResetEmail").value.trim().toLowerCase();
+      if(!EMAIL_RE.test(email)){ msg.textContent = "ایمیل معتبر وارد کنید."; return; }
+      var wait = COOLDOWN - (Date.now() - lastSent);
+      if(wait > 0){ msg.textContent = "لطفاً " + Math.ceil(wait/1000) + " ثانیه دیگر دوباره تلاش کنید."; return; }
+      btn.disabled = true;
+      try{
+        var res = await sb.auth.resetPasswordForEmail(email, { redirectTo: location.origin + location.pathname });
+        if(res.error){ msg.textContent = "ارسال انجام نشد؛ کمی بعد دوباره تلاش کنید."; return; }
+        lastSent = Date.now();
+        msg.textContent = "اگر این ایمیل در سامانه ثبت شده باشد، لینک تغییر رمز برایتان ارسال می‌شود. پوشه‌ی اسپم را هم نگاه کنید.";
+      }catch(e){
+        msg.textContent = "ارسال انجام نشد. اتصال اینترنت را بررسی کنید.";
+      }finally{ btn.disabled = false; }
+    };
+
+    function cancelNew(){
+      $("pwNewModal").classList.remove("show"); document.body.style.overflow = "";
+      sb.auth.signOut({ scope: "local" }).catch(function(){});
+      try{ localStorage.removeItem("behbahan_owner_auth_v4"); }catch(e){}
+    }
+    $("pwNewClose").onclick = cancelNew;
+
+    $("pwNewSave").onclick = async function(){
+      var p1 = $("pwNew1").value, p2 = $("pwNew2").value, msg = $("pwNewMsg"), btn = this;
+      if(p1.length < 8){ msg.textContent = "رمز عبور باید حداقل ۸ کاراکتر باشد."; return; }
+      if(p1 !== p2){ msg.textContent = "رمز و تکرار آن یکسان نیست."; return; }
+      btn.disabled = true;
+      try{
+        var res = await sb.auth.updateUser({ password: p1 });
+        if(res.error) throw res.error;
+        await sb.auth.signOut();
+        try{ localStorage.removeItem("behbahan_owner_auth_v4"); }catch(e){}
+        msg.textContent = "رمز با موفقیت تغییر کرد ✓ حالا با رمز جدید وارد شوید.";
+        setTimeout(function(){ location.href = location.origin + location.pathname; }, 1800);
+      }catch(e){
+        var m = (e && e.message) || "";
+        if(/weak|at least|characters/i.test(m)) msg.textContent = "رمز عبور ضعیف است؛ حداقل ۸ کاراکتر لازم است.";
+        else if(/different|same/i.test(m)) msg.textContent = "رمز جدید باید با رمز قبلی فرق داشته باشد.";
+        else msg.textContent = "تغییر رمز انجام نشد. ممکن است لینک منقضی شده باشد؛ دوباره درخواست لینک بدهید.";
+        btn.disabled = false;
+      }
+    };
+  }
+
+  function closeAuthModals(){
+    ["adminLoginModal","ownerAuthModal"].forEach(function(id){
+      var m = $(id); if(m) m.classList.remove("show");
+    });
+  }
+
+  function openReset(prefillEmail, note){
+    buildModals(); closeAuthModals();
+    $("pwResetEmail").value = prefillEmail || "";
+    $("pwResetMsg").textContent = note || "";
+    $("pwResetModal").classList.add("show");
+    document.body.style.overflow = "hidden";
+  }
+
+  function showNewPassword(){
+    buildModals(); closeAuthModals();
+    $("pwResetModal").classList.remove("show");
+    $("pwNewModal").classList.add("show");
+    document.body.style.overflow = "hidden";
+    $("pwNew1").focus();
+  }
+
+  function addLink(afterEl, id, getEmail){
+    if(!afterEl || $(id)) return;
+    var a = document.createElement("button");
+    a.type = "button"; a.id = id;
+    a.textContent = "رمز عبور را فراموش کرده‌اید؟";
+    a.style.cssText = "display:block;width:100%;margin-top:10px;background:none;border:0;color:var(--primary-700);font-family:inherit;font-size:12.5px;font-weight:700;cursor:pointer;text-decoration:underline";
+    a.onclick = function(){ openReset(getEmail()); };
+    afterEl.insertAdjacentElement("afterend", a);
+  }
+
+  addLink($("adminLoginBtn"), "adminForgotLink", function(){
+    return ($("adminEmailInput") || {}).value || "";
+  });
+
+  var obs = new MutationObserver(function(){
+    if($("ownerLoginBtn")){
+      addLink($("ownerLoginBtn"), "ownerForgotLink", function(){
+        return ($("ownerLoginEmail") || {}).value || "";
+      });
+      obs.disconnect();
+    }
+  });
+  obs.observe(document.body, { childList: true });
+
+  sb.auth.onAuthStateChange(function(event){
+    if(event === "PASSWORD_RECOVERY"){
+      setTimeout(function(){
+        showNewPassword();
+        try{ history.replaceState(null, "", location.pathname + location.search); }catch(e){}
+      }, 0);
+    }
+  });
+  if(/type=recovery/.test(location.hash)) showNewPassword();
+  if(/error_code=otp_expired|error=access_denied/.test(location.hash)){
+    openReset("", "لینک بازیابی نامعتبر یا منقضی شده است؛ دوباره درخواست دهید.");
+  }
+})();
+</script>
 </body>
-                </html>
+  </html>
