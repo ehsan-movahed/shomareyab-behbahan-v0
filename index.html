@@ -2141,11 +2141,18 @@ body, button, input, select, textarea{
   100%{box-shadow:0 0 0 0 rgba(220,38,38,0)}
 }
 /* ===== حالت اختصاصی مالک: فقط پنل کسب‌وکار ===== */
-body.owner-mode .container > .card:not(.owner-workspace):not(#myRequestCard):not(#registerCard),
+body.owner-mode .container > .card:not(.owner-workspace):not(#registerCard),
 body.owner-mode #ownerCtaCard,
 body.owner-mode #quickReqBtn,
 body.owner-mode .footer{
   display:none !important;
+}
+/* درخواست‌های من فقط وقتی عمداً باز شده */
+body.owner-mode #myRequestCard{
+  display:none !important;
+}
+body.owner-mode #myRequestCard.owner-view-active{
+  display:block !important;
 }
 body.owner-mode #registerCard:not(.hidden){
   display:block !important;
@@ -9997,7 +10004,7 @@ updateStats();
   };
 
   /* ---------- پنل مشتری ---------- */
-  function scrollToMy(){ var c = $("myRequestCard"); if(c) c.scrollIntoView({behavior:"smooth", block:"start"}); }
+  function scrollToMy(){ if(document.body.classList.contains("owner-mode") && window.showOwnerMyRequestsView){ window.showOwnerMyRequestsView(); return; } var c = $("myRequestCard"); if(c){ c.classList.remove("hidden"); c.scrollIntoView({behavior:"smooth", block:"start"}); } }
   function timeLeft(exp){
     var ms = new Date(exp).getTime() - Date.now(); if(ms <= 0) return "منقضی شد";
     return toFa(Math.floor(ms/3600000)) + " ساعت و " + toFa(Math.floor((ms%3600000)/60000)) + " دقیقه مانده";
@@ -10020,8 +10027,23 @@ updateStats();
   function renderMy(){
     var card = $("myRequestCard"), box = $("myRequestBox");
     if(!card || !box) return;
-    if(!user()){ card.classList.add("hidden"); box.innerHTML = ""; return; }
-    card.classList.remove("hidden");
+    if(!user()){
+      card.classList.add("hidden");
+      card.classList.remove("owner-view-active");
+      box.innerHTML = "";
+      return;
+    }
+    /* در حالت مالک، کارت درخواست را خودکار باز نکن — فقط اگر کاربر از منو زده */
+    var inOwner = document.body.classList.contains("owner-mode");
+    var wantMyReq = card.classList.contains("owner-view-active");
+    if(inOwner && !wantMyReq){
+      card.classList.add("hidden");
+      /* محتوا را برای وقتی کاربر باز کرد آماده نگه دار */
+    } else if(!inOwner){
+      card.classList.remove("hidden");
+    } else {
+      card.classList.remove("hidden");
+    }
     var act = active(), h = "";
     if(act){
       var offers = act.offers || [];
