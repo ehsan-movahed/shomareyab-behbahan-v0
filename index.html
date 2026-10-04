@@ -2140,6 +2140,47 @@ body, button, input, select, textarea{
   70%{box-shadow:0 0 0 8px rgba(220,38,38,0)}
   100%{box-shadow:0 0 0 0 rgba(220,38,38,0)}
 }
+
+/* ===== نومکس UX: لیست یکسان + استعلام قیمت اختیاری ===== */
+.nx-list{display:flex;flex-direction:column;gap:10px}
+.nx-row{
+  display:flex;align-items:flex-start;justify-content:space-between;gap:12px;
+  padding:14px 14px;border:1px solid var(--border);border-radius:14px;
+  background:var(--surface);transition:border-color .18s, box-shadow .18s;
+}
+.nx-row:hover{border-color:var(--primary-200);box-shadow:var(--shadow-sm)}
+.nx-row-main{flex:1;min-width:0;text-align:right}
+.nx-row-title{font-weight:800;font-size:14.5px;color:var(--text);margin:0 0 4px;word-break:break-word}
+.nx-row-meta{font-size:12px;color:var(--text-3);line-height:1.7;display:flex;flex-wrap:wrap;gap:6px 10px}
+.nx-row-side{flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.nx-quote-cta{
+  margin-top:12px;padding:14px 14px;border-radius:14px;
+  border:1.5px dashed var(--primary-300);
+  background:linear-gradient(135deg,var(--primary-50),rgba(14,165,233,.06));
+  text-align:right;
+}
+.nx-quote-cta h3{margin:0 0 6px;font-size:14.5px;font-weight:800;color:var(--primary-800)}
+.nx-quote-cta p{margin:0 0 12px;font-size:12.5px;line-height:1.85;color:var(--text-2)}
+.nx-quote-cta .nx-quote-btn{
+  width:100%;border:0;border-radius:12px;padding:12px 14px;
+  font:inherit;font-size:13.5px;font-weight:800;cursor:pointer;color:#fff;
+  background:linear-gradient(135deg,var(--primary-500),var(--primary-600));
+  box-shadow:var(--shadow-primary);
+}
+.nx-quote-cta .nx-quote-btn:hover{background:linear-gradient(135deg,var(--primary-600),var(--primary-700))}
+.nx-quote-cta .nx-quote-note{margin-top:8px;font-size:11px;color:var(--text-3);text-align:center}
+.nx-panel-head{
+  margin:0 0 14px;padding-bottom:12px;border-bottom:1px solid var(--border);
+}
+.nx-panel-head h2{margin:0;font-size:17px;font-weight:800}
+.nx-panel-head p{margin:6px 0 0;font-size:12.5px;color:var(--text-3);line-height:1.7}
+body.user-panel-mode .container > .card:not(#myRequestCard):not(#registerCard),
+body.user-panel-mode #ownerCtaCard,
+body.user-panel-mode #quickReqBtn,
+body.user-panel-mode .footer{display:none !important}
+body.user-panel-mode #myRequestCard{display:block !important}
+body.user-panel-mode #myRequestCard .section-title{display:none}
+
 /* ===== حالت اختصاصی مالک: فقط پنل کسب‌وکار ===== */
 body.owner-mode .container > .card:not(.owner-workspace):not(#registerCard),
 body.owner-mode #ownerCtaCard,
@@ -2370,6 +2411,12 @@ body.owner-mode .owner-biz-title{display:block !important}
           جستجو
         </button>
       </div>
+      <div class="nx-quote-cta" id="quoteCtaUnderSearch" style="margin-top:10px">
+        <h3>💰 استعلام قیمت — اختیاری</h3>
+        <p>اگر خواستی چند کسب‌وکار برای یک کار قیمت بدهند، استعلام بگذار. جستجو همچنان آزاد است و اجباری نیست.</p>
+        <button type="button" class="nx-quote-btn" id="quickReqBtn">📨 استعلام قیمت از چند کسب‌وکار</button>
+        <div class="nx-quote-note">پیشنهادها در پنل «درخواست‌های من» می‌آید</div>
+      </div>
     </div>
   </div>
 
@@ -2387,14 +2434,20 @@ body.owner-mode .owner-biz-title{display:block !important}
     </div>
 
     <div id="results"></div>
+    <div class="nx-quote-cta hidden" id="quoteCtaAfterResults">
+      <h3>هنوز مطمئن نیستی؟ از چند نفر قیمت بگیر</h3>
+      <p>نتایج بالا برای تماس مستقیم است. اگر می‌خواهی کسب‌وکارها خودشان پیشنهاد بدهند، استعلام قیمت بگذار.</p>
+      <button type="button" class="nx-quote-btn" id="quoteFromResultsBtn">📨 استعلام قیمت برای همین جستجو</button>
+    </div>
   </div>
 
-  <!-- ============ MY REQUEST (درخواست من) ============ -->
+  <!-- ============ MY REQUEST (پنل کاربر — استعلام‌ها) ============ -->
   <div id="myRequestCard" class="card hidden">
-    <h2 class="section-title">
-      <span class="icon">📨</span>
-      درخواست‌های من
-    </h2>
+    <div class="nx-panel-head">
+      <h2>استعلام‌ها و درخواست‌های من</h2>
+      <p>اینجا پیشنهاد قیمت کسب‌وکارها را می‌بینی و یکی را انتخاب می‌کنی.</p>
+    </div>
+    <h2 class="section-title" style="display:none"><span class="icon">📨</span> درخواست‌های من</h2>
     <div id="notifBoxCustomer"></div>
     <div id="myRequestBox"></div>
   </div>
@@ -3174,7 +3227,7 @@ body.owner-mode .owner-biz-title{display:block !important}
     </div>
     <div class="btns" style="margin-top:16px">
       <button type="button" class="btn-cancel" onclick="closeRequestModal()">انصراف</button>
-      <button type="button" class="btn-save" id="reqSubmitBtn" onclick="submitRequest()">📨 ثبت درخواست</button>
+      <button type="button" class="btn-save" id="reqSubmitBtn" onclick="submitRequest()">📨 ثبت استعلام قیمت</button>
     </div>
   </div>
 </div>
@@ -8715,6 +8768,15 @@ else msg.textContent='ثبت‌نام انجام نشد. اگر قبلاً ثب�
     __ownerView = tab;
     __ownerModeReady = true;
     __ownerBootstrapDone = true;
+    try{
+      if(window.nomaxGetAppView && window.nomaxSetAppView){
+        var want = (tab === "requests") ? "owner-msgs" : "owner-biz";
+        /* فقط اگر هنوز public است هم‌تراز کن؛ از تغییر ناخواسته جلوگیری */
+        if(window.nomaxGetAppView() === "public" || window.nomaxGetAppView() === "owner-biz" || window.nomaxGetAppView() === "owner-msgs"){
+          /* VIEW را بدون recursion تنظیم نکن — فقط فلگ داخلی */
+        }
+      }
+    }catch(e){}
     if(!opts.silent){
       try{ window.scrollTo({top:0, behavior:'smooth'}); }catch(e){ window.scrollTo(0,0); }
     }
@@ -9711,18 +9773,21 @@ updateStats();
       btn.onclick = async function(){
         var a = btn.getAttribute("data-am"); closeMenu();
         if(a === "req"){
-          /* درخواست‌های شخصی مالک — صفحه جدا با انیمیشن نرم */
-          if(window.showOwnerMyRequestsView && isBizOwner()) window.showOwnerMyRequestsView();
+          if(window.nomaxSetAppView) window.nomaxSetAppView("my-requests");
+          else if(window.showOwnerMyRequestsView && isBizOwner()) window.showOwnerMyRequestsView();
           else {
             var c = $("myRequestCard");
             if(c){ c.classList.remove("hidden"); c.scrollIntoView({behavior:"smooth", block:"start"}); }
-            try{ if(window.nomaxRefresh) window.nomaxRefresh(); }catch(e){}
           }
         }
         else if(a === "msgs" || a === "customers"){
-          if(window.showOwnerWorkspace) window.showOwnerWorkspace({ tab: "requests" });
+          if(window.nomaxSetAppView) window.nomaxSetAppView("owner-msgs", { force:true });
+          else if(window.showOwnerWorkspace) window.showOwnerWorkspace({ tab: "requests" });
         }
-        else if(a === "owner"){ if(window.showOwnerWorkspace) window.showOwnerWorkspace({ tab: "businesses" }); }
+        else if(a === "owner"){
+          if(window.nomaxSetAppView) window.nomaxSetAppView("owner-biz", { force:true });
+          else if(window.showOwnerWorkspace) window.showOwnerWorkspace({ tab: "businesses" });
+        }
         else if(a === "admin"){ openAdminPanel(); }
         else if(a === "out"){ await signOut(); }
       };
@@ -9956,7 +10021,7 @@ updateStats();
     if(!user()){
       window.nomaxAuth.open({
         pending: { type:"request", prefill: prefill || "" },
-        reason: "برای ثبت درخواست باید عضو نومکس باشی. با Google یا ایمیل وارد شو؛ بعد از ورود، درخواستت خودکار باز می‌شه و می‌تونی پیشنهاد کسب‌وکارها رو توی پنلت ببینی."
+        reason: "برای استعلام قیمت باید وارد حساب شوی. بعد از ورود، پیشنهاد کسب‌وکارها در «درخواست‌های من» می‌آید."
       });
       return;
     }
@@ -9996,9 +10061,11 @@ updateStats();
       }
       if(window.nomaxNotify && r.data) window.nomaxNotify({ action:"new_request", request_id:r.data });
       closeRequestModal();
-      showToast("✓ درخواست ثبت شد. پیشنهادها در پنل «درخواست‌های من» نمایش داده می‌شود.", "success");
+      showToast("✓ استعلام ثبت شد. پیشنهادها در پنل شما می‌آید.", "success");
       var rc = $("resultsCard"); if(rc) rc.classList.add("hidden");
-      await loadMy(); scrollToMy();
+      await loadMy();
+      if(window.nomaxSetAppView) window.nomaxSetAppView("my-requests", { force:true });
+      else scrollToMy();
     }catch(e){ console.error(e); showToast("ارتباط با سرور برقرار نشد.", "error"); }
     finally{ btn.disabled = false; }
   };
@@ -10055,15 +10122,15 @@ updateStats();
         ? '<div style="font-weight:700;font-size:13.5px;margin:14px 0 8px">پیشنهاد کسب‌وکارها — یکی را انتخاب کن</div>'+offers.map(function(o){return offerHTML(o,true,act.id);}).join("")
         : '<div class="empty" style="padding:18px"><div style="font-size:26px">⏳</div><div class="desc">منتظر پاسخ کسب‌وکارها هستیم…<br>به محض رسیدن پیشنهاد، اینجا نمایش داده می‌شود.</div></div>';
     } else {
-      h += '<div class="empty" style="padding:14px"><div class="desc">درخواست فعالی نداری. چیزی که می‌خوای رو ثبت کن تا کسب‌وکارها قیمت بدن.</div>'+
-           '<button class="cta" id="newReqBtn">📨 ثبت درخواست جدید</button></div>';
+      h += '<div class="empty" style="padding:14px"><div class="desc">استعلام فعالی نداری. اگر خواستی از چند کسب‌وکار قیمت بگیری، استعلام جدید ثبت کن.</div>'+
+           '<button class="cta" id="newReqBtn">📨 استعلام قیمت جدید</button></div>';
     }
     var hist = list.filter(function(r){ return r.status !== "open"; }).slice(0,5);
     if(hist.length){
       h += '<div style="font-weight:700;font-size:13.5px;margin:16px 0 8px">سابقه‌ی درخواست‌ها</div>';
       hist.forEach(function(r){
         var chosen = (r.offers||[]).filter(function(o){return o.selected;})[0];
-        h += '<div class="my-req-hist"><div style="min-width:0"><b>'+esc(r.service)+'</b><div style="font-size:11px;color:var(--text-3)">'+formatDate(new Date(r.created_at).getTime())+'</div></div><span class="st-pill '+esc(r.status)+'">'+esc(ST[r.status]||r.status)+'</span></div>';
+        h += '<div class="nx-row my-req-hist"><div class="nx-row-main"><div class="nx-row-title">'+esc(r.service)+'</div><div class="nx-row-meta"><span>'+formatDate(new Date(r.created_at).getTime())+'</span></div></div><div class="nx-row-side"><span class="st-pill '+esc(r.status)+'">'+esc(ST[r.status]||r.status)+'</span></div></div>';
         if(chosen) h += offerHTML(chosen,false,r.id);
       });
     }
@@ -10191,16 +10258,16 @@ updateStats();
     if(oc && !oc.classList.contains("hidden") && !document.hidden) loadOwnerRequests(true);
   }, 30000);
 
-  /* دکمه‌ی ثبت درخواست زیر جستجو */
-  var sw = $("stickySearchWrap");
-  if(sw && !$("quickReqBtn")){
-    var b = document.createElement("button");
-    b.id = "quickReqBtn"; b.type = "button";
-    b.style.cssText = "width:100%;margin-top:8px;border:1.5px dashed var(--primary-400);border-radius:12px;padding:10px;background:var(--primary-50);color:var(--primary-700);font-family:inherit;font-weight:700;font-size:13px;cursor:pointer";
-    b.textContent = "📨 پیدا نکردی؟ درخواست ثبت کن تا کسب‌وکارها قیمت بدهند";
-    b.onclick = function(){ openRequestModal($("searchInput").value.trim()); };
-    sw.parentNode.appendChild(b);
-  }
+  /* دکمه استعلام قیمت از HTML — فقط رویداد */
+  (function(){
+    function bindQuote(id){
+      var el = $(id); if(!el || el.__nxBound) return;
+      el.__nxBound = true;
+      el.onclick = function(){ openRequestModal(($("searchInput")||{}).value ? $("searchInput").value.trim() : ""); };
+    }
+    bindQuote("quickReqBtn");
+    bindQuote("quoteFromResultsBtn");
+  })();
 })();
 </script>
 
@@ -10392,6 +10459,104 @@ window.NOMAX_CFG = {
     if(t) setTimeout(render, 50);
   });
   render();
+})();
+</script>
+
+
+<script id="nomax-view-router">
+/* ===== نومکس: هدایت‌گر یکتا — جلوگیری از پرش بین پنل‌ها ===== */
+(function(){
+  var VIEW = { current: "public" }; // public | owner-biz | owner-msgs | my-requests
+
+  function hasOwnerBiz(){
+    try{ return !!(window.ownerBusinessList && window.ownerBusinessList().length); }catch(e){ return false; }
+  }
+
+  function hideEl(id){
+    var el = document.getElementById(id); if(!el) return;
+    el.classList.add("hidden");
+    el.classList.remove("owner-view-active");
+    el.classList.remove("owner-view-hidden");
+  }
+  function showEl(id){
+    var el = document.getElementById(id); if(!el) return;
+    el.classList.remove("hidden");
+  }
+
+  window.nomaxSetAppView = function(view, opts){
+    opts = opts || {};
+    if(VIEW.current === view && !opts.force) return;
+    VIEW.current = view;
+
+    document.body.classList.remove("owner-mode", "user-panel-mode");
+
+    if(view === "public"){
+      try{ if(window.exitOwnerMode) window.exitOwnerMode(); }catch(e){}
+      hideEl("ownerCard");
+      hideEl("myRequestCard");
+      var cta = document.getElementById("ownerCtaCard");
+      if(cta){ if(hasOwnerBiz()) cta.classList.add("hidden"); else cta.classList.remove("hidden"); }
+      return;
+    }
+
+    if(view === "my-requests"){
+      /* پنل کاربر عادی — نه مالک */
+      if(hasOwnerBiz()){
+        /* مالک هم می‌تواند استعلام شخصی ببیند */
+        document.body.classList.add("owner-mode");
+        var oc = document.getElementById("ownerCard");
+        if(oc){ oc.classList.remove("hidden"); oc.classList.add("owner-view-hidden"); }
+        var mr = document.getElementById("myRequestCard");
+        if(mr){ mr.classList.remove("hidden"); mr.classList.add("owner-view-active"); }
+      } else {
+        document.body.classList.add("user-panel-mode");
+        hideEl("ownerCard");
+        var mr2 = document.getElementById("myRequestCard");
+        if(mr2){ mr2.classList.remove("hidden"); mr2.classList.add("owner-view-active"); }
+      }
+      try{ if(typeof loadMy === "function") loadMy(true); }catch(e){}
+      if(!opts.silent){ try{ window.scrollTo({top:0,behavior:"smooth"}); }catch(e){ window.scrollTo(0,0);} }
+      return;
+    }
+
+    if(view === "owner-biz" || view === "owner-msgs"){
+      document.body.classList.add("owner-mode");
+      var mr3 = document.getElementById("myRequestCard");
+      if(mr3){ mr3.classList.add("hidden"); mr3.classList.remove("owner-view-active"); }
+      var card = document.getElementById("ownerCard");
+      if(card){ card.classList.remove("hidden"); card.classList.remove("owner-view-hidden"); }
+      var cta2 = document.getElementById("ownerCtaCard"); if(cta2) cta2.classList.add("hidden");
+      var tab = (view === "owner-msgs") ? "requests" : "businesses";
+      try{
+        if(window.showOwnerWorkspace) window.showOwnerWorkspace({ tab: tab, silent: !!opts.silent, force: !!opts.force });
+      }catch(e){}
+      if(!opts.silent){ try{ window.scrollTo({top:0,behavior:"smooth"}); }catch(e){ window.scrollTo(0,0);} }
+      return;
+    }
+  };
+
+  window.nomaxGetAppView = function(){ return VIEW.current; };
+
+  /* دکمه استعلام از نتایج */
+  document.addEventListener("click", function(e){
+    var t = e.target;
+    if(!t) return;
+    if(t.id === "quoteFromResultsBtn" || (t.closest && t.closest("#quoteFromResultsBtn"))){
+      var q = (document.getElementById("searchInput") || {}).value || "";
+      if(window.openRequestModal) window.openRequestModal(q.trim());
+    }
+  });
+
+  /* بعد از نمایش نتایج، CTA استعلام را نشان بده */
+  var _obs = new MutationObserver(function(){
+    var rc = document.getElementById("resultsCard");
+    var q = document.getElementById("quoteCtaAfterResults");
+    if(!rc || !q) return;
+    if(rc.classList.contains("hidden")) q.classList.add("hidden");
+    else q.classList.remove("hidden");
+  });
+  var rc0 = document.getElementById("resultsCard");
+  if(rc0) _obs.observe(rc0, { attributes:true, attributeFilter:["class"] });
 })();
 </script>
 
