@@ -691,6 +691,50 @@ body, button, input, select, textarea{
   margin-top:12px;
 }
 @media (max-width:420px){.business-cta{grid-template-columns:1fr}}
+
+/* Quote request button next to call */
+.business-cta{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-top:12px;
+}
+.quote-btn{
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  background:linear-gradient(135deg,#f59e0b,#d97706);
+  color:#fff; text-decoration:none; border:0;
+  padding:12px 14px; border-radius:12px;
+  font-size:13.5px; font-weight:800; font-family:inherit;
+  cursor:pointer;
+  transition:all .2s var(--ease-smooth);
+  box-shadow:0 6px 20px rgba(245,158,11,.3);
+}
+.quote-btn:hover{
+  background:linear-gradient(135deg,#d97706,#b45309);
+  transform:translateY(-1px);
+  box-shadow:0 10px 26px rgba(217,119,6,.35);
+}
+.quote-btn:active{transform:translateY(0) scale(.98)}
+.business-cta .business-actions{
+  grid-column:1 / -1;
+}
+.req-target-banner{
+  display:none;
+  margin-bottom:14px; padding:12px 14px;
+  border-radius:12px;
+  background:linear-gradient(135deg,var(--primary-50),rgba(14,165,233,.06));
+  border:1px solid var(--primary-100);
+  color:var(--primary-800);
+  font-size:13px; font-weight:700; line-height:1.8;
+}
+.req-target-banner.show{display:block}
+.req-quota-hint{
+  font-size:12px; color:var(--text-3); text-align:center;
+  margin-top:10px; line-height:1.7;
+}
+body.owner-mode .header-menu-anchor{display:none !important}
+body.owner-mode .theme-toggle:not(.acct-btn){display:none !important}
+
 .call-btn{
   display:flex; align-items:center; justify-content:center; gap:8px;
   background:linear-gradient(135deg,var(--primary-500),var(--primary-600));
@@ -2411,12 +2455,6 @@ body.owner-mode .owner-biz-title{display:block !important}
           جستجو
         </button>
       </div>
-      <div class="nx-quote-cta" id="quoteCtaUnderSearch" style="margin-top:10px">
-        <h3>💰 استعلام قیمت — اختیاری</h3>
-        <p>اگر خواستی چند کسب‌وکار برای یک کار قیمت بدهند، استعلام بگذار. جستجو همچنان آزاد است و اجباری نیست.</p>
-        <button type="button" class="nx-quote-btn" id="quickReqBtn">📨 استعلام قیمت از چند کسب‌وکار</button>
-        <div class="nx-quote-note">پیشنهادها در پنل «درخواست‌های من» می‌آید</div>
-      </div>
     </div>
   </div>
 
@@ -2434,11 +2472,6 @@ body.owner-mode .owner-biz-title{display:block !important}
     </div>
 
     <div id="results"></div>
-    <div class="nx-quote-cta hidden" id="quoteCtaAfterResults">
-      <h3>هنوز مطمئن نیستی؟ از چند نفر قیمت بگیر</h3>
-      <p>نتایج بالا برای تماس مستقیم است. اگر می‌خواهی کسب‌وکارها خودشان پیشنهاد بدهند، استعلام قیمت بگذار.</p>
-      <button type="button" class="nx-quote-btn" id="quoteFromResultsBtn">📨 استعلام قیمت برای همین جستجو</button>
-    </div>
   </div>
 
   <!-- ============ MY REQUEST (پنل کاربر — استعلام‌ها) ============ -->
@@ -3202,6 +3235,7 @@ body.owner-mode .owner-biz-title{display:block !important}
         </div>
       </div>
     </div>
+    <div class="req-target-banner" id="reqTargetBanner"></div>
     <div class="qfield">
       <label>کالا یا خدمت مورد نیاز *</label>
       <input id="reqService" type="text" maxlength="80" placeholder="مثلاً: لنت ترمز پراید، تعمیر کولر اسپلیت">
@@ -3225,6 +3259,7 @@ body.owner-mode .owner-biz-title{display:block !important}
       <label>توضیحات تکمیلی (اختیاری)</label>
       <textarea id="reqDesc" maxlength="300" placeholder="مدل دقیق، حدود قیمت، ..." style="min-height:70px;width:100%;padding:11px 13px;border:1.5px solid var(--border);border-radius:10px;font-size:13.5px;font-family:inherit;background:var(--surface);color:var(--text);outline:none;resize:vertical"></textarea>
     </div>
+    <div class="req-quota-hint" id="reqQuotaHint"></div>
     <div class="btns" style="margin-top:16px">
       <button type="button" class="btn-cancel" onclick="closeRequestModal()">انصراف</button>
       <button type="button" class="btn-save" id="reqSubmitBtn" onclick="submitRequest()">📨 ثبت استعلام قیمت</button>
@@ -5723,6 +5758,7 @@ actionsHtml +=
         (tagsHtml ? '<div class="tags-preview">' + tagsHtml + '</div>' : '') +
         '<div class="business-cta">' +
           '<a class="call-btn" href="tel:' + cleanPhone(b.phone) + '"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0122 16.92z"/></svg>تماس سریع</a>' +
+          '<button type="button" class="quote-btn" onclick="openQuoteForBusiness(' + b.id + ')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>استعلام قیمت</button>' +
           '<div class="business-actions">' + actionsHtml + '</div>' +
         '</div>' +
         ratingRowHTML(b) +
@@ -7338,10 +7374,11 @@ function getTimeAgo(ts){
   /* ============ SHARE + MAP ============ */
   function getBusinessById(id){
     for(var i=0;i<businesses.length;i++){
-      if(businesses[i].id === id) return businesses[i];
+      if(String(businesses[i].id) === String(id)) return businesses[i];
     }
     return null;
   }
+  window.getBusinessById = getBusinessById;
   
   function shareBusiness(id, btn){
     var b = getBusinessById(id);
@@ -8479,6 +8516,7 @@ function wrapAdmin(fnName){
         (tagsHtml?'<div class="tags-preview">'+tagsHtml+'</div>':'')+
         '<div class="business-cta">'+
           '<a class="call-btn" href="tel:'+cleanPhone(b.phone)+'">☎ تماس سریع</a>'+
+          '<button type="button" class="quote-btn" onclick="openQuoteForBusiness('+b.id+')">💬 استعلام قیمت</button>'+
           '<div class="business-actions">'+actionsHtml+'</div>'+
         '</div>'+
         ratingRowHTML(b)+
@@ -9706,7 +9744,7 @@ updateStats();
       if(state.admin) openAdminPanel();
       else if(state.user) showToast("این حساب دسترسی مدیر ندارد.", "error");
     } else if(!state.user) return;
-    else if(p.type === "request"){ setTimeout(function(){ if(window.openRequestModal) window.openRequestModal(p.prefill || ""); }, 150); }
+    else if(p.type === "request"){ setTimeout(function(){ if(window.openRequestModal){ var opts={}; if(p.targetBizId && typeof getBusinessById==="function"){ var bb=getBusinessById(Number(p.targetBizId)); if(bb) opts.targetBusiness=bb; } window.openRequestModal(p.prefill || "", opts); } }, 150); }
     else if(p.type === "owner"){ if(window.showOwnerWorkspace && window.currentOwner && window.currentOwner()) window.showOwnerWorkspace(); }
     else if(p.type === "myrequests"){ var c = $("myRequestCard"); if(c) c.scrollIntoView({behavior:"smooth", block:"start"}); }
   }
@@ -10017,12 +10055,66 @@ updateStats();
     }
   });
 
-  window.openRequestModal = function(prefill){
+  var targetBizId = null;
+  var QUOTA_KEY = "nomax_quote_quota_v1";
+  var QUOTA_MAX = 5;
+  var QUOTA_MS = 24 * 60 * 60 * 1000;
+
+  function quotaUserKey(){
+    var u = user();
+    return u ? ("u:" + u.id) : "anon";
+  }
+  function readQuota(){
+    try{
+      var all = JSON.parse(localStorage.getItem(QUOTA_KEY) || "{}");
+      var arr = all[quotaUserKey()] || [];
+      var now = Date.now();
+      arr = arr.filter(function(t){ return (now - Number(t)) < QUOTA_MS; });
+      all[quotaUserKey()] = arr;
+      localStorage.setItem(QUOTA_KEY, JSON.stringify(all));
+      return arr;
+    }catch(e){ return []; }
+  }
+  function remainingQuota(){ return Math.max(0, QUOTA_MAX - readQuota().length); }
+  function recordQuotaUse(){
+    try{
+      var all = JSON.parse(localStorage.getItem(QUOTA_KEY) || "{}");
+      var arr = all[quotaUserKey()] || [];
+      arr.push(Date.now());
+      all[quotaUserKey()] = arr;
+      localStorage.setItem(QUOTA_KEY, JSON.stringify(all));
+    }catch(e){}
+  }
+  function updateQuotaHint(){
+    var el = $("reqQuotaHint"); if(!el) return;
+    var left = remainingQuota();
+    if(left <= 0){
+      el.innerHTML = "⛔ سقف روزانه به پایان رسیده: حداکثر <b>۵</b> استعلام در ۲۴ ساعت.";
+      el.style.color = "var(--danger)";
+    } else {
+      el.innerHTML = "باقی‌مانده امروز: <b>" + (typeof toFa==="function"?toFa(left):left) + "</b> از ۵ استعلام قیمت";
+      el.style.color = "var(--text-3)";
+    }
+  }
+
+  window.openQuoteForBusiness = function(bizId){
+    var b = getBusinessById(Number(bizId));
+    if(!b){ showToast("کسب‌وکار پیدا نشد.", "error"); return; }
+    openRequestModal("", { targetBusiness: b });
+  };
+
+  window.openRequestModal = function(prefill, opts){
+    opts = opts || {};
+    targetBizId = null;
     if(!user()){
       window.nomaxAuth.open({
-        pending: { type:"request", prefill: prefill || "" },
-        reason: "برای استعلام قیمت باید وارد حساب شوی. بعد از ورود، پیشنهاد کسب‌وکارها در «درخواست‌های من» می‌آید."
+        pending: { type:"request", prefill: prefill || "", targetBizId: opts.targetBusiness ? opts.targetBusiness.id : null },
+        reason: "برای استعلام قیمت باید وارد حساب شوی. بعد از ورود می‌توانی درخواستت را ثبت کنی."
       });
+      return;
+    }
+    if(remainingQuota() <= 0){
+      showToast("سقف ۵ استعلام قیمت در ۲۴ ساعت پر شده است. فردا دوباره تلاش کنید.", "error");
       return;
     }
     if(active()){
@@ -10032,11 +10124,43 @@ updateStats();
     fillReqCats();
     $("reqService").value = prefill || ""; $("reqArea").value = ""; $("reqDesc").value = "";
     $("reqCategory").value = ""; fillReqSubs(""); $("reqCatHint").textContent = "";
+
+    var banner = $("reqTargetBanner");
+    var catRow = document.querySelector("#requestModal .qrow");
+    if(opts.targetBusiness){
+      var tb = opts.targetBusiness;
+      targetBizId = tb.id;
+      if(banner){
+        banner.classList.add("show");
+        banner.innerHTML = "🎯 استعلام مستقیم به: <b>" + esc(tb.name) + "</b>" + (tb.type ? (" · " + esc(tb.type)) : "");
+      }
+      // try map category from business
+      try{
+        var g = guessCategory((tb.type||"") + " " + (tb.name||"") + " " + ((tb.tags||[]).join(" ")));
+        if(g){ $("reqCategory").value = g.categoryId; fillReqSubs(g.categoryId); }
+        else if(tb.type){
+          // fallback: match by type name
+          for(var i=0;i<categories.length;i++){
+            if(normalize(categories[i].name) === normalize(tb.type) || normalize(tb.type).indexOf(normalize(categories[i].name))>-1){
+              $("reqCategory").value = categories[i].id; fillReqSubs(categories[i].id); break;
+            }
+          }
+        }
+      }catch(e){}
+      if(catRow) catRow.style.opacity = ".85";
+    } else {
+      if(banner){ banner.classList.remove("show"); banner.innerHTML = ""; }
+      if(catRow) catRow.style.opacity = "1";
+    }
+    updateQuotaHint();
     $("requestModal").classList.add("show"); document.body.style.overflow = "hidden";
-    if(prefill && prefill.length >= 3) guessReqCategory(prefill);
+    if(prefill && prefill.length >= 3 && !opts.targetBusiness) guessReqCategory(prefill);
+    setTimeout(function(){ var s=$("reqService"); if(s) s.focus(); }, 120);
   };
   window.closeRequestModal = function(){
     $("requestModal").classList.remove("show"); document.body.style.overflow = "";
+    targetBizId = null;
+    var banner = $("reqTargetBanner"); if(banner){ banner.classList.remove("show"); banner.innerHTML=""; }
   };
 
   window.submitRequest = async function(){
@@ -10044,24 +10168,37 @@ updateStats();
     var cat = $("reqCategory").value, sub = $("reqSubcategory").value;
     if(service.length < 2){ showToast("کالا یا خدمت را وارد کنید.", "error"); return; }
     if(!cat){ showToast("دسته را انتخاب کنید.", "error"); return; }
+    if(remainingQuota() <= 0){
+      showToast("سقف ۵ استعلام قیمت در ۲۴ ساعت پر شده است.", "error");
+      updateQuotaHint();
+      return;
+    }
+    var desc = $("reqDesc").value.trim();
+    var tb = targetBizId ? getBusinessById(Number(targetBizId)) : null;
+    if(tb){
+      var marker = "[هدف:" + tb.id + ":" + (tb.name || "") + "]";
+      desc = (desc ? (desc + "\n") : "") + marker + " استعلام مستقیم برای «" + (tb.name || "") + "»";
+    }
     var btn = $("reqSubmitBtn"); btn.disabled = true;
     try{
       var r = await sb.rpc("submit_service_request", {
         p_service: service, p_category: cat, p_sub: sub,
-        p_area: $("reqArea").value.trim(), p_desc: $("reqDesc").value.trim()
+        p_area: $("reqArea").value.trim(), p_desc: desc
       });
       if(r.error){
         var m = r.error.message || "";
-        if(m.indexOf("not_authenticated") > -1){ closeRequestModal(); window.nomaxAuth.open({ pending:{type:"request", prefill:service} }); }
+        if(m.indexOf("not_authenticated") > -1){ closeRequestModal(); window.nomaxAuth.open({ pending:{type:"request", prefill:service, targetBizId: targetBizId} }); }
         else if(m.indexOf("already_open") > -1){ showToast("شما یک درخواست فعال دارید.", "error"); closeRequestModal(); await loadMy(); }
-        else if(m.indexOf("daily_limit") > -1) showToast("امروز به سقف ۵ درخواست رسیده‌ای؛ فردا دوباره امتحان کن.", "error");
+        else if(m.indexOf("daily_limit") > -1){ try{ var all=JSON.parse(localStorage.getItem(QUOTA_KEY)||"{}"); all[quotaUserKey()]=[Date.now(),Date.now(),Date.now(),Date.now(),Date.now()]; localStorage.setItem(QUOTA_KEY,JSON.stringify(all)); }catch(e){} showToast("امروز به سقف ۵ درخواست رسیده‌ای؛ فردا دوباره امتحان کن.", "error"); updateQuotaHint(); }
         else if(m.indexOf("rate_limited") > -1) showToast("ترافیک زیاد است؛ چند دقیقه بعد دوباره تلاش کنید.", "error");
         else showToast("ثبت درخواست انجام نشد؛ دوباره تلاش کنید.", "error");
         return;
       }
-      if(window.nomaxNotify && r.data) window.nomaxNotify({ action:"new_request", request_id:r.data });
+      recordQuotaUse();
+      if(window.nomaxNotify && r.data) window.nomaxNotify({ action:"new_request", request_id:r.data, business_id: targetBizId || null });
+      var wasTarget = !!tb;
       closeRequestModal();
-      showToast("✓ استعلام ثبت شد. پیشنهادها در پنل شما می‌آید.", "success");
+      showToast(wasTarget ? ("✓ استعلام برای «" + (tb.name||"کسب‌وکار") + "» ثبت شد.") : "✓ استعلام ثبت شد. پیشنهادها در پنل شما می‌آید.", "success");
       var rc = $("resultsCard"); if(rc) rc.classList.add("hidden");
       await loadMy();
       if(window.nomaxSetAppView) window.nomaxSetAppView("my-requests", { force:true });
@@ -10221,9 +10358,10 @@ updateStats();
     var inp = 'style="width:100%;padding:9px;border:1px solid var(--border);border-radius:9px;margin-bottom:6px;background:var(--surface);color:var(--text);font-family:inherit"';
     box.innerHTML = ownerReqs.map(function(q, i){
       var o = q.my_offer, sel = q.status === "selected";
+      var isDirect = /\[هدف:/.test(String(q.description||""));
       var head = '<div style="display:flex;justify-content:space-between;gap:8px"><strong>🔎 '+esc(q.service)+'</strong><span style="font-size:11px;color:var(--text-3)">'+getTimeAgo(new Date(q.created_at).getTime())+'</span></div>'+
-        '<div class="request-meta"><span>🏪 '+esc(q.business_name||"")+'</span>'+(q.area?'<span>📍 '+esc(q.area)+'</span>':'')+'</div>'+
-        (q.description?'<div style="font-size:12.5px;color:var(--text-2);margin-top:6px">'+esc(q.description)+'</div>':'');
+        '<div class="request-meta">'+(isDirect?'<span class="st-pill open">🎯 مستقیم به شما</span>':'')+'<span>🏪 '+esc(q.business_name||"")+'</span>'+(q.area?'<span>📍 '+esc(q.area)+'</span>':'')+'</div>'+
+        (q.description?'<div style="font-size:12.5px;color:var(--text-2);margin-top:6px">'+esc(String(q.description).replace(/\[هدف:[^\]]*\]\s*/g,""))+'</div>':'');
       if(sel){
         return '<div class="owner-business '+(q.selected_mine?'offer-chosen':'')+'">'+head+
           '<div style="margin-top:10px;font-weight:800;font-size:13px;color:'+(q.selected_mine?'#047857':'var(--text-3)')+'">'+(q.selected_mine?'🎉 مشتری پیشنهاد شما را انتخاب کرد — منتظر تماس یا مراجعه‌اش باشید.':'مشتری پیشنهاد دیگری را انتخاب کرد.')+'</div></div>';
@@ -10258,16 +10396,7 @@ updateStats();
     if(oc && !oc.classList.contains("hidden") && !document.hidden) loadOwnerRequests(true);
   }, 30000);
 
-  /* دکمه استعلام قیمت از HTML — فقط رویداد */
-  (function(){
-    function bindQuote(id){
-      var el = $(id); if(!el || el.__nxBound) return;
-      el.__nxBound = true;
-      el.onclick = function(){ openRequestModal(($("searchInput")||{}).value ? $("searchInput").value.trim() : ""); };
-    }
-    bindQuote("quickReqBtn");
-    bindQuote("quoteFromResultsBtn");
-  })();
+  /* CTAهای عمومی استعلام از صفحه اصلی حذف شد؛ استعلام فقط از کارت کسب‌وکار */
 })();
 </script>
 
