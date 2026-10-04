@@ -2140,6 +2140,46 @@ body, button, input, select, textarea{
   70%{box-shadow:0 0 0 8px rgba(220,38,38,0)}
   100%{box-shadow:0 0 0 0 rgba(220,38,38,0)}
 }
+/* ===== حالت اختصاصی مالک: فقط پنل کسب‌وکار ===== */
+body.owner-mode .container > .card:not(.owner-workspace):not(#myRequestCard):not(#registerCard),
+body.owner-mode #ownerCtaCard,
+body.owner-mode #quickReqBtn,
+body.owner-mode .footer{
+  display:none !important;
+}
+body.owner-mode #registerCard:not(.hidden){
+  display:block !important;
+  animation:ownerPanelIn .35s var(--ease-smooth) both;
+}
+body.owner-mode #registerCard:not(.hidden) ~ #ownerCard,
+body.owner-mode:has(#registerCard:not(.hidden)) #ownerCard{
+  display:none !important;
+}
+body.owner-mode #ownerCard{
+  display:block !important;
+  margin-top:8px;
+  animation:ownerPanelIn .35s var(--ease-smooth) both;
+}
+body.owner-mode #myRequestCard.owner-view-active{
+  display:block !important;
+  animation:ownerPanelIn .35s var(--ease-smooth) both;
+}
+body.owner-mode #ownerCard.owner-view-hidden{
+  display:none !important;
+}
+body.owner-mode .header .stats,
+body.owner-mode .header .tagline{
+  opacity:.85;
+}
+.owner-panel-section{
+  animation:ownerPanelIn .3s var(--ease-smooth) both;
+}
+@keyframes ownerPanelIn{
+  from{opacity:0; transform:translateY(12px)}
+  to{opacity:1; transform:translateY(0)}
+}
+body.owner-mode .owner-close-action{display:none !important}
+
 .auth-google{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;background:#fff;color:#1f1f1f;border:1px solid #dadce0;border-radius:12px;padding:12px;font:inherit;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s}
 .auth-google:hover{background:#f8f9fa;box-shadow:0 2px 8px rgba(0,0,0,.1)}
 .auth-or{display:flex;align-items:center;gap:10px;color:var(--text-3);font-size:12px;margin:14px 0}
@@ -7369,13 +7409,20 @@ function getTimeAgo(ts){
   document.getElementById("cancelButton").onclick = function(){
     document.getElementById("registerCard").classList.add("hidden");
     resetForm();
+    try{
+      var hasBiz = (typeof ownerBusinessList==='function') && ownerBusinessList().length>0;
+      if(hasBiz && window.showOwnerWorkspace) window.showOwnerWorkspace({ silent:true, tab:'businesses' });
+    }catch(e){}
   };
   document.getElementById("closeOwnerButton").onclick = function(){
+    try{ if(window.exitOwnerMode) window.exitOwnerMode(); }catch(e){}
     document.getElementById("ownerCard").classList.add("hidden");
     try{
       var hasBiz = (typeof ownerBusinessList==='function') && ownerBusinessList().length>0;
       var cta = document.getElementById("ownerCtaCard");
       if(cta){ if(hasBiz) cta.classList.add("hidden"); else cta.classList.remove("hidden"); }
+      /* اگر هنوز مالک است و کسب‌وکار دارد، دوباره حالت مالک را برگردان */
+      if(hasBiz && window.syncOwnerHomeView) window.syncOwnerHomeView();
     }catch(e){}
   };
   
@@ -8589,7 +8636,9 @@ else msg.textContent='ثبت‌نام انجام نشد. اگر قبلاً ثب�
     document.getElementById('ownerLogoutV2').onclick=async function(){
       try{ await sb.auth.signOut(); }catch(e){}
       clearOwnerSession();
+      try{ if(window.exitOwnerMode) window.exitOwnerMode(); }catch(e){}
       document.getElementById('ownerCard').classList.add('hidden');
+      var cta=document.getElementById('ownerCtaCard'); if(cta) cta.classList.remove('hidden');
       showToast('از حساب مالک خارج شدید.','success');
     };
   }
@@ -8609,35 +8658,74 @@ else msg.textContent='ثبت‌نام انجام نشد. اگر قبلاً ثب�
     }catch(e){}
   }
 
+  function enterOwnerMode(){
+    document.body.classList.add('owner-mode');
+    var cta=document.getElementById('ownerCtaCard'); if(cta) cta.classList.add('hidden');
+    var reg=document.getElementById('registerCard'); if(reg) reg.classList.add('hidden');
+    var rc=document.getElementById('resultsCard'); if(rc) rc.classList.add('hidden');
+  }
+  function exitOwnerMode(){
+    document.body.classList.remove('owner-mode');
+    var card=document.getElementById('ownerCard');
+    if(card){ card.classList.add('hidden'); card.classList.remove('owner-view-hidden'); }
+    var mr=document.getElementById('myRequestCard');
+    if(mr){ mr.classList.add('hidden'); mr.classList.remove('owner-view-active'); }
+  }
   function showOwnerWorkspace(opts){
     opts = opts || {};
     try{ updateOwnerRequestsBadgeV2(); }catch(e){}
     try{ if(typeof maybePromptOwnerNotify==="function") maybePromptOwnerNotify(); }catch(e){}
+    var hasBiz = (typeof ownerBusinessList==='function') && ownerBusinessList().length>0;
+    if(hasBiz) enterOwnerMode();
     var card=document.getElementById('ownerCard'); if(!card)return;
     var reg=document.getElementById('registerCard'); if(reg) reg.classList.add('hidden');
     var cta=document.getElementById('ownerCtaCard'); if(cta) cta.classList.add('hidden');
+    // پنل کسب‌وکار را نشان بده؛ درخواست شخصی را پنهان کن
+    var mr=document.getElementById('myRequestCard');
+    if(mr){ mr.classList.add('hidden'); mr.classList.remove('owner-view-active'); }
     card.classList.remove('hidden');
+    card.classList.remove('owner-view-hidden');
     ownerPanelHeader(); renderOwnerBusinessesV2(); updateOwnerRequestsBadgeV2(); updateOwnerWorkspaceSummary();
     var tab = opts.tab || 'businesses';
     try{ if(typeof setOwnerPanelTab==='function') setOwnerPanelTab(tab); }catch(e){}
-    if(!opts.silent) card.scrollIntoView({behavior:'smooth',block:'start'});
+    if(!opts.silent){
+      try{ window.scrollTo({top:0, behavior:'smooth'}); }catch(e){ window.scrollTo(0,0); }
+    }
   }
   window.showOwnerWorkspace = showOwnerWorkspace;
+
+  /* نمایش نرم «درخواست‌های من» به‌جای پنل کسب‌وکار */
+  function showOwnerMyRequestsView(){
+    enterOwnerMode();
+    var card=document.getElementById('ownerCard');
+    if(card){ card.classList.add('owner-view-hidden'); card.classList.remove('hidden'); }
+    var mr=document.getElementById('myRequestCard');
+    if(mr){
+      mr.classList.remove('hidden');
+      mr.classList.add('owner-view-active');
+    }
+    try{ if(window.nomaxRefresh) window.nomaxRefresh(); }catch(e){}
+    try{ if(typeof loadMy==='function') loadMy(true); }catch(e){}
+    try{ window.scrollTo({top:0, behavior:'smooth'}); }catch(e){ window.scrollTo(0,0); }
+  }
+  window.showOwnerMyRequestsView = showOwnerMyRequestsView;
 
   function syncOwnerHomeView(){
     try{
       var hasBiz = (typeof ownerBusinessList==='function') && ownerBusinessList().length>0;
       var cta=document.getElementById('ownerCtaCard');
-      var card=document.getElementById('ownerCard');
       if(hasBiz){
-        if(cta) cta.classList.add('hidden');
-        if(card && card.classList.contains('hidden')) showOwnerWorkspace({ silent:true, tab:'businesses' });
+        enterOwnerMode();
+        showOwnerWorkspace({ silent:true, tab:'businesses' });
       } else {
+        exitOwnerMode();
         if(cta) cta.classList.remove('hidden');
       }
     }catch(e){}
   }
   window.syncOwnerHomeView = syncOwnerHomeView;
+  window.enterOwnerMode = enterOwnerMode;
+  window.exitOwnerMode = exitOwnerMode;
 
   function ownerStatusText(b){
     var why = b.rejectionReason ? (' — دلیل: ' + b.rejectionReason) : '';
@@ -9573,9 +9661,13 @@ updateStats();
       btn.onclick = async function(){
         var a = btn.getAttribute("data-am"); closeMenu();
         if(a === "req"){
-          var c = $("myRequestCard");
-          if(c){ c.classList.remove("hidden"); c.scrollIntoView({behavior:"smooth", block:"start"}); }
-          try{ if(window.nomaxRefresh) window.nomaxRefresh(); }catch(e){}
+          /* درخواست‌های شخصی مالک — صفحه جدا با انیمیشن نرم */
+          if(window.showOwnerMyRequestsView && isBizOwner()) window.showOwnerMyRequestsView();
+          else {
+            var c = $("myRequestCard");
+            if(c){ c.classList.remove("hidden"); c.scrollIntoView({behavior:"smooth", block:"start"}); }
+            try{ if(window.nomaxRefresh) window.nomaxRefresh(); }catch(e){}
+          }
         }
         else if(a === "msgs" || a === "customers"){
           if(window.showOwnerWorkspace) window.showOwnerWorkspace({ tab: "requests" });
@@ -9595,7 +9687,9 @@ updateStats();
     try{ await sb.auth.signOut(); }catch(e){}
     try{ localStorage.removeItem("behbahan_owner_auth_v4"); localStorage.removeItem("behbahan_admin"); }catch(e){}
     adminAuthState = false; adminAuthChecked = false;
+    try{ if(window.exitOwnerMode) window.exitOwnerMode(); }catch(e){}
     ["ownerCard","adminCard","registerCard"].forEach(function(id){ var el = $(id); if(el) el.classList.add("hidden"); });
+    var cta=$("ownerCtaCard"); if(cta) cta.classList.remove("hidden");
     await refresh();
     showToast("از حساب خارج شدید.", "success");
   }
