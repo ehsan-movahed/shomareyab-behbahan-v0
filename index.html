@@ -2207,6 +2207,7 @@ body.owner-mode #myRequestCard.owner-view-active{
 body.owner-mode #myRequestCard.owner-view-active .section-title{
   display:none;
 }
+body.owner-mode .owner-biz-title{display:block !important}
 
 
 .auth-google{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;background:#fff;color:#1f1f1f;border:1px solid #dadce0;border-radius:12px;padding:12px;font:inherit;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s}
@@ -6754,7 +6755,9 @@ if(saveBizBtn){
     resetForm();
     document.getElementById("registerCard").classList.add("hidden");
     try{
-      if(ownerUser && typeof showOwnerWorkspace === "function") showOwnerWorkspace();
+      if(ownerUser && typeof showOwnerWorkspace === "function"){
+        try{ if(window.syncOwnerHomeView) window.syncOwnerHomeView(); else showOwnerWorkspace({ silent:true }); }catch(e){ showOwnerWorkspace({ silent:true }); }
+      }
       if(typeof showOwnerPendingNotice === "function") showOwnerPendingNotice(name);
     }catch(e){}
   };
@@ -7424,15 +7427,16 @@ function getTimeAgo(ts){
     }catch(e){}
   };
   document.getElementById("closeOwnerButton").onclick = function(){
-    try{ if(window.exitOwnerMode) window.exitOwnerMode(); }catch(e){}
-    document.getElementById("ownerCard").classList.add("hidden");
+    /* در حالت مالک دکمه مخفی است؛ اگر صدا زده شد فقط پنل را نبند تا پرش ایجاد نشود */
     try{
       var hasBiz = (typeof ownerBusinessList==='function') && ownerBusinessList().length>0;
-      var cta = document.getElementById("ownerCtaCard");
-      if(cta){ if(hasBiz) cta.classList.add("hidden"); else cta.classList.remove("hidden"); }
-      /* اگر هنوز مالک است و کسب‌وکار دارد، دوباره حالت مالک را برگردان */
-      if(hasBiz && window.syncOwnerHomeView) window.syncOwnerHomeView();
+      if(hasBiz && window.showOwnerWorkspace){
+        window.showOwnerWorkspace({ silent:true, tab:'businesses' });
+        return;
+      }
     }catch(e){}
+    try{ if(window.exitOwnerMode) window.exitOwnerMode(); }catch(e){}
+    document.getElementById("ownerCard").classList.add("hidden");
   };
   
   /* ============ INIT ============ */
@@ -8657,18 +8661,19 @@ else msg.textContent='ثبت‌نام انجام نشد. اگر قبلاً ثب�
 
   var __ownerView = null; // businesses | requests | myrequest
   var __ownerModeReady = false;
+  var __ownerBootstrapDone = false; // فقط یک‌بار بعد از ورود خودکار
 
   function enterOwnerMode(){
-    if(!document.body.classList.contains('owner-mode')){
-      document.body.classList.add('owner-mode');
-    }
+    document.body.classList.add('owner-mode');
     var cta=document.getElementById('ownerCtaCard'); if(cta) cta.classList.add('hidden');
     var rc=document.getElementById('resultsCard'); if(rc) rc.classList.add('hidden');
+    var ac=document.getElementById('adminCard'); if(ac) ac.classList.add('hidden');
   }
   function exitOwnerMode(){
     document.body.classList.remove('owner-mode');
     __ownerView = null;
     __ownerModeReady = false;
+    __ownerBootstrapDone = false;
     var card=document.getElementById('ownerCard');
     if(card){ card.classList.add('hidden'); card.classList.remove('owner-view-hidden'); }
     var mr=document.getElementById('myRequestCard');
@@ -8679,6 +8684,7 @@ else msg.textContent='ثبت‌نام انجام نشد. اگر قبلاً ثب�
     var tab = opts.tab || 'businesses';
     var hasBiz = (typeof ownerBusinessList==='function') && ownerBusinessList().length>0;
     if(hasBiz) enterOwnerMode();
+    else enterOwnerMode(); // حتی بدون کسب‌وکار، پنل خلوت بماند اگر عمداً باز شده
     var card=document.getElementById('ownerCard'); if(!card)return;
     var reg=document.getElementById('registerCard'); if(reg) reg.classList.add('hidden');
     var cta=document.getElementById('ownerCtaCard'); if(cta) cta.classList.add('hidden');
@@ -8687,20 +8693,21 @@ else msg.textContent='ثبت‌نام انجام نشد. اگر قبلاً ثب�
     card.classList.remove('hidden');
     card.classList.remove('owner-view-hidden');
 
-    /* اگر همان نما فعال است، فقط در صورت اجبار دوباره رندر نکن — جلوگیری از پرش صفحه */
     var sameView = (__ownerView === tab && __ownerModeReady && document.body.classList.contains('owner-mode'));
-    if(!sameView || opts.force){
-      ownerPanelHeader();
-      if(tab === 'businesses' || !__ownerModeReady || opts.force){
-        renderOwnerBusinessesV2();
-      }
-      try{ if(typeof setOwnerPanelTab==='function') setOwnerPanelTab(tab); }catch(e){}
-      if(tab === 'requests'){
-        try{ if(window.loadOwnerRequests) window.loadOwnerRequests(true); }catch(e){}
-      }
-      __ownerView = tab;
-      __ownerModeReady = true;
+    if(sameView && !opts.force){
+      return; // هیچ DOM touch نکن
     }
+    ownerPanelHeader();
+    if(tab === 'businesses'){
+      renderOwnerBusinessesV2();
+    }
+    try{ if(typeof setOwnerPanelTab==='function') setOwnerPanelTab(tab); }catch(e){}
+    if(tab === 'requests'){
+      try{ if(window.loadOwnerRequests) window.loadOwnerRequests(true); }catch(e){}
+    }
+    __ownerView = tab;
+    __ownerModeReady = true;
+    __ownerBootstrapDone = true;
     if(!opts.silent){
       try{ window.scrollTo({top:0, behavior:'smooth'}); }catch(e){ window.scrollTo(0,0); }
     }
@@ -8719,19 +8726,23 @@ else msg.textContent='ثبت‌نام انجام نشد. اگر قبلاً ثب�
     }
     __ownerView = 'myrequest';
     try{ if(typeof loadMy==='function') loadMy(true); }catch(e){}
-    try{ window.scrollTo({top:0, behavior:'smooth'}); }catch(e){ window.scrollTo(0,0); }
+    if(!arguments[0] || !arguments[0].silent){
+      try{ window.scrollTo({top:0, behavior:'smooth'}); }catch(e){ window.scrollTo(0,0); }
+    }
   }
   window.showOwnerMyRequestsView = showOwnerMyRequestsView;
 
   function syncOwnerHomeView(){
     try{
+      // قفل: بعد از یک‌بار bootstrap موفق، دیگر خودکار صدا نزن
+      if(__ownerBootstrapDone && document.body.classList.contains('owner-mode')) return;
       var hasBiz = (typeof ownerBusinessList==='function') && ownerBusinessList().length>0;
       var cta=document.getElementById('ownerCtaCard');
       if(hasBiz){
-        /* فقط اگر هنوز در حالت مالک نیستیم وارد شو — جلوگیری از رفرش مداوم */
-        if(!document.body.classList.contains('owner-mode') || !__ownerModeReady){
-          showOwnerWorkspace({ silent:true, tab:'businesses', force:true });
-        }
+        showOwnerWorkspace({ silent:true, tab:'businesses', force:false });
+      } else if(window.currentOwner && window.currentOwner()){
+        // مالک بدون کسب‌وکار: پنل خالی با امکان ثبت
+        showOwnerWorkspace({ silent:true, tab:'businesses', force:false });
       } else {
         if(document.body.classList.contains('owner-mode')) exitOwnerMode();
         if(cta) cta.classList.remove('hidden');
@@ -8757,17 +8768,34 @@ else msg.textContent='ثبت‌نام انجام نشد. اگر قبلاً ثب�
   function renderOwnerBusinessesV2(){
     var box=document.getElementById('myBusinesses'); if(!box)return;
     var list=ownerBusinessList();
+    var approved=list.filter(function(b){ return b.status==='approved'; });
+    var pending=list.filter(function(b){ return b.status!=='approved'; });
     var newBtn=document.getElementById('newBusinessButton');
     if(newBtn){ newBtn.style.display = list.length>=1 ? 'none' : ''; }
+
+    var titleHtml='<div class="owner-biz-title" style="margin:4px 0 14px;padding:0 2px">'
+      +'<div style="font-size:16px;font-weight:800;color:var(--text)">کسب‌وکارهای تایید شده</div>'
+      +'<div style="font-size:12px;color:var(--text-3);margin-top:4px;line-height:1.7">فقط کسب‌وکار ثبت‌شده و تاییدشده شما</div>'
+      +'</div>';
+
     if(!list.length){
-      box.innerHTML='<div class="empty" style="padding:20px"><div style="font-size:28px">🏪</div><div class="title">هنوز کسب‌وکاری ثبت نکرده‌اید</div><div class="desc">از دکمه زیر کسب‌وکار خود را ثبت کنید.</div></div>';
+      box.innerHTML=titleHtml+'<div class="empty" style="padding:20px"><div style="font-size:28px">🏪</div><div class="title">هنوز کسب‌وکاری ثبت نکرده‌اید</div><div class="desc">از منوی حساب یا دکمه ثبت، کسب‌وکار خود را اضافه کنید.</div></div>';
       return;
     }
-    var html='';
-    // فقط کسب‌وکار(های) متعلق به همین مالک — معمولاً یکی
-    for(var i=0;i<list.length;i++){
-      var b=list[i];
-      html+='<div class="owner-business"><div class="owner-head"><div class="avatar">'+avatarHTML(b)+'</div><div class="owner-head-text"><h3>'+esc(b.name)+'</h3><div class="meta">'+esc(b.type||'دسته‌بندی نشده')+' · '+esc(ownerStatusText(b))+(b.emergency?' · ⚡ اورژانسی':(b.open24h?' · ⚡ ۲۴ساعته (منتظر تأیید مدیر)':''))+'</div></div></div><div class="owner-info"><div class="row"><span>📞</span><span>'+toFa(esc(b.phone||''))+'</span></div><div class="row"><span>📍</span><span>'+esc(b.address||'بهبهان')+'</span></div></div><div class="owner-actions"><button class="edit-btn" data-own-edit="'+b.id+'">✏️ ویرایش</button><button class="delete-btn" data-own-delete="'+b.id+'">🗑 حذف</button></div></div>';
+
+    function cardHTML(b){
+      return '<div class="owner-business"><div class="owner-head"><div class="avatar">'+avatarHTML(b)+'</div><div class="owner-head-text"><h3>'+esc(b.name)+'</h3><div class="meta">'+esc(b.type||'دسته‌بندی نشده')+' · '+esc(ownerStatusText(b))+(b.emergency?' · ⚡ اورژانسی':(b.open24h?' · ⚡ ۲۴ساعته (منتظر تأیید مدیر)':''))+'</div></div></div><div class="owner-info"><div class="row"><span>📞</span><span>'+toFa(esc(b.phone||''))+'</span></div><div class="row"><span>📍</span><span>'+esc(b.address||'بهبهان')+'</span></div></div><div class="owner-actions"><button class="edit-btn" data-own-edit="'+b.id+'">✏️ ویرایش</button><button class="delete-btn" data-own-delete="'+b.id+'">🗑 حذف</button></div></div>';
+    }
+
+    var html=titleHtml;
+    if(approved.length){
+      for(var i=0;i<approved.length;i++) html+=cardHTML(approved[i]);
+    } else {
+      html+='<div class="empty" style="padding:16px 12px"><div class="desc">هنوز کسب‌وکار تاییدشده‌ای ندارید.</div></div>';
+    }
+    if(pending.length){
+      html+='<div style="margin:18px 0 10px;font-size:13.5px;font-weight:800;color:var(--accent-700)">⏳ در انتظار تأیید</div>';
+      for(var j=0;j<pending.length;j++) html+=cardHTML(pending[j]);
     }
     box.innerHTML=html;
     box.querySelectorAll('[data-own-edit]').forEach(function(btn){btn.onclick=function(){editBusinessV2(+btn.getAttribute('data-own-edit'));};});
@@ -9590,8 +9618,10 @@ updateStats();
     try{ window.dispatchEvent(new Event("nomax-auth")); }catch(e){}
     try{
       if(u && window.syncOwnerHomeView){
-        setTimeout(function(){ window.syncOwnerHomeView(); }, 120);
-      } else {
+        // فقط یک‌بار؛ اگر قبلاً bootstrap شده، دست نزن
+        setTimeout(function(){ window.syncOwnerHomeView(); }, 200);
+      } else if(!u) {
+        try{ if(window.exitOwnerMode) window.exitOwnerMode(); }catch(e2){}
         var cta=document.getElementById('ownerCtaCard');
         var card=document.getElementById('ownerCard');
         if(cta) cta.classList.remove('hidden');
