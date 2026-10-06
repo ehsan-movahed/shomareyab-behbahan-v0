@@ -10,6 +10,8 @@
 /* Anti-clickjacking: جلوگیری از نمایش سایت داخل iframe سایت‌های دیگر */
 (function(){ try{ if(window.top !== window.self){ document.documentElement.style.display="none"; window.top.location = window.self.location; } }catch(e){ document.documentElement.style.display="none"; } })();
 </script>
+<link rel="preconnect" href="https://pqydooffsqhvrmswzpfa.supabase.co" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" crossorigin="anonymous"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>نومکس</title>
@@ -2132,6 +2134,89 @@ body, button, input, select, textarea{
 .offer-pick{width:100%;margin-top:8px;border:0;border-radius:10px;padding:10px;font:inherit;font-weight:800;font-size:13px;cursor:pointer;background:linear-gradient(135deg,var(--primary-500),var(--primary-600));color:#fff}
 .offer-chosen{border:2px solid #22c55e!important;background:rgba(34,197,94,.06)}
 </style>
+<style>
+/* ===== نومکس v4 ===== */
+.nx-locked{background:var(--muted)!important;color:var(--text-2)!important;cursor:not-allowed;border-style:dashed!important}
+.nx-lockhint{font-size:11.5px;color:var(--text-3);margin-top:4px}
+.nx-kb-warn{display:none;margin-top:6px;padding:7px 10px;border-radius:9px;background:#fffbeb;color:#92400e;border:1px solid #fde68a;font-size:12px;font-weight:700}
+.nx-kb-warn.show{display:block;animation:nxIn .2s ease}
+[data-theme="dark"] .nx-kb-warn{background:#422006;color:#fde68a;border-color:#78350f}
+@keyframes nxIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.nx-badge{position:absolute;top:-6px;left:-6px;min-width:20px;height:20px;padding:0 5px;border-radius:10px;background:#dc2626;color:#fff;font-size:11px;font-weight:800;display:none;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(220,38,38,.45);border:2px solid var(--surface,#fff)}
+.acct-btn{position:relative}
+.nx-remember{display:flex;align-items:center;gap:8px;margin:8px 0 4px;font-size:13px;color:var(--text-2);cursor:pointer}
+.nx-remember input{width:17px;height:17px;accent-color:var(--primary-500);margin:0}
+/* نتایج آکاردئونی */
+details.nx-res{background:var(--surface);border:1px solid var(--border);border-radius:16px;margin-bottom:10px;overflow:hidden;animation:nxIn .25s ease both}
+details.nx-res>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:8px;padding:10px}
+details.nx-res>summary::-webkit-details-marker{display:none}
+details.nx-res[open]{box-shadow:0 6px 20px rgba(0,0,0,.06)}
+.nx-res-main{flex:1;min-width:0}
+.nx-res-name{font-weight:800;font-size:14.5px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.nx-res-sub{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-3);margin-top:3px;min-width:0}
+.nx-res-sub .nx-addr{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.nx-res-sub span{flex-shrink:0}.nx-res-sub .nx-addr{flex-shrink:1}
+.nx-res-q{display:flex;gap:6px;flex-shrink:0}
+.nx-q{border:0;border-radius:10px;height:34px;padding:0 9px;font:inherit;font-size:12.5px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;cursor:pointer}
+.nx-q.call{background:var(--primary-500);color:#fff;width:34px;padding:0;font-size:15px}
+.nx-q.price{background:var(--primary-50);color:var(--primary-700);border:1px solid var(--primary-100)}
+.nx-res-body{padding:0 12px 12px}
+.nx-res-body .business-inner{padding:0;border:0;box-shadow:none;background:transparent}
+.nx-res-body .call-btn{display:flex;width:100%;justify-content:center;margin-bottom:8px}
+.nx-neg{color:#b45309;background:#fffbeb;border-radius:8px;padding:1px 6px;font-weight:700;font-size:11px}
+#nxLocBar{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:12px;background:var(--primary-50);color:var(--primary-700);font-size:12.5px;margin-bottom:10px}
+#nxLocBar button{margin-right:auto;border:0;border-radius:9px;background:var(--primary-500);color:#fff;font:inherit;font-weight:700;padding:7px 12px;cursor:pointer;white-space:nowrap}
+/* منوی سایت */
+#nxSiteMenu{position:fixed;z-index:1300;display:none;background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:0 14px 40px rgba(0,0,0,.18);padding:8px;width:min(300px,calc(100vw - 20px))}
+#nxSiteMenu.open{display:block;animation:nxIn .15s ease}
+#nxSiteMenu button{display:flex;align-items:center;gap:10px;width:100%;border:0;background:transparent;color:var(--text);font:inherit;font-size:14px;font-weight:600;padding:11px 12px;border-radius:10px;cursor:pointer;text-align:right}
+#nxSiteMenu button:hover{background:var(--muted)}
+#nxSiteMenu hr{border:0;border-top:1px solid var(--border);margin:6px 4px}
+#nxAbout{position:fixed;inset:0;z-index:1400;background:rgba(0,0,0,.45);display:none;align-items:flex-end;justify-content:center}
+#nxAbout.show{display:flex}
+#nxAbout .nx-sheet{background:var(--surface);width:min(520px,100%);max-height:85vh;overflow:auto;border-radius:20px 20px 0 0;padding:18px 18px 24px}
+#nxAbout h3{margin:0 0 10px;font-size:17px}#nxAbout h4{margin:14px 0 4px;font-size:14px}#nxAbout p{margin:0;font-size:13.5px;line-height:1.9;color:var(--text-2)}
+/* درخواست و پیشنهاد */
+.nx-oc{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:12px 14px;margin-bottom:10px}
+.nx-oc.nx-mine{border-color:var(--primary-200,#99f6e4)}
+.nx-oc.ok{border-color:#16a34a}
+.nx-oc-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.nx-oc-title{font-weight:800;font-size:15px;line-height:1.5}
+.nx-oc-time{font-size:11px;color:var(--text-3);white-space:nowrap;padding-top:3px}
+.nx-oc-meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.nx-chip{display:inline-flex;align-items:center;gap:4px;background:var(--muted);color:var(--text-2);border-radius:100px;padding:3px 10px;font-size:11.5px;font-weight:600;text-decoration:none}
+a.nx-chip{color:var(--primary-700);background:var(--primary-50)}
+.nx-oc-desc{margin-top:8px;font-size:12.5px;line-height:1.8;color:var(--text-2);background:var(--muted);border-radius:10px;padding:8px 10px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.nx-sec{display:flex;align-items:baseline;gap:8px;font-weight:800;font-size:13.5px;margin:4px 0 8px}
+.nx-sec small{margin-right:auto;font-weight:500;font-size:11px;color:var(--text-3)}
+.nx-empty-s{font-size:12.5px;color:var(--text-3);padding:4px 2px 10px}
+.nx-oc-form{margin-top:10px;border-top:1px dashed var(--border);padding-top:10px}
+.nx-row2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.nx-oc-form input,.nx-oc-form textarea{width:100%;padding:9px 10px;border:1.5px solid var(--border);border-radius:10px;background:var(--surface);color:var(--text);font:inherit;font-size:13px}
+.nx-notebox{position:relative}.nx-notebox textarea{resize:none;padding-bottom:20px}
+.nx-cnt{position:absolute;left:10px;bottom:6px;font-size:10.5px;color:var(--text-3)}
+.nx-oc-actions{display:flex;gap:8px;margin-top:10px}
+.nx-btn-p,.nx-btn-d{border:0;border-radius:10px;padding:10px;font:inherit;font-weight:800;font-size:13px;cursor:pointer}
+.nx-btn-p{flex:2;background:var(--primary-500);color:#fff}
+.nx-btn-d{flex:1;background:#fef2f2;color:#b91c1c}
+.nx-oc-state{margin-top:10px;font-size:12.5px;font-weight:800}.nx-lock{opacity:.6;font-weight:400}
+.nx-reply{margin-top:8px;border:1px solid var(--border);border-radius:12px;padding:8px 10px;background:var(--muted)}
+.nx-reply-h{font-size:11px;color:var(--text-3);margin-bottom:4px}
+.nx-reply-r{display:flex;gap:12px;font-weight:700;font-size:13px}
+.nx-wait{display:flex;align-items:center;gap:12px;margin-top:12px;padding:14px;border-radius:14px;background:linear-gradient(120deg,var(--primary-50),var(--muted));background-size:200% 100%;animation:nxShine 3s ease-in-out infinite}
+@keyframes nxShine{0%,100%{background-position:0 0}50%{background-position:100% 0}}
+.nx-wait-t{font-weight:800;font-size:13.5px}.nx-wait-s{font-size:11.5px;color:var(--text-3);margin-top:2px}
+.nx-radar{position:relative;width:34px;height:34px;flex-shrink:0}
+.nx-radar i{position:absolute;inset:0;border-radius:50%;border:2px solid var(--primary-500);opacity:0;animation:nxRadar 2.4s ease-out infinite}
+.nx-radar i:nth-child(2){animation-delay:.8s}.nx-radar i:nth-child(3){animation-delay:1.6s}
+@keyframes nxRadar{0%{transform:scale(.2);opacity:.9}100%{transform:scale(1);opacity:0}}
+.nx-dots b{animation:nxDot 1.2s infinite;opacity:.2}.nx-dots b:nth-child(2){animation-delay:.2s}.nx-dots b:nth-child(3){animation-delay:.4s}
+@keyframes nxDot{0%,80%,100%{opacity:.2}40%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.nx-wait,.nx-radar i,.nx-dots b,details.nx-res{animation:none}}
+.nx-locbtn{width:100%;border:1.5px dashed var(--primary-400);background:var(--primary-50);color:var(--primary-700);border-radius:10px;padding:11px;font:inherit;font-weight:800;font-size:13.5px;cursor:pointer}
+.nx-locbtn.done{border-style:solid;background:#ecfdf5;color:#047857;border-color:#a7f3d0}
+
+</style>
 </head>
 <body>
 
@@ -2238,13 +2323,7 @@ body, button, input, select, textarea{
   </div>
   <h1>نومکس</h1>
   <p class="tagline">کسب‌وکارها و خدمات شهر، یک‌جا</p>
-  <div class="stats">
-    <span><b id="statBusinesses">۰</b> کسب‌وکار</span>
-    <span class="dot"></span>
-    <span><b id="statCategories">۰</b> دسته</span>
-    <span class="dot"></span>
-    <span><b id="statReviews">۰</b> نظر</span>
-  </div>
+  <div class="stats"><span><b id="statBusinesses">۰</b> کسب‌وکار فعال</span><span style="display:none"><b id="statCategories">۰</b><b id="statReviews">۰</b></span></div>
   <svg class="wave" viewBox="0 0 1200 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M0,20 C300,45 600,-5 900,15 C1050,25 1150,30 1200,25 L1200,40 L0,40 Z" fill="#fafaf9"/>
   </svg>
@@ -2365,12 +2444,11 @@ body, button, input, select, textarea{
       </div>
       
       <div class="field" id="f-owner">
-        <label>نام و نام خانوادگی صاحب</label>
-        <input id="businessOwner" type="text" placeholder="مثلاً علی محمدی">
-        <div class="hint">اختیاری — اگه پر کنی، روی کارت نمایش داده می‌شه</div>
-      </div>
-    
-      <div class="field" id="f-showOwner" style="display:none">
+<label>نام و نام خانوادگی مالک: <span class="req">*</span></label>
+<input id="businessOwner" type="text" readonly class="nx-locked" placeholder="از حساب شما خوانده می‌شود">
+<div class="err-msg">نام مالک از حساب شما خوانده می‌شود؛ وارد حساب شوید.</div>
+</div>
+<div class="field" id="f-showOwner" style="display:none">
         <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-weight:500">
           <input type="checkbox" id="showOwnerCheck" style="width:18px;height:18px;accent-color:var(--primary-500);cursor:pointer;margin:0" checked>
           <span>نام من روی کارت نمایش داده بشه</span>
@@ -2508,160 +2586,4 @@ body, button, input, select, textarea{
       </div>
 
       <div class="field" id="f-location">
-        <label>📍 موقعیت جغرافیایی کسب‌وکار <span style="color:var(--text-3);font-weight:400">(اختیاری)</span></label>
-        <div class="location-box">
-          <div class="location-status" id="businessLocationStatus">هنوز موقعیت جغرافیایی ثبت نشده است.</div>
-          <div class="location-actions">
-            <button type="button" class="location-btn" id="getBusinessLocationBtn">📍 ثبت موقعیت فعلی</button>
-            <button type="button" class="location-clear-btn" id="clearBusinessLocationBtn">پاک کردن</button>
-          </div>
-          <div class="location-coords" id="businessLocationCoords" dir="ltr"></div>
-          <div class="hint">برای ثبت موقعیت، اجازه دسترسی به موقعیت مکانی مرورگر را تأیید کنید. مختصات در اطلاعات همین کسب‌وکار ذخیره می‌شود.</div>
-        </div>
-      </div>
-    
-      <button type="button" class="menu-btn green" id="toStep2">مرحله بعد ←</button>
-      <button type="button" class="menu-btn" id="cancelButton">انصراف</button>
-    </div>
-
-    <div class="form-step" data-step="2">
-      <div class="field">
-        <label>✅ برچسب‌های استاندارد (خدمات اصلی شما)</label>
-        <div class="hint" style="margin-bottom:8px">هر چیزی که کسب‌وکار شما ارائه می‌ده، تیک بزن.</div>
-        <div id="itemsBox" class="items-box">ابتدا دسته و زیر‌دسته را انتخاب کنید.</div>
-      </div>
-    
-      <div class="field">
-        <label>✨ برچسب‌های سفارشی شما <span style="color:var(--text-3);font-weight:400">(حداکثر ۳ برچسب)</span></label>
-        <div class="hint" style="margin-bottom:10px">
-          اگه خدمتی داری که در لیست بالا نیست، اینجا اضافه کن.
-          <strong style="color:var(--accent-700)">بعد از تأیید ادمین نمایش داده می‌شه.</strong>
-        </div>
-        
-        <div class="custom-box">
-          <input id="customItemInput" type="text" placeholder="مثلاً جوشکاری اگزوز" maxlength="30">
-          <button type="button" id="addCustomButton">افزودن</button>
-        </div>
-        
-        <div id="customCounter" style="font-size:11.5px;color:var(--text-3);margin-top:6px;text-align:left;direction:ltr">
-          0 / 3
-        </div>
-        
-        <div id="pendingTagsBox" style="margin-top:12px;display:none">
-          <div style="font-size:12px;color:var(--text-2);font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:6px">
-            <span style="font-size:14px">🏷️</span>
-            <span>برچسب‌های سفارشی شما:</span>
-            <span id="pendingTagsCount" style="color:var(--accent-700);font-weight:700"></span>
-          </div>
-          <div id="customList" style="display:flex;flex-wrap:wrap;gap:8px"></div>
-        </div>
-      </div>
-      
-      <button type="button" class="menu-btn green" id="toStep3">مرحله بعد ←</button>
-      <button type="button" class="menu-btn" id="backToStep1">→ مرحله قبل</button>
-    </div>
-
-    <div class="form-step" data-step="3">
-      <div id="previewBox" class="items-box" style="display:block;background:var(--muted);padding:16px"></div>
-      <label class="field" id="f-register-terms" style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;padding:12px;border:1.5px solid var(--border);border-radius:12px;background:var(--muted);margin:12px 0">
-        <input type="checkbox" id="registerTermsCheck" style="width:18px;height:18px;margin-top:3px;accent-color:var(--primary-500);flex-shrink:0">
-        <span style="font-size:13px;line-height:1.9;font-weight:600;color:var(--text)">
-          <a href="#" id="registerTermsLink" style="color:var(--primary-700);text-decoration:underline;font-weight:800">قوانین نومکس</a>
-          را خوانده و با آن موافقم.
-          <span class="req">*</span>
-        </span>
-      </label>
-      <div class="err-msg" id="registerTermsErr" style="display:none;color:var(--danger);font-size:12px;margin:-4px 0 10px">برای ثبت، باید قوانین را بپذیرید.</div>
-      <button type="button" class="menu-btn green" id="saveBusinessButton">✓ ثبت نهایی</button>
-      <button type="button" class="menu-btn" id="backToStep2">→ مرحله قبل</button>
-    </div>
-  </div>
-
-  <!-- ============ OWNER PANEL ============ -->
-  <div id="ownerCard" class="card hidden">
-    <h2 class="section-title">
-      <span class="icon">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-      </span>
-      مدیریت کسب‌وکارها
-    </h2>
-  
-    <!-- تب‌های پنل صاحب کسب‌وکار -->
-    <div class="admin-sub-tabs" id="ownerSubTabs" style="margin-bottom:16px">
-      <button type="button" class="admin-sub-tab active" data-owner-sub="businesses">🏪 کسب‌وکارهای من</button>
-      <button type="button" class="admin-sub-tab" data-owner-sub="requests">📨 درخواست‌ها <span id="ownerRequestsBadge" style="background:var(--danger);color:#fff;font-size:10px;padding:1px 6px;border-radius:100px;font-weight:700;margin-right:4px;display:none">۰</span></button>
-    </div>
-  
-    <div id="myBusinessesBox">
-      <div id="myBusinesses"></div>
-      <button type="button" class="menu-btn green" id="newBusinessButton">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-        کسب‌وکار جدید
-      </button>
-    </div>
-  
-    <div id="myRequestsBox" style="display:none">
-      <div class="owner-notif-banner" id="ownerNotifBanner">
-        <div id="ownerNotifBannerText">اعلان جدیدی ندارید.</div>
-        <button type="button" id="enableBrowserNotifBtn">🔔 فعال‌سازی اعلان مرورگر</button>
-      </div>
-      <div id="myRequests"></div>
-    </div>
-  
-    <button type="button" class="menu-btn" id="closeOwnerButton">بستن</button>
-  </div>
-
-  <div class="footer">
-    ساخته شده با ❤️ برای <strong>بهبهان</strong>
-  </div>
-
-</div>
-<!-- ============ OWNER REPLY MODAL ============ -->
-<div class="modal-overlay" id="ownerReplyModal">
-    <div class="modal review-modal">
-      <div class="modal-head">
-        <h3>پاسخ به نظر</h3>
-        <button type="button" class="close-x" onclick="closeOwnerReplyModal()">×</button>
-      </div>
-      <div style="font-size:12.5px;color:var(--text-2);margin-bottom:12px" id="replyToInfo"></div>
-      <div class="field" style="margin-bottom:14px">
-        <label style="font-size:13px">پاسخ شما</label>
-        <textarea id="ownerReplyText" maxlength="250" placeholder="پاسخ خودتون رو بنویسید..." style="width:100%;min-height:80px;padding:12px;border:1.5px solid var(--border);border-radius:10px;font-size:13.5px;font-family:inherit;background:var(--surface);color:var(--text);outline:none;resize:vertical"></textarea>
-        <div class="char-count"><span id="ownerReplyCharCount">۰</span> / ۲۵۰</div>
-      </div>
-      <div class="btns">
-        <button type="button" class="btn-submit" id="submitOwnerReplyBtn">ثبت پاسخ</button>
-      </div>
-    </div>
-  </div>
-  
-  <!-- ============ CONFIRM MODAL ============ -->
-  <div class="modal-overlay" id="confirmModal">
-    <div class="modal">
-      <div class="modal-icon">
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>
-      </div>
-      <h3>حذف کسب‌وکار</h3>
-      <p id="confirmText">آیا از حذف این کسب‌وکار مطمئن هستید؟ این عمل قابل بازگشت نیست.</p>
-      <div class="btns">
-        <button class="btn-cancel" id="confirmCancel">انصراف</button>
-        <button class="btn-danger" id="confirmOk">حذف کن</button>
-      </div>
-    </div>
-  </div>
-  
-  <!-- ============ QR MODAL ============ -->
-  <div class="modal-overlay" id="qrModal">
-    <div class="modal review-modal qr-modal-content">
-      <div class="modal-head">
-        <h3>📱 کد QR کسب‌وکار</h3>
-        <button type="button" class="close-x" onclick="closeQRModal()">×</button>
-      </div>
-      <div class="qr-code-box">
-        <img id="qrImage" src="" alt="QR Code">
-      </div>
-      <div class="qr-name" id="qrName"></div>
-      <div class="qr-info" id="qrInfo"></div>
-      <div class="btns" style="margin-top:12px">
-        <button type="button" class="btn-submit" onclick="downloadQR()">📥 دانلود</button>
-        <button type="button" class="btn-c
+        <label>📍 موقعیت جغرافیایی 
