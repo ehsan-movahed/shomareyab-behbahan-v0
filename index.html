@@ -1058,6 +1058,16 @@ body, button, input, select, textarea{
 }
 .custom-tag button:hover{opacity:1}
 
+/* ============ REQUEST / MARKET UX V5 ============ */
+.nx-owner-req{position:relative;border:1px solid var(--border);border-right:4px solid var(--primary-400);border-radius:16px;background:var(--surface);margin:0 0 10px;overflow:hidden;box-shadow:var(--shadow-sm)}
+.nx-owner-req.archived-ok{border-right-color:rgba(22,163,74,.65)} .nx-owner-req.archived-no{border-right-color:rgba(220,38,38,.55)}
+.nx-owner-req summary{list-style:none;cursor:pointer;padding:13px 14px;display:flex;align-items:center;gap:10px;min-height:68px}.nx-owner-req summary::-webkit-details-marker{display:none}
+.nx-owner-req .nx-summary-main{flex:1;min-width:0}.nx-owner-req .nx-summary-service{font-size:14px;font-weight:800;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.nx-owner-req .nx-summary-user,.nx-owner-req .nx-summary-contact{font-size:11px;color:var(--text-3);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.nx-owner-req .nx-summary-actions{display:flex;gap:6px;flex-shrink:0}
+.nx-mini-btn{border:0;border-radius:10px;padding:8px 9px;font:inherit;font-size:11px;font-weight:800;cursor:pointer;white-space:nowrap}.nx-mini-btn.ok{background:#ecfdf5;color:#15803d;border:1px solid #bbf7d0}.nx-mini-btn.no{background:#fef2f2;color:#b91c1c;border:1px solid #fecaca}
+.nx-owner-body{padding:0 14px 14px;border-top:1px solid var(--border)}.nx-owner-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:11px}.nx-owner-detail{background:var(--muted);border:1px solid var(--border);border-radius:10px;padding:8px;font-size:11.5px;color:var(--text-2)}.nx-owner-detail b{display:block;color:var(--text-3);font-size:10px;margin-bottom:2px}
+.nx-owner-market{border:1px solid var(--primary-100);background:linear-gradient(135deg,var(--primary-50),var(--surface));border-radius:16px;padding:14px;margin-bottom:14px}.nx-owner-market h3{margin:0;font-size:14px;font-weight:900}.nx-owner-market .sub{font-size:11px;color:var(--text-3);margin:3px 0 10px}.nx-market-list{display:flex;flex-direction:column;gap:7px}.nx-market-row{display:flex;align-items:center;gap:9px;background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:9px 10px}.nx-market-rank{width:24px;height:24px;border-radius:8px;background:var(--primary-500);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;flex-shrink:0}.nx-market-q{flex:1;font-size:12.5px;font-weight:700}.nx-market-n{font-size:11px;color:var(--text-3);font-weight:700}
+@media(max-width:520px){.nx-owner-req .nx-summary-actions{flex-direction:column}.nx-owner-detail-grid{grid-template-columns:1fr}}
+
 /* ============ OWNER PANEL ============ */
 .owner-business{
   border:1px solid var(--border);
@@ -7023,7 +7033,7 @@ async function loadFromSupabase(){
 document.querySelectorAll(".admin-sub-tab[data-owner-sub]").forEach(function(tab){
   tab.onclick = function(){
     var target = this.getAttribute("data-owner-sub");
-    document.querySelectorAll(".admin-sub-tab[data-owner-sub]").forEach(function(t){
+  document.querySelectorAll(".admin-sub-tab[data-owner-sub]").forEach(function(t){
       t.classList.toggle("active", t === tab);
     });
     document.getElementById("myBusinessesBox").style.display = target === "businesses" ? "block" : "none";
@@ -9865,75 +9875,32 @@ updateStats();
       '<div class="nx-oc-meta"><span class="nx-chip">🏪 '+esc(q.business_name||"")+'</span>'+where+'</div>'+
       (q.description ? '<div class="nx-oc-desc">'+esc(q.description)+'</div>' : '');
   }
+  async function loadOwnerMarket(){
+    var box=$("npMarketList"); if(!box) return;
+    try{
+      var rr=await sb.rpc("get_market_searches_10d", {p_limit:10});
+      if(rr.error) throw rr.error;
+      var rows=Array.isArray(rr.data)?rr.data:[];
+      if(!rows.length){box.innerHTML='<div class="nx-empty-s">در ۱۰ روز اخیر داده کافی ثبت نشده است.</div>';return;}
+      box.innerHTML='<div class="nx-market-list">'+rows.map(function(x,i){return '<div class="nx-market-row"><span class="nx-market-rank">'+toFa(i+1)+'</span><span class="nx-market-q">'+esc(x.query||"")+'</span><span class="nx-market-n">'+toFa(Number(x.count||0))+' جستجو</span></div>';}).join('')+'</div>';
+    }catch(e){
+      box.innerHTML='<div class="nx-empty-s">تحلیل بازار فعلاً در دسترس نیست. لطفاً اتصال RPC تحلیل بازار را بررسی کنید.</div>';
+    }
+  }
   function renderOwner(){
-    var box = $("myRequests"); if(!box) return;
-    if(!ownerReqs.length){
-      box.innerHTML = '<div class="empty" style="padding:24px"><div style="font-size:28px">📭</div><div class="title">درخواست مرتبطی نیست</div><div class="desc">وقتی مشتری چیزی مرتبط با دسته‌ی کسب‌وکار شما بخواهد، اینجا می‌بینید.</div></div>';
-      return;
-    }
-    var act = [], arch = [], WEEK = 7*86400000;
-    ownerReqs.forEach(function(q,i){
-      var o = q.my_offer;
-      if(q.status === "open" && !o && !declinedOf(q)) act.push({q:q,i:i});
-      else if(Date.now() - new Date(q.created_at).getTime() < WEEK) arch.push({q:q,i:i});
-    });
-    arch.sort(function(a,b){ return new Date(b.q.created_at) - new Date(a.q.created_at); });
-    arch = arch.slice(0,15);
-    var h = '<div class="nx-sec">⏳ در انتظار پاسخ شما <b>'+toFa(act.length)+'</b></div>';
-    if(!act.length) h += '<div class="nx-empty-s">درخواست بازی نیست.</div>';
-    act.forEach(function(x){
-      var q = x.q, i = x.i;
-      h += '<div class="nx-oc">'+ocHead(q)+
-        (isLate(q)?'<div class="nx-warn" style="margin-top:8px;display:inline-block">⚠️ بیش از ۲۴ ساعت بی‌پاسخ مانده؛ امتیاز منفی ثبت شد</div>':'')+
-        '<div class="nx-oc-form">'+
-          '<div class="nx-row2"><input data-f="price" data-i="'+i+'" maxlength="40" placeholder="💰 قیمت (مثلاً ۲۵۰ هزار تومان)"><input data-f="brand" data-i="'+i+'" maxlength="40" placeholder="🏷 برند"></div>'+
-          '<div class="nx-notebox"><textarea data-f="note" data-i="'+i+'" rows="2" maxlength="120" placeholder="توضیح کوتاه (گارانتی، موجودی، تحویل…)"></textarea><span class="nx-cnt">۰ / ۱۲۰</span></div>'+
-          '<div class="nx-oc-actions"><button class="nx-btn-p" data-send="'+i+'">✓ ارسال پیشنهاد</button><button class="nx-btn-d" data-decline="'+i+'">✕ رد</button></div>'+
-        '</div></div>';
-    });
-    h += '<button type="button" class="np-linkbtn" id="archToggle">🗄 '+(archOpen?'پنهان کردن بایگانی':'بایگانی ('+toFa(arch.length)+')')+'</button>';
-    if(archOpen){
-      if(arch.length) h += '<div class="nx-empty-s">سابقه فقط ۷ روز نگه داشته می‌شود.</div>';
-      arch.forEach(function(x){
-        var q = x.q, o = q.my_offer, d = declinedOf(q), st, cls = "";
-        if(o){ if(q.status === "selected"){ st = q.selected_mine ? "🎉 انتخاب شد" : "مشتری پیشنهاد دیگری را انتخاب کرد"; cls = q.selected_mine ? " ok" : ""; } else st = "پیشنهاد ارسال شد"; }
-        else if(d) st = d === "timeout" ? "بدون پاسخ (۲۴ ساعت)" : "رد شد";
-        else st = "مشتری پیشنهاد دیگری را انتخاب کرد";
-        h += '<div class="nx-oc arch'+cls+'">'+ocHead(q)+
-          '<div class="nx-oc-state">'+st+' <span class="nx-lock">🔒</span></div>'+
-          (o?'<div class="nx-reply"><div class="nx-reply-h">پاسخ شما</div><div class="nx-reply-r"><span>💰 '+esc(o.price)+'</span>'+(o.brand?'<span>🏷 '+esc(o.brand)+'</span>':'')+'</div>'+(o.note?'<div class="nx-note">'+esc(o.note)+'</div>':'')+'</div>':'')+
-          '</div>';
-      });
-    }
-    box.innerHTML = h;
-    box.querySelectorAll("textarea[data-f=note]").forEach(limitLines);
-    var at = $("archToggle"); if(at) at.onclick = function(){ archOpen = !archOpen; renderOwner(); };
-    box.querySelectorAll("[data-send]").forEach(function(btn){
-      btn.onclick = async function(){
-        var i = +btn.getAttribute("data-send"), q = ownerReqs[i];
-        function val(f){ return box.querySelector('[data-f="'+f+'"][data-i="'+i+'"]').value.trim(); }
-        if(!val("price")){ showToast("قیمت را وارد کنید.", "error"); return; }
-        if(!await nomaxConfirm("⚠️ بعد از ارسال، قیمت و توضیحات دیگر قابل تغییر نیست و درخواست به بایگانی می‌رود. ارسال شود؟")) return;
-        btn.disabled = true;
-        var r = await sb.rpc("submit_offer", { p_request:q.id, p_business:q.business_id, p_price:val("price"), p_brand:val("brand"), p_note:val("note").slice(0,120) });
-        btn.disabled = false;
-        if(r.error){ var m = r.error.message||""; showToast(m.indexOf("already_offered")>-1?"برای این درخواست قبلاً پیشنهاد داده‌اید.":(m.indexOf("not_allowed")>-1?"این درخواست دیگر در دسترس نیست.":"ثبت نشد؛ دوباره تلاش کنید."), "error"); loadOwnerRequests(); return; }
-        if(window.nomaxNotify) window.nomaxNotify({ action:"new_offer", request_id:q.id, business_id:q.business_id });
-        showToast("پیشنهاد ثبت شد و به بایگانی رفت ✓", "success"); loadOwnerRequests();
-      };
-    });
-    box.querySelectorAll("[data-decline]").forEach(function(btn){
-      btn.onclick = async function(){
-        var q = ownerReqs[+btn.getAttribute("data-decline")];
-        if(!await nomaxConfirm("⚠️ این درخواست رد و بایگانی می‌شود و دیگر قابل پاسخ نیست. رد کردن، امتیاز منفی برای کسب‌وکار شما ثبت می‌کند و روی رتبه‌ی نمایش شما در جستجو اثر می‌گذارد. ادامه می‌دهید؟", { danger:true })) return;
-        var r = await sb.rpc("decline_request", { p_request:String(q.id), p_business:String(q.business_id) });
-        if(r.error){ showToast("ثبت نشد؛ دوباره تلاش کنید.", "error"); return; }
-        showToast("درخواست به بایگانی رفت.", "success"); loadOwnerRequests();
-        if(window.nomaxLoadPenalties) window.nomaxLoadPenalties();
-      };
-    });
+    var box=$("myRequests"); if(!box)return;
+    if(!ownerReqs.length){box.innerHTML='<div class="empty" style="padding:24px"><div style="font-size:28px">📭</div><div class="title">درخواست مرتبطی نیست</div><div class="desc">وقتی مشتری چیزی مرتبط با دسته کسب‌وکار شما بخواهد، اینجا می‌بینید.</div></div>';return;}
+    var act=[],arch=[],WEEK=7*86400000; ownerReqs.forEach(function(q,i){var o=q.my_offer;if(q.status==="open"&&!o&&!declinedOf(q))act.push({q:q,i:i});else if(Date.now()-new Date(q.created_at).getTime()<WEEK)arch.push({q:q,i:i});}); arch.sort(function(a,b){return new Date(b.q.created_at)-new Date(a.q.created_at)});arch=arch.slice(0,15);
+    var h='<div class="nx-sec">⏳ استعلام‌های جدید <b>'+toFa(act.length)+'</b></div>'; if(!act.length)h+='<div class="nx-empty-s">استعلام جدیدی برای پاسخ وجود ندارد.</div>';
+    act.forEach(function(x){var q=x.q,i=x.i,phone=String(q.phone||q.user_phone||""),masked=phone?phone.replace(/(\d{3})(\d{3,})(\d{2})$/,'$1•••$3'):'شماره مخفی';h+='<details class="nx-owner-req" data-owner-req="'+esc(q.id)+'"><summary><div class="nx-summary-main"><div class="nx-summary-service">'+esc(q.service||"استعلام")+'</div><div class="nx-summary-user">'+esc(q.user_name||q.customer_name||"کاربر نومکس")+'</div><div class="nx-summary-contact">'+esc(q.area||"مکان ثبت نشده")+' · '+esc(masked)+'</div></div><div class="nx-summary-actions"><button type="button" class="nx-mini-btn ok" data-send="'+i+'">✓ تأیید</button><button type="button" class="nx-mini-btn no" data-decline="'+i+'">رد</button></div></summary><div class="nx-owner-body"><div class="nx-owner-detail-grid"><div class="nx-owner-detail"><b>کالا / خدمت</b>'+esc(q.service||"—")+'</div><div class="nx-owner-detail"><b>مکان</b>'+esc(q.area||"—")+'</div><div class="nx-owner-detail"><b>توضیحات</b>'+esc(q.description||"—")+'</div><div class="nx-owner-detail"><b>زمان ثبت</b>'+esc(getTimeAgo(new Date(q.created_at).getTime()))+'</div></div>'+(isLate(q)?'<div class="nx-warn" style="margin-top:9px;display:inline-block">⚠️ بیش از ۲۴ ساعت بی‌پاسخ مانده؛ امتیاز منفی ثبت می‌شود.</div>':'')+'<div class="nx-oc-form" style="margin-top:10px"><div class="nx-row2"><input data-f="price" data-i="'+i+'" maxlength="40" placeholder="💰 قیمت"><input data-f="brand" data-i="'+i+'" maxlength="40" placeholder="🏷 برند"></div><div class="nx-notebox"><textarea data-f="note" data-i="'+i+'" rows="2" maxlength="120" placeholder="توضیح کوتاه (گارانتی، موجودی، تحویل…)"></textarea><span class="nx-cnt">۰ / ۱۲۰</span></div></div></div></details>';});
+    h+='<button type="button" class="np-linkbtn" id="archToggle">🗄 '+(archOpen?'پنهان کردن بایگانی':'بایگانی ('+toFa(arch.length)+')')+'</button>';
+    if(archOpen){arch.forEach(function(x){var q=x.q,o=q.my_offer,d=declinedOf(q),ok=!!(o&&q.status==="selected"&&q.selected_mine),no=!!d,st=o?(q.status==="selected"?(q.selected_mine?'🎉 پیشنهاد شما انتخاب شد':'مشتری پیشنهاد دیگری را انتخاب کرد'):'پیشنهاد ارسال شد'):(d?(d==='timeout'?'بدون پاسخ (۲۴ ساعت)':'رد شد'):'بسته شده');h+='<details class="nx-owner-req '+(ok?'archived-ok ':'')+(no?'archived-no':'')+'"><summary><div class="nx-summary-main"><div class="nx-summary-service">'+esc(q.service||"استعلام")+'</div><div class="nx-summary-user">'+esc(q.user_name||q.customer_name||"کاربر نومکس")+'</div><div class="nx-summary-contact">'+esc(q.area||"مکان ثبت نشده")+'</div></div><span class="st-pill '+(ok?'selected':'')+'">'+esc(st)+'</span></summary><div class="nx-owner-body">'+ocHead(q)+(o?'<div class="nx-reply"><div class="nx-reply-h">پاسخ شما</div><div class="nx-reply-r"><span>💰 '+esc(o.price)+'</span>'+(o.brand?'<span>🏷 '+esc(o.brand)+'</span>':'')+'</div>'+(o.note?'<div class="nx-note">'+esc(o.note)+'</div>':'')+'</div>':'')+'<div class="nx-oc-state">🔒 این مورد در بایگانی است و قابل ویرایش نیست.</div></div></details>';});}
+    box.innerHTML=h; box.querySelectorAll('textarea[data-f="note"]').forEach(limitLines); var at=$("archToggle");if(at)at.onclick=function(){archOpen=!archOpen;renderOwner()};
+    box.querySelectorAll('[data-send]').forEach(function(btn){btn.onclick=async function(e){e.preventDefault();e.stopPropagation();var i=+btn.getAttribute('data-send'),q=ownerReqs[i],price=box.querySelector('[data-f="price"][data-i="'+i+'"]').value.trim(),brand=box.querySelector('[data-f="brand"][data-i="'+i+'"]').value.trim(),note=box.querySelector('[data-f="note"][data-i="'+i+'"]').value.trim();if(!price){showToast('قیمت را وارد کنید.','error');return}if(!await nomaxConfirm('⚠️ با تأیید، پیشنهاد برای مشتری ارسال و استعلام بایگانی می‌شود؛ قیمت بعداً قابل ویرایش نیست. ادامه می‌دهید؟'))return;btn.disabled=true;var r=await sb.rpc('submit_offer',{p_request:q.id,p_business:q.business_id,p_price:price,p_brand:brand,p_note:note.slice(0,120)});btn.disabled=false;if(r.error){showToast('ثبت پیشنهاد انجام نشد؛ دوباره تلاش کنید.','error');return}if(window.nomaxNotify)window.nomaxNotify({action:'new_offer',request_id:q.id,business_id:q.business_id});showToast('✓ پیشنهاد ثبت و بایگانی شد.','success');loadOwnerRequests()};});
+    box.querySelectorAll('[data-decline]').forEach(function(btn){btn.onclick=async function(e){e.preventDefault();e.stopPropagation();var q=ownerReqs[+btn.getAttribute('data-decline')];if(!await nomaxConfirm('⚠️ این استعلام رد و بایگانی می‌شود و دیگر قابل پاسخ نیست. ادامه می‌دهید؟',{danger:true}))return;var r=await sb.rpc('decline_request',{p_request:String(q.id),p_business:String(q.business_id)});if(r.error){showToast('رد استعلام انجام نشد؛ RPC مربوطه در بک‌اند موجود نیست.','error');return}showToast('استعلام رد و بایگانی شد.','success');loadOwnerRequests();if(window.nomaxLoadPenalties)window.nomaxLoadPenalties()};});
   }
 
+  window.loadOwnerMarket=loadOwnerMarket;
   document.querySelectorAll(".admin-sub-tab[data-owner-sub]").forEach(function(tab){
     tab.addEventListener("click", function(){ if(this.getAttribute("data-owner-sub") === "requests") loadOwnerRequests(); });
   });
@@ -10076,7 +10043,7 @@ updateStats();
     });
     if(t === "settings") renderSettings();
     if(t === "inbox" && window.loadOwnerRequests && bizCount()) window.loadOwnerRequests(true);
-    if(t === "biz" && window.nomaxReloadBiz) window.nomaxReloadBiz();
+    if(t === "biz" && window.nomaxReloadBiz) window.nomaxReloadBiz(); if(t === "biz" && window.loadOwnerMarket) window.loadOwnerMarket();
     var b = el.querySelector(".np-body"); if(b) b.scrollTop = 0;
   }
   function open(t){
@@ -10810,7 +10777,7 @@ window.NOMAX_CFG = {
       '</div>'+
       /* تکمیل پروفایل */
       '<div id="nxaScProfile" style="display:none">'+
-        '<div class="nxa-f" id="nxaNameF"><label>نام و نام خانوادگی <span style="color:var(--danger)">*</span></label><input id="nxaName" type="text" autocomplete="name" placeholder="مثلاً علی محمدی"><div class="nxa-kb" id="nxaKb">⌨️ صفحه کلید خود را تغییر دهید</div></div>'+
+        '<div class="nxa-f" id="nxaNameF"><label>نام و نام خانوادگی <span style="color:var(--danger)">*</span></label><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><input id="nxaFirst" type="text" autocomplete="given-name" placeholder="نام"><input id="nxaLast" type="text" autocomplete="family-name" placeholder="نام خانوادگی"></div><input id="nxaName" type="hidden"><div class="nxa-kb" id="nxaKb">⌨️ صفحه کلید خود را تغییر دهید</div></div>'+
         '<div class="nxa-f"><label>شماره موبایل</label><input id="nxaPhoneRO" type="tel" class="ltr" readonly></div>'+
         '<div class="nxa-f"><label id="nxaPassL">رمز عبور <span style="color:var(--danger)">*</span></label><input id="nxaP1" type="password" autocomplete="new-password" placeholder="حداقل ۸ کاراکتر"></div>'+
         '<div class="nxa-f"><label>تکرار رمز عبور <span style="color:var(--danger)">*</span></label><input id="nxaP2" type="password" autocomplete="new-password" placeholder="تکرار رمز"></div>'+
@@ -10840,6 +10807,7 @@ window.NOMAX_CFG = {
     $("nxaSkip").onclick=function(){ finish("خوش آمدید ✓"); };
     $("nxaName").addEventListener("input",function(){ var bad=/[A-Za-z]/.test(this.value); if(bad) this.value=this.value.replace(/[A-Za-z]+/g,""); $("nxaKb").style.display=bad?"block":"none"; if(bad) setTimeout(function(){ $("nxaKb").style.display="none"; },3000); });
     ["nxaLPhone","nxaPhone"].forEach(function(id){ $(id).addEventListener("input",function(){ this.value=latin(this.value).replace(/[^\d+]/g,""); }); });
+    ["nxaFirst","nxaLast"].forEach(function(id){ $(id).addEventListener("input",function(){ var bad=/[A-Za-z]/.test(this.value); if(bad)this.value=this.value.replace(/[A-Za-z]+/g,""); }); });
   }
 
   function msg(t,ok){ var e=$("nxaMsg"); if(!e) return; e.textContent=t||""; e.className="nxa-msg"+(ok?" ok":""); }
@@ -10947,15 +10915,16 @@ window.NOMAX_CFG = {
   /* ---- تکمیل پروفایل و رمز ---- */
   async function saveProfile(){
     if(S.busy) return;
-    var name=$("nxaName").value.trim(), p1=$("nxaP1").value, p2=$("nxaP2").value;
+    var first=$("nxaFirst")?$("nxaFirst").value.trim():"", last=$("nxaLast")?$("nxaLast").value.trim():"", name=(first+" "+last).trim()||$("nxaName").value.trim(), p1=$("nxaP1").value, p2=$("nxaP2").value;
     if(!S.registered){
-      if(name.length<3 || !/[\u0600-\u06FF]/.test(name)){ msg("نام و نام خانوادگی را فارسی وارد کنید."); return; }
+      if(first.length<2 || last.length<2 || !/[\u0600-\u06FF]/.test(name)){ msg("نام و نام خانوادگی را کامل و فارسی وارد کنید."); return; }
+      $("nxaName").value=name;
     }
     if(p1.length<8){ msg("رمز عبور باید حداقل ۸ کاراکتر باشد."); return; }
     if(p1!==p2){ msg("رمز و تکرار آن یکسان نیست."); return; }
     var b=$("nxaSave"); setBusy(b,true,"در حال ثبت…");
     try{
-      var upd={password:p1}; if(!S.registered) upd.data={full_name:name,registered:true};
+      var upd={password:p1}; if(!S.registered) upd.data={full_name:name,name:name,first_name:first,last_name:last,registered:true};
       var r=await sb.auth.updateUser(upd); if(r.error) throw r.error;
       var u=r.data&&r.data.user;
       if(!S.registered && u){
@@ -10982,7 +10951,7 @@ window.NOMAX_CFG = {
     S.flow = opts.mode==="link" ? "link" : "signup";
     var why=$("nxaWhy");
     if(opts.reason){ why.textContent=opts.reason; why.style.display=""; } else if(opts.mode==="link"){ why.textContent="برای ثبت کسب‌وکار، شماره‌ی موبایل شما باید با کد پیامکی تأیید شود."; why.style.display=""; } else why.style.display="none";
-    $("nxaLPass").value=""; $("nxaP1").value=""; $("nxaP2").value=""; $("nxaCode").value="";
+    $("nxaLPass").value=""; $("nxaP1").value=""; $("nxaP2").value=""; $("nxaCode").value=""; if($("nxaFirst"))$("nxaFirst").value=""; if($("nxaLast"))$("nxaLast").value="";
     if(opts.mode==="link") go("phone"); else go(opts.mode==="signup"?"phone":"login");
     if(opts.mode==="signup") S.flow="signup";
     $("nxaModal").classList.add("show"); document.body.style.overflow="hidden";
